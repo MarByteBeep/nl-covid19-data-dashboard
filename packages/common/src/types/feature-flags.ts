@@ -1,3 +1,5 @@
+import { KeysOfType } from '.';
+
 export function isSimpleFeature(feature: Feature): feature is SimpleFeature {
   return !('dataScopes' in feature);
 }
@@ -36,6 +38,40 @@ export type VerboseFeature = {
    */
   metricProperties?: string[];
 } & SimpleFeature;
+
+export type VerboseFeatureWithMockData<T> = {
+  generateMockData: boolean;
+  mockConfiguration: DateSpanMockConfiguration<T> | DateMockConfiguration<T>;
+} & VerboseFeature;
+
+export type MockConfiguration<T> = {
+  itemCount: number;
+  propertyConfigurations: PropertyConfigurations<T>;
+};
+
+type PropertyConfigurations<T> = Record<
+  KeysOfType<T, 'number', true>,
+  PropertyValueConfiguration | PropertyValueGenerator<T>
+>;
+
+type PropertyValueGenerator<T> = (
+  index: number,
+  name: KeysOfType<T, 'number', true>,
+  type: 'integer' | 'number'
+) => number;
+
+type PropertyValueConfiguration = {
+  range: [number, number];
+};
+
+type DateSpanMockConfiguration<T> = {
+  type: 'dateSpan';
+  dateSpanDayCount: number;
+} & MockConfiguration<T>;
+
+type DateMockConfiguration<T> = {
+  type: 'date';
+} & MockConfiguration<T>;
 
 export type MetricScope = 'in' | 'nl' | 'vr' | 'gm';
 export type JsonDataScope =
