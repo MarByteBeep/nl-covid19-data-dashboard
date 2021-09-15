@@ -56,7 +56,7 @@ type PropertyConfigurations<T> = Record<
 
 type PropertyValueGenerator<T> = (
   index: number,
-  name: KeysOfType<T, 'number', true>,
+  name: KeysOfType<T, 'number' | null, true>,
   type: 'integer' | 'number'
 ) => number;
 

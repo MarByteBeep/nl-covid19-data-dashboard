@@ -1,4 +1,10 @@
-import { JsonDataScope, MockConfiguration } from '@corona-dashboard/common';
+import {
+  JsonDataScope,
+  VerboseFeatureWithMockData,
+} from '@corona-dashboard/common';
+import { sub } from 'date-fns';
+import Series from 'time-series-data-generator';
+import { getSchema } from '~/static-props/utils/get-schema';
 
 const choroplethScopes: JsonDataScope[] = [
   'in_collection',
@@ -13,15 +19,36 @@ function isChoroplethScope(value: JsonDataScope): value is ChoroplethScope {
 }
 
 export function generateMockData<T>(
-  configuration: MockConfiguration<T>,
+  feature: VerboseFeatureWithMockData<T>,
   scope: JsonDataScope
 ) {
   if (isChoroplethScope(scope)) {
-    return generateMockChoroplethData(configuration, scope);
+    return generateMockChoroplethData(feature, scope);
   }
 }
 
 function generateMockChoroplethData<T>(
-  configuration: MockConfiguration<T>,
+  feature: VerboseFeatureWithMockData<T>,
   scope: ChoroplethScope
-) {}
+) {
+  const { mockConfiguration } = feature;
+  const [rootSchema, metricSchema] = getSchema(feature, scope);
+  const { itemCount, propertyConfigurations, type } = mockConfiguration;
+
+  const result = Object.entries(propertyConfigurations).map(
+    ([key, value]) => {}
+  );
+
+  const until = new Date();
+  const from = sub(until, { days: itemCount });
+  const values = new Series({
+    from: from.toISOString(),
+    until: until.toISOString(),
+    interval: 86400,
+  })
+    .sin()
+    .map((x) => ({
+      ...x,
+      timestamp: new Date(x.timestamp).getTime() * 1000,
+    }));
+}

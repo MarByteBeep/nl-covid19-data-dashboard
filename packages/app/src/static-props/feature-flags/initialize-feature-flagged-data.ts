@@ -3,25 +3,9 @@ import {
   JsonDataScope,
   VerboseFeature,
 } from '@corona-dashboard/common';
-import path from 'path';
 import { isDefined } from 'ts-is-present';
-import {
-  disabledMetrics,
-  schemaRootPath,
-} from '~/static-props/feature-flags/feature-flag-constants';
-import { loadJsonFromFile } from '~/static-props/utils/load-json-from-file';
-
-type AjvPropertyDef = { type?: MetricType; $ref: string; enum?: any[] };
-
-type AjvSchema = {
-  $schema: string;
-  type: string;
-  title: string;
-  additionalProperties: boolean;
-  required: string[];
-  properties: Record<string, AjvPropertyDef>;
-  definitions?: Record<string, AjvSchema>;
-};
+import { disabledMetrics } from '~/static-props/feature-flags/feature-flag-constants';
+import { AjvPropertyDef, AjvSchema, getSchema } from '../utils/get-schema';
 
 /**
  * This method receives a dashboard data file (one from the public/json folder),
@@ -176,18 +160,6 @@ function initializeProperty(prop: AjvPropertyDef, schema: AjvSchema) {
   return null;
 }
 
-function getSchema(feature: VerboseFeature, scope: JsonDataScope) {
-  const rootSchemaPath = path.join(schemaRootPath, scope, '__index.json');
-  const rootSchema = loadJsonFromFile<AjvSchema>(rootSchemaPath);
-  const metricSchemaPath = path.join(
-    schemaRootPath,
-    scope,
-    `${feature.metricName}.json`
-  );
-  const metricSchema = loadJsonFromFile<AjvSchema>(metricSchemaPath);
-  return [rootSchema, metricSchema] as const;
-}
-
 function getFeatureFlagsByScope(scope: JsonDataScope) {
   return disabledMetrics.filter((x) => x.dataScopes.includes(scope));
 }
@@ -201,7 +173,7 @@ function getMetricType(schema: AjvSchema, metricName: string) {
   return propertyDef.type ?? 'ref';
 }
 
-type SimpleMetricType =
+export type SimpleMetricType =
   | 'array'
   | 'object'
   | 'string'
@@ -209,4 +181,4 @@ type SimpleMetricType =
   | 'number'
   | 'boolean';
 
-type MetricType = SimpleMetricType | 'ref' | 'null' | MetricType[];
+export type MetricType = SimpleMetricType | 'ref' | 'null' | MetricType[];

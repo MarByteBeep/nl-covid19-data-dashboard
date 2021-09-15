@@ -59,10 +59,11 @@
     "styled-components": "^5.3.1",
     "styled-system": "^5.1.5",
     "svgo-loader": "^3.0.0",
-    "swr": "^1.0.0",
+    "swr": "^1.0.1",
+    "time-series-data-generator": "^0.1.5",
     "tippy.js": "^6.3.1",
     "topojson-client": "^3.1.0",
-    "ts-is-present": "^1.1.5",
+    "ts-is-present": "^1.2.2",
     "use-callback-ref": "^1.2.5",
     "xss": "^1.0.9"
   },
@@ -120,9 +121,9 @@
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.3.2",
     "react-refresh": "^0.10.0",
-    "start-server-and-test": "^1.13.1",
+    "start-server-and-test": "^1.14.0",
     "ts-jest": "^27.0.4",
-    "typescript": "^4.4.2",
+    "typescript": "^4.4.3",
     "walkjs": "^3.1.11"
   },
   "lint-staged": {
