@@ -61,7 +61,10 @@ const codeProperties: Record<
 function generateMockChoroplethData<T>(
   feature: VerboseFeatureWithMockData<T>,
   scope: ChoroplethScope
-) {}
+) {
+  const info = codeProperties[scope];
+  //return createChoroplethData(info.data, info.propertyName);
+}
 
 function generateTimeseriesData<T>(
   feature: VerboseFeatureWithMockData<T>,
