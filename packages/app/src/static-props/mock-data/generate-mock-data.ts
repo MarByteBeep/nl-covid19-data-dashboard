@@ -1,10 +1,23 @@
 import {
+  isPropertyValueConfiguration,
   JsonDataScope,
+  MetricScope,
+  PropertyValueConfiguration,
+  PropertyValueGenerator,
   VerboseFeatureWithMockData,
 } from '@corona-dashboard/common';
-import { sub } from 'date-fns';
-import Series from 'time-series-data-generator';
+import { gmData } from '~/data/gm';
+import { vrData } from '~/data/vr';
 import { getSchema } from '~/static-props/utils/get-schema';
+import { loadJsonFromDataFile } from '../utils/load-json-from-data-file';
+import { createTimestampedSeries } from './create-timestamped-series';
+
+const countryCodes = Object.keys(
+  loadJsonFromDataFile<Record<string, string>>(
+    'nl-country-names.json',
+    'static-json'
+  )
+).map((x) => x.toLocaleUpperCase());
 
 const choroplethScopes: JsonDataScope[] = [
   'in_collection',
@@ -25,30 +38,73 @@ export function generateMockData<T>(
   if (isChoroplethScope(scope)) {
     return generateMockChoroplethData(feature, scope);
   }
+  return generateTimeseriesData(feature, scope);
 }
 
+const codeProperties: Record<
+  ChoroplethScope,
+  { propertyName: string; data: string[] }
+> = {
+  gm_collection: {
+    propertyName: 'gmcode',
+    data: gmData.map((x) => x.gemcode),
+  },
+  vr_collection: {
+    propertyName: 'vrcode',
+    data: vrData.map((x) => x.code),
+  },
+  in_collection: {
+    propertyName: 'country_code',
+    data: countryCodes,
+  },
+};
 function generateMockChoroplethData<T>(
   feature: VerboseFeatureWithMockData<T>,
   scope: ChoroplethScope
+) {}
+
+function generateTimeseriesData<T>(
+  feature: VerboseFeatureWithMockData<T>,
+  scope: MetricScope
 ) {
   const { mockConfiguration } = feature;
   const [rootSchema, metricSchema] = getSchema(feature, scope);
-  const { itemCount, propertyConfigurations, type } = mockConfiguration;
 
-  const result = Object.entries(propertyConfigurations).map(
-    ([key, value]) => {}
-  );
+  const {
+    itemCount,
+    propertyTimeSeriesConfigurations: propertyConfigurations,
+  } = mockConfiguration;
 
-  const until = new Date();
-  const from = sub(until, { days: itemCount });
-  const values = new Series({
-    from: from.toISOString(),
-    until: until.toISOString(),
-    interval: 86400,
-  })
-    .sin()
-    .map((x) => ({
-      ...x,
-      timestamp: new Date(x.timestamp).getTime() * 1000,
-    }));
+  const dateSpanDayCount =
+    'dateSpanDayCount' in mockConfiguration
+      ? mockConfiguration.dateSpanDayCount
+      : 1;
+
+  const propertyNames = Object.keys(propertyConfigurations);
+  const configurations = Object.values<
+    PropertyValueConfiguration | PropertyValueGenerator<T>
+  >(propertyConfigurations).filter(isPropertyValueConfiguration);
+
+  const itemWithSeries = configurations.map((x, index) => {
+    const range = 'range' in x ? x.range : ([0, 100] as [number, number]);
+
+    return createTimestampedSeries(
+      itemCount,
+      range,
+      x.decimalCount ?? 0,
+      dateSpanDayCount,
+      propertyNames[index]
+    );
+  });
+
+  const firstSeries = itemWithSeries.shift();
+
+  const mergedSeries = firstSeries?.map((x, index) => {
+    return itemWithSeries.reduce((aggr, y) => {
+      return {
+        ...aggr,
+        ...y[index],
+      };
+    }, x);
+  });
 }

@@ -46,23 +46,45 @@ export type VerboseFeatureWithMockData<T> = {
 
 export type MockConfiguration<T> = {
   itemCount: number;
-  propertyConfigurations: PropertyConfigurations<T>;
+  propertyTimeSeriesConfigurations: PropertyConfigurations<T>;
+  propertyConfigurations: Record<keyof T, PropertyValueGenerator<T>>;
 };
 
-type PropertyConfigurations<T> = Record<
-  KeysOfType<T, 'number', true>,
-  PropertyValueConfiguration | PropertyValueGenerator<T>
+export type PropertyConfigurations<T> = Record<
+  KeysOfType<T, 'number' | null, true>,
+  PropertyValueConfiguration
 >;
 
-type PropertyValueGenerator<T> = (
+export function isPropertyValueConfiguration<T>(
+  value: PropertyValueConfiguration | PropertyValueGenerator<T>
+): value is PropertyValueConfiguration {
+  return typeof value !== 'function';
+}
+
+export function isPropertyValueGenerator(
+  value: PropertyValueConfiguration | PropertyValueGenerator<unknown>
+): value is PropertyValueGenerator<unknown> {
+  return typeof value === 'function';
+}
+
+export type PropertyValueGenerator<T> = (
   index: number,
-  name: KeysOfType<T, 'number' | null, true>,
-  type: 'integer' | 'number'
+  name: keyof T
 ) => number;
 
-type PropertyValueConfiguration = {
-  range: [number, number];
-};
+export type PropertyValueConfiguration =
+  | {
+      decimalCount?: number;
+    } & (
+      | {
+          range: [number, number];
+        }
+      | {
+          isPercentage: true;
+        }
+    );
+
+type;
 
 type DateSpanMockConfiguration<T> = {
   type: 'dateSpan';

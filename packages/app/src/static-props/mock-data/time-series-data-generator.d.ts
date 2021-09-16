@@ -8,7 +8,7 @@ declare module 'time-series-data-generator' {
     ratio(ratioArgs: RatioArgs): SineValue<PropertyName>[];
     generate(func: (unix: number) => number): SineValue<PropertyName>[];
   }
-  export type SineValue<PropertyName extends string> = {
+  export type SineValue<PropertyName extends string = 'value'> = {
     timestamp: string;
   } & { [P in PropertyName]: number };
   export type CtorValues<PropertyName extends string> = {
