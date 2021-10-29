@@ -1,10 +1,16 @@
+const baseConfig = require('../../jest.base');
 module.exports = {
-  roots: ['<rootDir>/src'],
-  testMatch: [
-    '**/__tests__/**/*.+(ts|tsx|js)',
-    '**/?(*.)+(spec|test).+(ts|tsx|js)',
-  ],
-  transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+  ...baseConfig,
+  displayName: 'Common',
+  rootDir: '../../',
+  roots: ['./packages/common/'],
+  globals: {
+    'ts-jest': {
+      tsConfig: '<rootDir>/packages/common/tsconfig.json',
+    },
+  },
+  moduleNameMapper: {
+    ...baseConfig.moduleNameMapper,
+    '~/(.*)': '<rootDir>/packages/common/src/$1',
   },
 };
