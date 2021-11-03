@@ -2266,6 +2266,7 @@
 				"description": "De cijfers hieronder worden niet meer bijgewerkt.",
 				"title": "Archief cijfers"
 			},
+			"new_category": { "title": "Nieuwe Categorie" },
 			"behaviour": { "title": "Gedrag" },
 			"early_indicators": { "title": "Vroege signalen" },
 			"hospitals": { "title": "Ziekenhuizen" },
@@ -2276,6 +2277,7 @@
 			"vulnerable_groups": { "title": "Kwetsbare groepen" }
 		},
 		"metrics": {
+			"new_item": { "title": "Nieuw Item" },
 			"compliance": { "title": "Naleving en draagvlak" },
 			"coronamelder_app": { "title": "CoronaMelder-app" },
 			"disabled_care": { "title": "Gehandicaptenzorg" },

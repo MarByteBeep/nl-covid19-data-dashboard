@@ -36,6 +36,7 @@ export function useReverseRouter() {
 
 			nl: {
 				index: () => reverseRouter.nl.vaccinaties() + openMenuSuffix,
+				nieuwItem: () => `/landelijk/nieuw-item`,
 				vaccinaties: () => `/landelijk/vaccinaties`,
 				positiefGetesteMensen: () =>
 					`/landelijk/positief-geteste-mensen`,

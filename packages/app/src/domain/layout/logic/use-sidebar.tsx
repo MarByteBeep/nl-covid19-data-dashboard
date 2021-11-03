@@ -30,6 +30,7 @@ import {
 } from './types';
 
 const mapKeysToIcons = {
+	new_item: <Test />,
 	hospital_admissions: <Ziekenhuis />,
 	positive_tests: <Test />,
 	mortality: <Coronavirus />,
@@ -50,6 +51,7 @@ const mapKeysToIcons = {
 } as const;
 
 const mapKeysToReverseRouter = {
+	new_item: 'nieuwItem',
 	compliance: 'gedrag',
 	coronamelder_app: 'coronamelder',
 	disabled_care: 'gehandicaptenzorg',

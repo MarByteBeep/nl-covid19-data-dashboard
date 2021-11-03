@@ -35,6 +35,7 @@ export type VrCategoryKeys =
 	| 'vulnerable_groups';
 
 export type NlItemKeys =
+	| 'new_item'
 	| 'compliance'
 	| 'coronamelder_app'
 	| 'disabled_care'
@@ -54,6 +55,7 @@ export type NlItemKeys =
 	| 'variants';
 
 export type NlCategoryKeys =
+	| 'new_category'
 	| 'archived_metrics'
 	| 'behaviour'
 	| 'early_indicators'

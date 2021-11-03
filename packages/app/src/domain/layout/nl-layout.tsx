@@ -41,6 +41,7 @@ export function NlLayout(props: NlLayoutProps) {
 	const items = useSidebar({
 		layout: 'nl',
 		map: [
+			['new_category', ['new_item']],
 			['vaccinations', ['vaccinations']],
 			['hospitals', ['hospital_admissions', 'intensive_care_admissions']],
 			[
