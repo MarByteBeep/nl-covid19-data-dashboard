@@ -12,10 +12,10 @@ import {
 export type SchemaInfo = Record<JsonDataScope, SchemaInfoItem>;
 
 export type SchemaInfoItem = {
-	files: string[];
-	basePath: string;
-	customValidations?: CustomValidationFunction[];
-	optional?: boolean;
+	files: string[],
+	basePath: string,
+	customValidations?: CustomValidationFunction[],
+	optional?: boolean,
 };
 
 export function getSchemaInfo(
