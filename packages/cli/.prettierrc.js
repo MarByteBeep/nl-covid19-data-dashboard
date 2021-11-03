@@ -5,6 +5,6 @@ module.exports = {
 	singleQuote: true,
 	useTabs: true,
 	bracketSpacing: true,
-	endOfLine: 'crlf',
+	endOfLine: 'lf',
 	parser: 'babel',
 };
