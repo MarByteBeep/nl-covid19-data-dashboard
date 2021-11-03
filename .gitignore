@@ -17,7 +17,6 @@ tsconfig.tsbuildinfo
 .gitlab-ci.yml
 exports
 
-/*.code-workspace
 /cypress/screenshots
 /cypress/videos
 
