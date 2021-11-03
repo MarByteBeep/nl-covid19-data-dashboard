@@ -4,7 +4,7 @@
 	"version": "0.0.0",
 	"license": "EUROPEAN UNION PUBLIC LICENCE v. 1.2",
 	"scripts": {
-		"bootstrap": "yarn lokalize:export",
+		"bootstrap": "exit 0",
 		"clean": "npx rimraf dist .sanity-asset-cache .lokalize-reference",
 		"nuke": "yarn clean && npx rimraf node_modules",
 		"dev": "sanity start",

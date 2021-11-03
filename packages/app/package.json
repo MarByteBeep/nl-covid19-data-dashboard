@@ -136,7 +136,7 @@
 	},
 	"scripts": {
 		"analyze": "cross-env ANALYZE=true yarn build",
-		"bootstrap": "exit 0",
+		"bootstrap": "yarn run download",
 		"export": "next export",
 		"dev": "yarn workspace @corona-dashboard/icons build && yarn workspace @corona-dashboard/common build && run-p dev:common dev:next dev:lokalize",
 		"dev:next": "node next-server.js",
