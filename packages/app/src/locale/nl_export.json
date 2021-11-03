@@ -409,9 +409,7 @@
 			"title": "Bron- en contactonderzoek GGD'en | Coronadashboard | Rijksoverheid.nl"
 		},
 		"pagina_toelichting": "Om verspreiding van het coronavirus tegen te gaan, is het belangrijk om te weten waar mensen besmet raken met het virus. De GGD’en zoeken tijdens het bron- en contactonderzoek onder andere uit waar iemand mogelijk besmet is met het virus.",
-		"reference": {
-			"href": "/verantwoording#bron-en-contactonderzoek-ggd-en"
-		},
+		"reference": { "href": "/verantwoording#bron-en-contactonderzoek-ggd-en" },
 		"situaties": {
 			"gathering": {
 				"beschrijving": "Mensen zijn mogelijk besmet bij bijvoorbeeld een feest, een vereniging of een uitvaart.",
@@ -753,10 +751,7 @@
 				"zeven_daags_gemiddelde_nieuw": "Dat is {{differenceTrend}} dan het vorige gemiddelde ({{differenceAverage}})."
 			},
 			"meer_lezen": {
-				"link": {
-					"href": "/artikelen",
-					"text": "Bekijk alle artikelen"
-				},
+				"link": { "href": "/artikelen", "text": "Bekijk alle artikelen" },
 				"omschrijving": "Hier vindt u artikelen die allerlei zaken rondom de coronacijfers uitleggen.",
 				"read_weekly_message": "Lees het weekbericht",
 				"titel": "Meer lezen over het coronavirus",
@@ -842,11 +837,7 @@
 		"waarschuwingen_over_tijd_grafiek": {
 			"ariaDescription": "Deze grafiek laat per dag zien hoeveel (positief geteste) gebruikers van CoronaMelder andere app-gebruikers hebben gewaarschuwd.",
 			"bronnen": {
-				"coronamelder": {
-					"download": "",
-					"href": "",
-					"text": "CoronaMelder"
-				}
+				"coronamelder": { "download": "", "href": "", "text": "CoronaMelder" }
 			},
 			"description": "Deze grafiek laat per dag zien hoeveel (positief geteste) gebruikers van CoronaMelder andere app-gebruikers hebben gewaarschuwd.",
 			"labels": { "warnings": "Aantal waarschuwingen" },
@@ -899,9 +890,7 @@
 			"title": "Varianten van het coronavirus"
 		},
 		"pagina_toelichting": "Als een virus meer mensen besmet, kan het steeds een heel klein beetje veranderen. Soms zorgt een verandering ervoor dat een virus zich iets anders gedraagt. Zo ontstaat er een variant van het virus. Het kan zijn dat een variant van het coronavirus besmettelijker is, mensen zieker maakt of dat vaccins minder effectief zijn. Het is daarom belangrijk de varianten in Nederland goed in de gaten te houden.",
-		"reference": {
-			"href": "/verantwoording#varianten-van-het-coronavirus"
-		},
+		"reference": { "href": "/verantwoording#varianten-van-het-coronavirus" },
 		"titel": "Varianten van het coronavirus",
 		"varianten": {
 			"alpha": "Alfa",
@@ -991,11 +980,7 @@
 			"omschrijving": "Deze tabel toont het percentage per variant van het coronavirus die in Nederland is gevonden. In de eerste kolom staat de naam van de variant en is te zien in welk land de variant voor het eerst is gevonden. In de tweede kolom staat hoe groot het aandeel van een variant is. Ook is te zien of het percentage van een bepaalde variant stijgt, daalt of gelijk blijft in vergelijking met de vorige meting.\n\n> De informatie in de tabel gaat over de periode van **{{date_start}} tot en met {{date_end}}**. De gegevens van de laatste weken zijn nog niet compleet. De tabel wordt wekelijks bijgewerkt. Lees hierover meer in de [Cijferverantwoording](/verantwoording#varianten-van-het-coronavirus).",
 			"omschrijving_zonder_placeholders": "Deze tabel toont het percentage per variant van het coronavirus die in Nederland is gevonden.",
 			"titel": "Varianten van het coronavirus",
-			"verschil": {
-				"gelijk": "gelijk",
-				"meer": "meer",
-				"minder": "minder"
-			}
+			"verschil": { "gelijk": "gelijk", "meer": "meer", "minder": "minder" }
 		}
 	},
 	"dashboard_wide_notification": {
@@ -1066,10 +1051,7 @@
 				"titel": "Zeer ernstig",
 				"toelichting": "De situatie is erg slecht. Er zijn extreem veel nieuwe besmettingen en/of de druk op de zorg is extreem groot."
 			},
-			"onbekend": {
-				"titel": "Onbekend",
-				"toelichting": "onbekend toelichting"
-			}
+			"onbekend": { "titel": "Onbekend", "toelichting": "onbekend toelichting" }
 		},
 		"valid_from": "Geldig vanaf {{validFrom}}"
 	},
@@ -1641,9 +1623,7 @@
 			"title": "Positief geteste mensen - internationaal | Coronadashboard | Rijksoverheid.nl"
 		},
 		"pagina_toelichting": "Door het aantal positief geteste mensen in andere landen bij te houden, krijgen we een beeld van hoe het virus zich verspreidt. En wat dit misschien betekent voor Nederland. Hierdoor blijven we voorbereid.",
-		"reference": {
-			"href": "/verantwoording#positieve-testen-internationaal"
-		},
+		"reference": { "href": "/verantwoording#positieve-testen-internationaal" },
 		"time_graph": {
 			"description": "Deze grafiek laat per land zien van hoeveel mensen gemeld is dat ze positief getest zijn op het coronavirus. Dit wordt berekend per 100.000 inwoners en gemiddeld over de afgelopen zeven dagen. Via de zoekfunctie kunt u een land toevoegen.",
 			"title": "Aantal positief geteste mensen door de tijd heen"
@@ -1692,11 +1672,7 @@
 			"omschrijving": "Deze tabel toont het percentage per variant van het coronavirus die in Nederland is gevonden. In de eerste kolom staat de naam van de variant en is te zien in welk land de variant voor het eerst is gevonden. In de tweede kolom staat hoe groot het aandeel van een variant is. Ook is te zien of het percentage van een bepaalde variant stijgt, daalt of gelijk blijft in vergelijking met de vorige meting.",
 			"omschrijving_zonder_placeholders": "Deze tabel toont het percentage per variant van het coronavirus die in Nederland is gevonden.",
 			"titel": "Varianten van het coronavirus",
-			"verschil": {
-				"gelijk": "gelijk",
-				"meer": "meer",
-				"minder": "minder"
-			}
+			"verschil": { "gelijk": "gelijk", "meer": "meer", "minder": "minder" }
 		}
 	},
 	"laatst_bijgewerkt": {
@@ -2280,9 +2256,7 @@
 			"coronamelder_app": { "title": "CoronaMelder-app" },
 			"disabled_care": { "title": "Gehandicaptenzorg" },
 			"elderly_at_home": { "title": "Thuiswonende 70-plussers" },
-			"general_practitioner_suspicions": {
-				"title": "Klachten bij huisartsen"
-			},
+			"general_practitioner_suspicions": { "title": "Klachten bij huisartsen" },
 			"hospital_admissions": { "title": "Ziekenhuisopnames" },
 			"infectious_people": { "title": "Besmettelijke mensen" },
 			"intensive_care_admissions": { "title": "Intensive care-opnames" },
@@ -2292,9 +2266,7 @@
 			"positive_tests": { "title": "Positieve testen" },
 			"reproduction_number": { "title": "Reproductiegetal" },
 			"sewage_measurement": { "title": "Rioolwatermeting" },
-			"source_investigation": {
-				"title": "Bron- en contactonderzoek GGD"
-			},
+			"source_investigation": { "title": "Bron- en contactonderzoek GGD" },
 			"vaccinations": { "title": "Vaccinaties" },
 			"variants": { "title": "Varianten van het coronavirus" }
 		},

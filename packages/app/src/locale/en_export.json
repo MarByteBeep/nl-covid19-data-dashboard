@@ -837,11 +837,7 @@
 		"waarschuwingen_over_tijd_grafiek": {
 			"ariaDescription": "This graph shows how many users with a confirmed case of COVID-19 have informed other users of CoronaMelder of this.",
 			"bronnen": {
-				"coronamelder": {
-					"download": "",
-					"href": "",
-					"text": "CoronaMelder"
-				}
+				"coronamelder": { "download": "", "href": "", "text": "CoronaMelder" }
 			},
 			"description": "This graph shows how many users with a confirmed case of COVID-19 have informed other users of CoronaMelder of this.",
 			"labels": { "warnings": "Number of warnings" },
@@ -968,9 +964,7 @@
 			"legend_niet_compleet_label": "The figures for the most recent week are not complete because samples are still being analysed.",
 			"titel": "Coronavirus variants over time",
 			"toelichting": "This graph shows how frequently a variant has been detected in the Netherlands. We only show variants designated as variants of concern by the European Centre for Disease Prevention and Control (ECDC) and the World Health Organization (WHO) because of the potential risk that they pose. The samples of positive tests collected in the most recent week are still being analysed, so the figures for this week are still incomplete.",
-			"tooltip_labels": {
-				"other_percentage": "Other coronavirus variants"
-			}
+			"tooltip_labels": { "other_percentage": "Other coronavirus variants" }
 		},
 		"varianten_tabel": {
 			"anderen_tooltip": "The other coronavirus variants detected in samples.",
@@ -986,11 +980,7 @@
 			"omschrijving": "This table shows what percentage of infections can be attributed to the different coronavirus variants detected in the Netherlands. The first column shows the name of the variant and the country in which the variant was first detected. The second column shows the percentages of each variant. The table also shows whether the percentage of a variant has increased, decreased or remained the same in relation to the previous measurement.\n\nThe information in the table is for the period from **{{date_start}} to {{date_end}}**. The figures for the most recent weeks are not yet available. The table is updated weekly. Read more about the numbers shown here in the [Explanation of the data presented](/verantwoording#varianten-van-het-coronavirus).",
 			"omschrijving_zonder_placeholders": "This table shows what percentage of infections can be attributed to the different coronavirus variants detected in the Netherlands.",
 			"titel": "Coronavirus variants",
-			"verschil": {
-				"gelijk": "no change",
-				"meer": "more",
-				"minder": "less"
-			}
+			"verschil": { "gelijk": "no change", "meer": "more", "minder": "less" }
 		}
 	},
 	"dashboard_wide_notification": {
@@ -1063,10 +1053,7 @@
 				"titel": "Severe",
 				"toelichting": "The situation is severe. The number of new confirmed cases is extremely high and/or pressure on healthcare capacity is extreme."
 			},
-			"onbekend": {
-				"titel": "Unknown",
-				"toelichting": "unknown explanation"
-			}
+			"onbekend": { "titel": "Unknown", "toelichting": "unknown explanation" }
 		},
 		"valid_from": "Valid from {{validFrom}}"
 	},
@@ -1376,9 +1363,7 @@
 		"nodata_sidebar": "This information is not available for this municipality.",
 		"pagina_toelichting": "If you are infected with coronavirus, there are likely to be virus particles in your stool. These are flushed down the toilet and end up in wastewater. By testing samples of wastewater collected at wastewater treatment plants, we can get information about how widespread the virus is in the community.",
 		"population_count_explanation": "To compare municipalities, we look at the average number of virus particles per 100,000 people. If there were 100,000 people living in {{municipalityName}}, the number of virus particles would be {{value}} x 100 billion.",
-		"reference": {
-			"href": "/verantwoording#virus-particles-in-wastewater"
-		},
+		"reference": { "href": "/verantwoording#virus-particles-in-wastewater" },
 		"titel": "Virus particles in wastewater {{municipality}}",
 		"total_measurements_description": "Sampling locations can report multiple measurements per week. The number of measurements used per location per week can differ because not all measurements are successful.",
 		"total_measurements_locations": "{{sampled_installation_count}} of the {{total_installation_count}} sampling locations reported at least one measurement in the given week.",
@@ -1626,10 +1611,7 @@
 			"header_land": "Country",
 			"header_per_inwoners": "Per 100,000 inhabitants",
 			"header_totale": "Total number over the past seven days",
-			"search": {
-				"clear": "Clear search",
-				"placeholder": "Find a country"
-			},
+			"search": { "clear": "Clear search", "placeholder": "Find a country" },
 			"sort_option": {
 				"infected_high_to_low": "Total number past seven days, high to low",
 				"infected_low_to_high": "Total number past seven days, low to high",
@@ -1697,11 +1679,7 @@
 			"omschrijving": "This table shows what percentage of infections can be attributed to the different coronavirus variants detected in the Netherlands. The first column shows the name of the variant and the country in which the variant was first detected. The second column shows the percentages of each variant. The table also shows whether the percentage of a variant has increased, decreased or remained the same in relation to the previous measurement.",
 			"omschrijving_zonder_placeholders": "This table shows the percentage per variant of the coronavirus found in the Netherlands.",
 			"titel": "Coronavirus variants",
-			"verschil": {
-				"gelijk": "no change",
-				"meer": "more",
-				"minder": "less"
-			}
+			"verschil": { "gelijk": "no change", "meer": "more", "minder": "less" }
 		}
 	},
 	"laatst_bijgewerkt": {
@@ -2181,9 +2159,7 @@
 			"title": "Virus particles in wastewater | Coronavirus Dashboard | Government.nl"
 		},
 		"pagina_toelichting": "If you are infected with coronavirus, there are likely to be virus particles in your stool. These are flushed down the toilet and end up in wastewater. By testing samples of wastewater collected at wastewater treatment plants, we can get information about how widespread the virus is in the community.",
-		"reference": {
-			"href": "/verantwoording#virus-particles-in-wastewater"
-		},
+		"reference": { "href": "/verantwoording#virus-particles-in-wastewater" },
 		"split_labels": {
 			"segment_0": "0 to 10",
 			"segment_1": "10 to 50",
@@ -2303,10 +2279,7 @@
 			"vaccinations": { "title": "Vaccinations" },
 			"variants": { "title": "Coronavirus variants" }
 		},
-		"shared": {
-			"metrics_title": "Alle cijfers",
-			"nl_title": "The Netherlands"
-		}
+		"shared": { "metrics_title": "Alle cijfers", "nl_title": "The Netherlands" }
 	},
 	"skiplinks": {
 		"footer_nav": "Go to footer",
@@ -2369,9 +2342,7 @@
 			"line_chart_deceased_daily_moving_average_short_label": "Average number over the past seven days",
 			"line_chart_legend_inaccurate_label": "Data for recent days is incomplete due to reporting delays",
 			"line_chart_legend_trend_label": "Number of deceased",
-			"reference": {
-				"href": "/verantwoording#people-over-70-living-at-home"
-			},
+			"reference": { "href": "/verantwoording#people-over-70-living-at-home" },
 			"title": "People over 70 living at home - COVID-19 deaths"
 		},
 		"section_positive_tested": {
@@ -2396,9 +2367,7 @@
 			"line_chart_legend_trend_label": "Number of confirmed cases among over-70s living at home",
 			"line_chart_positive_tested_daily_moving_average": "Average number over the past seven days",
 			"line_chart_positive_tested_daily_moving_average_short_label": "Average number over the past seven days",
-			"reference": {
-				"href": "/verantwoording#people-over-70-living-at-home"
-			},
+			"reference": { "href": "/verantwoording#people-over-70-living-at-home" },
 			"title": "People over 70 living at home"
 		},
 		"titel_kpi": "Number of confirmed cases"
@@ -2969,9 +2938,7 @@
 			"title": "Virus particles in wastewater in {{safetyRegionName}} | Coronavirus Dashboard | Government.nl"
 		},
 		"pagina_toelichting": "If you are infected with coronavirus, there are likely to be virus particles in your stool. These are flushed down the toilet and end up in wastewater. By testing samples of wastewater collected at wastewater treatment plants, we can get information about how widespread the virus is in the community.",
-		"reference": {
-			"href": "/verantwoording#virus-particles-in-wastewater"
-		},
+		"reference": { "href": "/verantwoording#virus-particles-in-wastewater" },
 		"tile_explanation_description": "Every day the dashboard publishes the average number of virus particles per 100,000 inhabitants. To calculate this number, we use the last measurement of each wastewater treatment plant. The last measurement of a treatment plant can count several days in the calculation. \n\nAll wastewater treatment plants measure on average three times a week. If, for example, a treatment plant passes on a new measurement on Monday, Wednesday and Saturday, the result of Wednesday's measurement also counts on Thursday and Friday. Only if the last measurement is older than nine days, it is not included in the average.",
 		"tile_explanation_title": "Calculation of average number of virus particles",
 		"titel": "Virus particles in wastewater {{safetyRegion}}",
@@ -3036,9 +3003,7 @@
 			"line_chart_deceased_daily_moving_average_short_label": "Average number over the past seven days",
 			"line_chart_legend_inaccurate_label": "Data for recent days is incomplete due to reporting delays",
 			"line_chart_legend_trend_label": "Number of deceased",
-			"reference": {
-				"href": "/verantwoording#people-over-70-living-at-home"
-			},
+			"reference": { "href": "/verantwoording#people-over-70-living-at-home" },
 			"title": "People over 70 in {{safetyRegion}} living at home – COVID-19 deaths"
 		},
 		"section_positive_tested": {
@@ -3060,9 +3025,7 @@
 			"line_chart_legend_trend_label": "Number of confirmed cases among over-70s living at home",
 			"line_chart_positive_tested_daily_moving_average": "Average number over the past seven days",
 			"line_chart_positive_tested_daily_moving_average_short_label": "Average number over the past seven days",
-			"reference": {
-				"href": "/verantwoording#people-over-70-living-at-home"
-			},
+			"reference": { "href": "/verantwoording#people-over-70-living-at-home" },
 			"title": "People over-70 in safety region {{safetyRegion}} living at home"
 		},
 		"titel_kpi": "Confirmed cases"
@@ -3240,9 +3203,7 @@
 				"text": "RIVM"
 			}
 		},
-		"chloropleth_legenda": {
-			"titel": "Percentage of infected nursing homes"
-		},
+		"chloropleth_legenda": { "titel": "Percentage of infected nursing homes" },
 		"datums": "Last values obtained on {{dateOfInsertion}}. Is updated on a daily basis.",
 		"kpi_titel": "Total number of infected locations",
 		"kpi_toelichting": "This figure is an estimate of the number of nursing homes where in the past 28 days at least one (new) COVID-19 infection (confirmed by a positive test) is reported. The percentage shows what proportion of the total number of nursing homes in the Netherlands this is.",
