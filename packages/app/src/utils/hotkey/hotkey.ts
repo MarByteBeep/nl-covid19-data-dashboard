@@ -7,15 +7,15 @@ import { assert } from '../assert';
  */
 
 const KEY_MAP: Record<string, string> = {
-  esc: 'escape',
-  '+': 'plus',
-  ' ': 'space',
-  command: 'meta',
-  control: 'ctrl',
-  left: 'arrowleft',
-  right: 'arrowright',
-  up: 'arrowup',
-  down: 'arrowdown',
+	esc: 'escape',
+	'+': 'plus',
+	' ': 'space',
+	command: 'meta',
+	control: 'ctrl',
+	left: 'arrowleft',
+	right: 'arrowright',
+	up: 'arrowup',
+	down: 'arrowdown',
 };
 
 const MODIFIER_KEYS = ['ctrl', 'shift', 'alt', 'meta'];
@@ -23,202 +23,206 @@ const MODIFIER_KEYS = ['ctrl', 'shift', 'alt', 'meta'];
 export type Callback = () => void;
 
 export interface Options {
-  /**
-   * duration (ms) to detect key sequences
-   *
-   * default: 500
-   */
-  debounceTime?: number;
-  /**
-   * disable hotkey trigger while focus is on a textarea or input[type=text]
-   *
-   * default: false
-   */
-  disableTextInputs?: boolean;
-  /**
-   * allow repeated callback triggers during long press of keys
-   *
-   * default: false
-   */
-  allowRepeat?: boolean;
-  /**
-   * prevent default when hotkey is matched
-   *
-   * default: true
-   */
-  preventDefault?: boolean;
+	/**
+	 * duration (ms) to detect key sequences
+	 *
+	 * default: 500
+	 */
+	debounceTime?: number;
+	/**
+	 * disable hotkey trigger while focus is on a textarea or input[type=text]
+	 *
+	 * default: false
+	 */
+	disableTextInputs?: boolean;
+	/**
+	 * allow repeated callback triggers during long press of keys
+	 *
+	 * default: false
+	 */
+	allowRepeat?: boolean;
+	/**
+	 * prevent default when hotkey is matched
+	 *
+	 * default: true
+	 */
+	preventDefault?: boolean;
 }
 
 interface Hotkey {
-  [key: string]: boolean;
+	[key: string]: boolean;
 }
 
 interface Listener {
-  hotkey: Hotkey[];
-  callback: Callback;
+	hotkey: Hotkey[];
+	callback: Callback;
 }
 
 const defaultOptions: Options = {
-  debounceTime: 500,
-  disableTextInputs: false,
-  allowRepeat: false,
-  preventDefault: true,
+	debounceTime: 500,
+	disableTextInputs: false,
+	allowRepeat: false,
+	preventDefault: true,
 };
 
 export function createContext(options: Options = {}) {
-  const listeners: Listener[] = [];
-  const handler = createKeyListener(
-    listeners,
-    defaults({}, options, defaultOptions)
-  );
+	const listeners: Listener[] = [];
+	const handler = createKeyListener(
+		listeners,
+		defaults({}, options, defaultOptions)
+	);
 
-  /**
-   * must be keydown event, a keyup event won't work with keycombinations like
-   * command+e
-   */
-  document.addEventListener('keydown', handler);
+	/**
+	 * must be keydown event, a keyup event won't work with keycombinations like
+	 * command+e
+	 */
+	document.addEventListener('keydown', handler);
 
-  return {
-    register: createListenersFn(listeners, registerListener),
-    unregister: createListenersFn(listeners, unregisterListener),
-    destroy: () => document.removeEventListener('keydown', handler),
-  };
+	return {
+		register: createListenersFn(listeners, registerListener),
+		unregister: createListenersFn(listeners, unregisterListener),
+		destroy: () => document.removeEventListener('keydown', handler),
+	};
 }
 
 function createListenersFn(
-  listeners: Listener[],
-  fn: typeof registerListener | typeof unregisterListener
+	listeners: Listener[],
+	fn: typeof registerListener | typeof unregisterListener
 ) {
-  return (hotkey: string | string[], callback: Callback) => {
-    const hotkeys: string[] = [];
-    hotkeys.concat(hotkey).forEach((x) => fn(listeners, x, callback));
-  };
+	return (hotkey: string | string[], callback: Callback) => {
+		const hotkeys: string[] = [];
+		hotkeys.concat(hotkey).forEach((x) => fn(listeners, x, callback));
+	};
 }
 
 function unregisterListener(
-  listeners: Listener[],
-  hotkeyStr: string,
-  callback: Callback
+	listeners: Listener[],
+	hotkeyStr: string,
+	callback: Callback
 ) {
-  const hotkey = normalizeHotkey(hotkeyStr);
+	const hotkey = normalizeHotkey(hotkeyStr);
 
-  const index = listeners.findIndex(
-    (x) => x.callback === callback && isEqual(hotkey, x.hotkey)
-  );
+	const index = listeners.findIndex(
+		(x) => x.callback === callback && isEqual(hotkey, x.hotkey)
+	);
 
-  if (index !== -1) {
-    listeners.splice(index, 1);
-  }
+	if (index !== -1) {
+		listeners.splice(index, 1);
+	}
 }
 
 function registerListener(
-  listeners: Listener[],
-  hotkey: string,
-  callback: Callback
+	listeners: Listener[],
+	hotkey: string,
+	callback: Callback
 ) {
-  listeners.push({ hotkey: normalizeHotkey(hotkey), callback });
+	listeners.push({ hotkey: normalizeHotkey(hotkey), callback });
 }
 
 function createKeyListener(listeners: Listener[], options: Options) {
-  let buffer: Hotkey[] = [];
-  const clearBuffer = debounce(() => {
-    buffer = [];
-  }, options.debounceTime);
+	let buffer: Hotkey[] = [];
+	const clearBuffer = debounce(() => {
+		buffer = [];
+	}, options.debounceTime);
 
-  return (evt: KeyboardEvent) => {
-    if (!options.allowRepeat && evt.repeat) {
-      return;
-    }
+	return (evt: KeyboardEvent) => {
+		if (!options.allowRepeat && evt.repeat) {
+			return;
+		}
 
-    if (options.disableTextInputs && hasFocusOnTextInput()) {
-      return;
-    }
+		if (options.disableTextInputs && hasFocusOnTextInput()) {
+			return;
+		}
 
-    /**
-     * @TODO figure out whether it is useful to support single modifier hotkeys
-     */
-    // if (evt.getModifierState(evt.key)) {
-    //   return;
-    // }
+		/**
+		 * @TODO figure out whether it is useful to support single modifier hotkeys
+		 */
+		// if (evt.getModifierState(evt.key)) {
+		//   return;
+		// }
 
-    clearBuffer();
+		clearBuffer();
 
-    const hotkey: Hotkey = {
-      [getMappedKey(evt.key)]: true,
-    };
+		const hotkey: Hotkey = {
+			[getMappedKey(evt.key)]: true,
+		};
 
-    MODIFIER_KEYS.map((key) => ({
-      key,
-      eventKey: `${key}Key` as 'ctrlKey' | 'shiftKey' | 'altKey' | 'metaKey',
-    })).forEach(({ key, eventKey }) => {
-      if (evt[eventKey]) {
-        hotkey[key] = true;
-      }
-    });
+		MODIFIER_KEYS.map((key) => ({
+			key,
+			eventKey: `${key}Key` as
+				| 'ctrlKey'
+				| 'shiftKey'
+				| 'altKey'
+				| 'metaKey',
+		})).forEach(({ key, eventKey }) => {
+			if (evt[eventKey]) {
+				hotkey[key] = true;
+			}
+		});
 
-    buffer.push(hotkey);
+		buffer.push(hotkey);
 
-    const listener = listeners.find((x) => matchHotkey(buffer, x.hotkey));
+		const listener = listeners.find((x) => matchHotkey(buffer, x.hotkey));
 
-    if (listener) {
-      options.preventDefault && evt.preventDefault();
-      return listener.callback();
-    }
-  };
+		if (listener) {
+			options.preventDefault && evt.preventDefault();
+			return listener.callback();
+		}
+	};
 }
 
 function getMappedKey(key: string) {
-  key = key.toLowerCase();
-  return KEY_MAP[key] || key;
+	key = key.toLowerCase();
+	return KEY_MAP[key] || key;
 }
 
 function matchHotkey(buffer: Hotkey[], hotkey: Hotkey[]) {
-  if (buffer.length < hotkey.length) {
-    return false;
-  }
+	if (buffer.length < hotkey.length) {
+		return false;
+	}
 
-  const indexDiff = buffer.length - hotkey.length;
+	const indexDiff = buffer.length - hotkey.length;
 
-  for (let i = hotkey.length - 1; i >= 0; i -= 1) {
-    if (!isEqual(buffer[indexDiff + i], hotkey[i])) {
-      return false;
-    }
-  }
+	for (let i = hotkey.length - 1; i >= 0; i -= 1) {
+		if (!isEqual(buffer[indexDiff + i], hotkey[i])) {
+			return false;
+		}
+	}
 
-  return true;
+	return true;
 }
 
 function createHotkey(keys: string[]): Hotkey {
-  return keys.reduce((obj, key) => ({ ...obj, [key]: true }), {});
+	return keys.reduce((obj, key) => ({ ...obj, [key]: true }), {});
 }
 
 function normalizeHotkey(hotkey: string) {
-  return hotkey.split(/ +/g).map((part) => {
-    const keys = part.split('+').filter(isDefined).map(getMappedKey);
-    const result = createHotkey(keys);
+	return hotkey.split(/ +/g).map((part) => {
+		const keys = part.split('+').filter(isDefined).map(getMappedKey);
+		const result = createHotkey(keys);
 
-    assert(
-      Object.keys(result).length >= keys.length,
-      `Hotkey combination has duplicates "${hotkey}"`
-    );
+		assert(
+			Object.keys(result).length >= keys.length,
+			`Hotkey combination has duplicates "${hotkey}"`
+		);
 
-    return result;
-  });
+		return result;
+	});
 }
 
 function hasFocusOnTextInput() {
-  const element = document.activeElement;
-  const tagName = element?.tagName.toLowerCase();
+	const element = document.activeElement;
+	const tagName = element?.tagName.toLowerCase();
 
-  if (tagName === 'textarea') {
-    return true;
-  }
+	if (tagName === 'textarea') {
+		return true;
+	}
 
-  if (tagName === 'input') {
-    return ['text', 'email', 'password', 'search', 'tel', 'url'].includes(
-      (element as HTMLInputElement).type
-    );
-  }
+	if (tagName === 'input') {
+		return ['text', 'email', 'password', 'search', 'tel', 'url'].includes(
+			(element as HTMLInputElement).type
+		);
+	}
 
-  return false;
+	return false;
 }

@@ -11,7 +11,7 @@ import { getLocalMutations, readReferenceTexts } from './logic';
 import { exportLokalizeTexts } from './logic/export';
 
 const cli = meow(
-  `
+	`
     Usage
       $ lokalize:export
 
@@ -23,65 +23,65 @@ const cli = meow(
       $ lokalize:export --dataset=development
       $ lokalize:export --dataset=development --clean-json
 `,
-  {
-    flags: {
-      dataset: {
-        type: 'string',
-        default: 'development',
-      },
-      cleanJson: {
-        type: 'boolean',
-      },
-    },
-  }
+	{
+		flags: {
+			dataset: {
+				type: 'string',
+				default: 'development',
+			},
+			cleanJson: {
+				type: 'boolean',
+			},
+		},
+	}
 );
 
 (async function run() {
-  const dataset = cli.flags.dataset;
+	const dataset = cli.flags.dataset;
 
-  console.log(
-    `We are exporting the shortcopy and translations from the ${dataset} dataset`
-  );
-  console.log(
-    `There's a chance this command will fail if you don't have a valid Sanity token set in packages/cms/.env.local`
-  );
+	console.log(
+		`We are exporting the shortcopy and translations from the ${dataset} dataset`
+	);
+	console.log(
+		`There's a chance this command will fail if you don't have a valid Sanity token set in packages/cms/.env.local`
+	);
 
-  const referenceTexts = await readReferenceTexts();
+	const referenceTexts = await readReferenceTexts();
 
-  if (referenceTexts) {
-    const mutations = await getLocalMutations(referenceTexts);
+	if (referenceTexts) {
+		const mutations = await getLocalMutations(referenceTexts);
 
-    if (
-      !isEmpty(mutations.add) ||
-      !isEmpty(mutations.delete) ||
-      !isEmpty(mutations.move)
-    ) {
-      const response = await prompts([
-        {
-          type: 'confirm',
-          name: 'isConfirmed',
-          message: outdent`
+		if (
+			!isEmpty(mutations.add) ||
+			!isEmpty(mutations.delete) ||
+			!isEmpty(mutations.move)
+		) {
+			const response = await prompts([
+				{
+					type: 'confirm',
+					name: 'isConfirmed',
+					message: outdent`
             There are local changes. Are you sure you want to overwrite these with an export?
 
             ${JSON.stringify(mutations, null, 2)}
           `,
-          initial: false,
-        },
-      ]);
+					initial: false,
+				},
+			]);
 
-      if (!response.isConfirmed) {
-        process.exit(0);
-      }
-    }
-  }
+			if (!response.isConfirmed) {
+				process.exit(0);
+			}
+		}
+	}
 
-  await exportLokalizeTexts({
-    dataset,
-    appendDocumentIdToKey: !cli.flags.cleanJson,
-  });
+	await exportLokalizeTexts({
+		dataset,
+		appendDocumentIdToKey: !cli.flags.cleanJson,
+	});
 
-  console.log(`Export dataset "${dataset}" completed`);
+	console.log(`Export dataset "${dataset}" completed`);
 })().catch((err) => {
-  console.error(`Export failed: ${err.message}`);
-  process.exit(1);
+	console.error(`Export failed: ${err.message}`);
+	process.exit(1);
 });

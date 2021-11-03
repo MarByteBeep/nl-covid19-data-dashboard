@@ -8,81 +8,89 @@ import { SituationsOverviewChoroplethTile } from '~/domain/situations/situations
 import { useIntl } from '~/intl';
 import { withFeatureNotFoundPage } from '~/lib/features';
 import {
-  createPageArticlesQuery,
-  PageArticlesQueryResult,
+	createPageArticlesQuery,
+	PageArticlesQueryResult,
 } from '~/queries/create-page-articles-query';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import {
-  createGetChoroplethData,
-  createGetContent,
-  getLastGeneratedDate,
+	createGetChoroplethData,
+	createGetContent,
+	getLastGeneratedDate,
 } from '~/static-props/get-data';
 export const getStaticProps = withFeatureNotFoundPage(
-  'situationsPage',
-  createGetStaticProps(
-    getLastGeneratedDate,
-    createGetChoroplethData({
-      vr: ({ situations }) => ({
-        situations,
-      }),
-    }),
-    createGetContent<PageArticlesQueryResult>((context) => {
-      const { locale } = context;
-      return createPageArticlesQuery('situationsPage', locale);
-    })
-  )
+	'situationsPage',
+	createGetStaticProps(
+		getLastGeneratedDate,
+		createGetChoroplethData({
+			vr: ({ situations }) => ({
+				situations,
+			}),
+		}),
+		createGetContent<PageArticlesQueryResult>((context) => {
+			const { locale } = context;
+			return createPageArticlesQuery('situationsPage', locale);
+		})
+	)
 );
 
 export default function BrononderzoekPage(
-  props: StaticProps<typeof getStaticProps>
+	props: StaticProps<typeof getStaticProps>
 ) {
-  const { choropleth, lastGenerated, content } = props;
+	const { choropleth, lastGenerated, content } = props;
 
-  const intl = useIntl();
+	const intl = useIntl();
 
-  const text = intl.siteText.brononderzoek;
+	const text = intl.siteText.brononderzoek;
 
-  const metadata = {
-    ...intl.siteText.nationaal_metadata,
-    title: text.metadata.title,
-    description: text.metadata.description,
-  };
+	const metadata = {
+		...intl.siteText.nationaal_metadata,
+		title: text.metadata.title,
+		description: text.metadata.description,
+	};
 
-  const singleValue = choropleth.vr.situations[0];
+	const singleValue = choropleth.vr.situations[0];
 
-  return (
-    <Layout {...metadata} lastGenerated={lastGenerated}>
-      <NlLayout>
-        <TileList>
-          <PageInformationBlock
-            category={intl.siteText.nationaal_layout.headings.besmettingen}
-            screenReaderCategory={
-              intl.siteText.sidebar.metrics.source_investigation.title
-            }
-            title={text.titel}
-            icon={<Gedrag />}
-            description={text.pagina_toelichting}
-            metadata={{
-              datumsText: text.datums,
-              dateOrRange: {
-                start: singleValue.date_start_unix,
-                end: singleValue.date_end_unix,
-              },
-              dateOfInsertionUnix: singleValue.date_of_insertion_unix,
-              dataSources: [text.bronnen.rivm],
-            }}
-            referenceLink={text.reference.href}
-            articles={content.articles}
-          />
+	return (
+		<Layout {...metadata} lastGenerated={lastGenerated}>
+			<NlLayout>
+				<TileList>
+					<PageInformationBlock
+						category={
+							intl.siteText.nationaal_layout.headings.besmettingen
+						}
+						screenReaderCategory={
+							intl.siteText.sidebar.metrics.source_investigation
+								.title
+						}
+						title={text.titel}
+						icon={<Gedrag />}
+						description={text.pagina_toelichting}
+						metadata={{
+							datumsText: text.datums,
+							dateOrRange: {
+								start: singleValue.date_start_unix,
+								end: singleValue.date_end_unix,
+							},
+							dateOfInsertionUnix:
+								singleValue.date_of_insertion_unix,
+							dataSources: [text.bronnen.rivm],
+						}}
+						referenceLink={text.reference.href}
+						articles={content.articles}
+					/>
 
-          <SituationsDataCoverageChoroplethTile data={choropleth.vr} />
+					<SituationsDataCoverageChoroplethTile
+						data={choropleth.vr}
+					/>
 
-          <SituationsOverviewChoroplethTile data={choropleth.vr.situations} />
-        </TileList>
-      </NlLayout>
-    </Layout>
-  );
+					<SituationsOverviewChoroplethTile
+						data={choropleth.vr.situations}
+					/>
+				</TileList>
+			</NlLayout>
+		</Layout>
+	);
 }

@@ -6,35 +6,38 @@ import { ChoroplethLegenda } from '~/components/choropleth-legenda';
 import { MetadataProps } from '~/components/metadata';
 
 type EuropeChoroplethTileProps = {
-  children: ReactNode;
-  title: string;
-  description: string;
-  metadata?: MetadataProps;
-  legend?: {
-    title: string;
-    thresholds: ChoroplethThresholdsValue[];
-  };
+	children: ReactNode;
+	title: string;
+	description: string;
+	metadata?: MetadataProps;
+	legend?: {
+		title: string;
+		thresholds: ChoroplethThresholdsValue[];
+	};
 };
 
 export function EuropeChoroplethTile(props: EuropeChoroplethTileProps) {
-  const { children, title, description, metadata, legend } = props;
+	const { children, title, description, metadata, legend } = props;
 
-  const legendaComponent = legend && (
-    <Box width="50%" pt={3}>
-      <ChoroplethLegenda thresholds={legend.thresholds} title={legend.title} />
-    </Box>
-  );
+	const legendaComponent = legend && (
+		<Box width="50%" pt={3}>
+			<ChoroplethLegenda
+				thresholds={legend.thresholds}
+				title={legend.title}
+			/>
+		</Box>
+	);
 
-  return (
-    <ChartTile metadata={metadata} title={title} description={description}>
-      <Box borderWidth="1px" borderColor="border" borderStyle="solid">
-        {children}
-      </Box>
-      {legendaComponent && (
-        <Box display="flex" justifyContent="flex-start">
-          {legendaComponent}
-        </Box>
-      )}
-    </ChartTile>
-  );
+	return (
+		<ChartTile metadata={metadata} title={title} description={description}>
+			<Box borderWidth="1px" borderColor="border" borderStyle="solid">
+				{children}
+			</Box>
+			{legendaComponent && (
+				<Box display="flex" justifyContent="flex-start">
+					{legendaComponent}
+				</Box>
+			)}
+		</ChartTile>
+	);
 }

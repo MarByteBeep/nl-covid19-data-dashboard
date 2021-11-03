@@ -3,10 +3,10 @@ import chalk from 'chalk';
 import prompts from 'prompts';
 import { getClient } from '../client';
 import {
-  appendTextMutation,
-  exportLokalizeTexts,
-  getLocalMutations,
-  readReferenceTexts,
+	appendTextMutation,
+	exportLokalizeTexts,
+	getLocalMutations,
+	readReferenceTexts,
 } from './logic';
 import { createTextDocument } from './logic/create-text-document';
 
@@ -17,111 +17,118 @@ import { createTextDocument } from './logic/create-text-document';
  * log file and possibly adding new documents to Sanity.
  */
 (async function run() {
-  const referenceTexts = await readReferenceTexts();
+	const referenceTexts = await readReferenceTexts();
 
-  assert(
-    referenceTexts,
-    `Failed to read reference texts. Please run lokalize:export first.`
-  );
+	assert(
+		referenceTexts,
+		`Failed to read reference texts. Please run lokalize:export first.`
+	);
 
-  const mutations = await getLocalMutations(referenceTexts);
+	const mutations = await getLocalMutations(referenceTexts);
 
-  const choices = [
-    ...mutations.add.map(
-      (mutation) =>
-        ({
-          title: chalk.green(`add:\t\t${mutation.key}`),
-          value: { type: 'add', mutation },
-        } as const)
-    ),
-    ...mutations.delete.map(
-      (mutation) =>
-        ({
-          title: chalk.red(`delete:\t${mutation.key}`),
-          value: { type: 'delete', mutation },
-        } as const)
-    ),
-    ...mutations.move.map(
-      (mutation) =>
-        ({
-          title: `move:\t\t${mutation.key} → ${mutation.moveTo}`,
-          value: { type: 'move', mutation },
-        } as const)
-    ),
-  ];
+	const choices = [
+		...mutations.add.map(
+			(mutation) =>
+				({
+					title: chalk.green(`add:\t\t${mutation.key}`),
+					value: { type: 'add', mutation },
+				} as const)
+		),
+		...mutations.delete.map(
+			(mutation) =>
+				({
+					title: chalk.red(`delete:\t${mutation.key}`),
+					value: { type: 'delete', mutation },
+				} as const)
+		),
+		...mutations.move.map(
+			(mutation) =>
+				({
+					title: `move:\t\t${mutation.key} → ${mutation.moveTo}`,
+					value: { type: 'move', mutation },
+				} as const)
+		),
+	];
 
-  if (!choices.length) return console.log('\nNo changes to sync\n');
+	if (!choices.length) return console.log('\nNo changes to sync\n');
 
-  const response = (await prompts({
-    type: 'multiselect',
-    name: 'keys',
-    message: 'Select the mutations to sync to Sanity:',
-    choices,
-    onState,
-  })) as { keys: typeof choices[number]['value'][] };
+	const response = (await prompts({
+		type: 'multiselect',
+		name: 'keys',
+		message: 'Select the mutations to sync to Sanity:',
+		choices,
+		onState,
+	})) as { keys: typeof choices[number]['value'][] };
 
-  if (!response.keys.length) return console.log('\nNo mutations selected\n');
+	if (!response.keys.length) return console.log('\nNo mutations selected\n');
 
-  const devClient = getClient('development');
+	const devClient = getClient('development');
 
-  for (const choice of response.keys) {
-    if (choice.type === 'delete') {
-      const { key, documentId } = choice.mutation;
-      await appendTextMutation({ action: 'delete', key, documentId });
-      /**
-       * The actual deletion of documents from Sanity is postponed to
-       * sync-after-feature to not break other branches.
-       */
-    }
+	for (const choice of response.keys) {
+		if (choice.type === 'delete') {
+			const { key, documentId } = choice.mutation;
+			await appendTextMutation({ action: 'delete', key, documentId });
+			/**
+			 * The actual deletion of documents from Sanity is postponed to
+			 * sync-after-feature to not break other branches.
+			 */
+		}
 
-    if (choice.type === 'add') {
-      const { key, text } = choice.mutation;
-      /**
-       * First create the document in Sanity, so that we can store the document
-       * id in the mutations log. We need this id later to sync to production,
-       * because both datasets share their document ids for lokalize texts.
-       *
-       * If a document with the given key already exists we log a warning.
-       */
-      const count = await devClient.fetch(
-        `count(*[_type == 'lokalizeText' && key == '${key}'])`
-      );
-      if (count === 0) {
-        const document = await devClient.create(createTextDocument(key, text));
+		if (choice.type === 'add') {
+			const { key, text } = choice.mutation;
+			/**
+			 * First create the document in Sanity, so that we can store the document
+			 * id in the mutations log. We need this id later to sync to production,
+			 * because both datasets share their document ids for lokalize texts.
+			 *
+			 * If a document with the given key already exists we log a warning.
+			 */
+			const count = await devClient.fetch(
+				`count(*[_type == 'lokalizeText' && key == '${key}'])`
+			);
+			if (count === 0) {
+				const document = await devClient.create(
+					createTextDocument(key, text)
+				);
 
-        await appendTextMutation({
-          action: 'add',
-          key,
-          documentId: document._id,
-        });
-      } else {
-        console.warn(
-          `A lokalize document with key ${key} already exists. Skipped adding a new one.`
-        );
-      }
-    }
+				await appendTextMutation({
+					action: 'add',
+					key,
+					documentId: document._id,
+				});
+			} else {
+				console.warn(
+					`A lokalize document with key ${key} already exists. Skipped adding a new one.`
+				);
+			}
+		}
 
-    if (choice.type === 'move') {
-      const { key, documentId, moveTo } = choice.mutation;
+		if (choice.type === 'move') {
+			const { key, documentId, moveTo } = choice.mutation;
 
-      await appendTextMutation({ action: 'move', key, documentId, moveTo });
-    }
-  }
+			await appendTextMutation({
+				action: 'move',
+				key,
+				documentId,
+				moveTo,
+			});
+		}
+	}
 
-  console.log('Updating text export...');
+	console.log('Updating text export...');
 
-  await exportLokalizeTexts({
-    dataset: 'development',
-    appendDocumentIdToKey: true,
-  });
+	await exportLokalizeTexts({
+		dataset: 'development',
+		appendDocumentIdToKey: true,
+	});
 
-  console.log(
-    'Successfully applied the following mutations:\n',
-    JSON.stringify(response.keys, null, 2)
-  );
+	console.log(
+		'Successfully applied the following mutations:\n',
+		JSON.stringify(response.keys, null, 2)
+	);
 })().catch((err) => {
-  console.error('An error occurred:', err.message);
-  process.exit(1);
+	console.error('An error occurred:', err.message);
+	process.exit(1);
 });
 
 /**
@@ -130,9 +137,9 @@ import { createTextDocument } from './logic/create-text-document';
  * see: https://github.com/terkelg/prompts/issues/252#issuecomment-778683666
  */
 function onState(state: { aborted: boolean }) {
-  if (state.aborted) {
-    process.nextTick(() => {
-      process.exit(0);
-    });
-  }
+	if (state.aborted) {
+		process.nextTick(() => {
+			process.exit(0);
+		});
+	}
 }

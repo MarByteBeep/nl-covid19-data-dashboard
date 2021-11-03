@@ -8,50 +8,53 @@ import styles from './deploy.css';
 const namespace = 'github-actions-deployment';
 
 const pluginConfigKeys = [
-  {
-    key: 'webhookUrl',
-    description: 'The webhook to trigger a deployment',
-    title: 'The webhook to trigger a deployment',
-  },
+	{
+		key: 'webhookUrl',
+		description: 'The webhook to trigger a deployment',
+		title: 'The webhook to trigger a deployment',
+	},
 ];
 
 type Secrets =
-  | {
-      webhookUrl?: string;
-    }
-  | undefined;
+	| {
+			webhookUrl?: string;
+	  }
+	| undefined;
 
 function Deploy() {
-  const secrets = useSecrets(namespace).secrets as Secrets;
-  const [showSettings, setShowSettings] = useState(false);
+	const secrets = useSecrets(namespace).secrets as Secrets;
+	const [showSettings, setShowSettings] = useState(false);
 
-  // useEffect(() => {
-  //   if (!secrets) {
-  //     setShowSettings(true);
-  //   }
-  // }, [secrets]);
+	// useEffect(() => {
+	//   if (!secrets) {
+	//     setShowSettings(true);
+	//   }
+	// }, [secrets]);
 
-  function triggerDeploy() {
-    if (secrets?.webhookUrl) {
-      fetch(secrets.webhookUrl, {
-        mode: 'no-cors',
-      });
-    } else {
-      console.error(
-        'The studio is missing the webhookUrl secret. Check your configuration'
-      );
-    }
-  }
+	function triggerDeploy() {
+		if (secrets?.webhookUrl) {
+			fetch(secrets.webhookUrl, {
+				mode: 'no-cors',
+			});
+		} else {
+			console.error(
+				'The studio is missing the webhookUrl secret. Check your configuration'
+			);
+		}
+	}
 
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h2 className={styles.title}>Deploy to staging (DISABLED)</h2>
-      </header>
-      <div className={styles.content}>
-        <p>This panel has been disabled due to changes in infrastructure.</p>
+	return (
+		<div className={styles.container}>
+			<header className={styles.header}>
+				<h2 className={styles.title}>Deploy to staging (DISABLED)</h2>
+			</header>
+			<div className={styles.content}>
+				<p>
+					This panel has been disabled due to changes in
+					infrastructure.
+				</p>
 
-        {/* {showSettings && (
+				{/* {showSettings && (
           <SettingsView
             title="Deploy settings"
             namespace={namespace}
@@ -77,23 +80,23 @@ function Deploy() {
         </p>
         <p>A deployment looks like this:</p>
         <img src="/static/github-actions-deployment.png" /> */}
-      </div>
-      <div className={styles.footer}>
-        <Button
-          bleed
-          color="primary"
-          kind="simple"
-          disabled
-          // onClick={() => triggerDeploy()}
-        >
-          Trigger a deployment
-        </Button>
-      </div>
-    </div>
-  );
+			</div>
+			<div className={styles.footer}>
+				<Button
+					bleed
+					color="primary"
+					kind="simple"
+					disabled
+					// onClick={() => triggerDeploy()}
+				>
+					Trigger a deployment
+				</Button>
+			</div>
+		</div>
+	);
 }
 
 export default {
-  name: 'deploy',
-  component: Deploy,
+	name: 'deploy',
+	component: Deploy,
 };

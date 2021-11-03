@@ -1,9 +1,9 @@
 import { GetStaticPropsContext } from 'next';
 
 export function getHospitalAdmissionsPageQuery(context: GetStaticPropsContext) {
-  const { locale } = context;
+	const { locale } = context;
 
-  return `
+	return `
   *[_type=='hospitalPage']{
     "pageLinks": [...pageLinks[]{
       "title": title.${locale},

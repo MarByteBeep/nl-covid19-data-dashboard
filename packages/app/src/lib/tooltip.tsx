@@ -10,14 +10,14 @@ import { isDefined } from 'ts-is-present';
 let handleMount: undefined | ((tippyInstance: Instance) => void);
 
 const StyledTippy = styled(Tippy)(
-  css({
-    backgroundColor: 'white',
-    color: 'black',
-    boxShadow: 'tile',
-    '.tippy-arrow': {
-      color: 'white',
-    },
-  })
+	css({
+		backgroundColor: 'white',
+		color: 'black',
+		boxShadow: 'tile',
+		'.tippy-arrow': {
+			color: 'white',
+		},
+	})
 ) as typeof Tippy;
 
 /**
@@ -26,41 +26,41 @@ const StyledTippy = styled(Tippy)(
  */
 
 export function WithTooltip(props: TippyProps) {
-  const breakpoints = useBreakpoints();
+	const breakpoints = useBreakpoints();
 
-  if (!isDefined(props.content)) {
-    return <>{props.children}</>;
-  }
+	if (!isDefined(props.content)) {
+		return <>{props.children}</>;
+	}
 
-  return (
-    <StyledTippy
-      appendTo={getBody}
-      maxWidth={breakpoints.sm ? '260px' : '285px'}
-      {...(handleMount ? { onMount: handleMount } : {})}
-      {...props}
-    />
-  );
+	return (
+		<StyledTippy
+			appendTo={getBody}
+			maxWidth={breakpoints.sm ? '260px' : '285px'}
+			{...(handleMount ? { onMount: handleMount } : {})}
+			{...props}
+		/>
+	);
 }
 
 function getBody() {
-  return document.body;
+	return document.body;
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  /**
-   * This entire block won't be part of a production build
-   */
-  const isFocusableSelector =
-    'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled]), details:not([disabled]), summary:not(:disabled)';
+	/**
+	 * This entire block won't be part of a production build
+	 */
+	const isFocusableSelector =
+		'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]):not([disabled]), details:not([disabled]), summary:not(:disabled)';
 
-  handleMount = function reportIsFocusable(tippyInstance: Instance) {
-    const { reference } = tippyInstance;
+	handleMount = function reportIsFocusable(tippyInstance: Instance) {
+		const { reference } = tippyInstance;
 
-    if (!reference.matches(isFocusableSelector)) {
-      console.error({ tippyInstance, reference });
-      throw new Error(
-        `A tooltip has been wrapped around an element which cannot receive focus state. Please make it focusable for a11y by setting tabIndex={0}`
-      );
-    }
-  };
+		if (!reference.matches(isFocusableSelector)) {
+			console.error({ tippyInstance, reference });
+			throw new Error(
+				`A tooltip has been wrapped around an element which cannot receive focus state. Please make it focusable for a11y by setting tabIndex={0}`
+			);
+		}
+	};
 }

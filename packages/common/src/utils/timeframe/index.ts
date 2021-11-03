@@ -1,32 +1,32 @@
 import {
-  DateSpanValue,
-  DateValue,
-  isDateSeries,
-  isDateSpanSeries,
-  TimestampedValue,
+	DateSpanValue,
+	DateValue,
+	isDateSeries,
+	isDateSpanSeries,
+	TimestampedValue,
 } from '../../data-sorting';
 import { DAY_IN_SECONDS } from '../../time';
 
 export type TimeframeOption = 'all' | '5weeks';
 
 export function getDaysForTimeframe(timeframe: TimeframeOption) {
-  if (timeframe === '5weeks') {
-    return 5 * 7;
-  }
-  return Infinity;
+	if (timeframe === '5weeks') {
+		return 5 * 7;
+	}
+	return Infinity;
 }
 
 const oneDayInMilliseconds = DAY_IN_SECONDS * 1000;
 
 export const getMinimumUnixForTimeframe = (
-  timeframe: TimeframeOption,
-  today: Date
+	timeframe: TimeframeOption,
+	today: Date
 ): number => {
-  if (timeframe === 'all') {
-    return 0;
-  }
-  const days = getDaysForTimeframe(timeframe);
-  return today.getTime() - days * oneDayInMilliseconds;
+	if (timeframe === 'all') {
+		return 0;
+	}
+	const days = getDaysForTimeframe(timeframe);
+	return today.getTime() - days * oneDayInMilliseconds;
 };
 
 type CompareCallbackFunction<T> = (value: T) => number;
@@ -39,15 +39,15 @@ type CompareCallbackFunction<T> = (value: T) => number;
  * @param compareCallback
  */
 export const getFilteredValues = <T>(
-  values: T[],
-  timeframe: TimeframeOption,
-  today: Date,
-  compareCallback: CompareCallbackFunction<T>
+	values: T[],
+	timeframe: TimeframeOption,
+	today: Date,
+	compareCallback: CompareCallbackFunction<T>
 ): T[] => {
-  const minimumUnix = getMinimumUnixForTimeframe(timeframe, today);
-  return values.filter((value: T): boolean => {
-    return compareCallback(value) >= minimumUnix;
-  });
+	const minimumUnix = getMinimumUnixForTimeframe(timeframe, today);
+	return values.filter((value: T): boolean => {
+		return compareCallback(value) >= minimumUnix;
+	});
 };
 
 /**
@@ -58,29 +58,29 @@ export const getFilteredValues = <T>(
  * on.
  */
 export function getValuesInTimeframe<T extends TimestampedValue>(
-  values: T[],
-  timeframe: TimeframeOption,
-  today: Date
+	values: T[],
+	timeframe: TimeframeOption,
+	today: Date
 ): T[] {
-  const boundary = getTimeframeBoundaryUnix(timeframe, today);
+	const boundary = getTimeframeBoundaryUnix(timeframe, today);
 
-  if (isDateSeries(values)) {
-    return values.filter((x: DateValue) => x.date_unix >= boundary) as T[];
-  }
+	if (isDateSeries(values)) {
+		return values.filter((x: DateValue) => x.date_unix >= boundary) as T[];
+	}
 
-  if (isDateSpanSeries(values)) {
-    return values.filter(
-      (x: DateSpanValue) => x.date_end_unix >= boundary
-    ) as T[];
-  }
+	if (isDateSpanSeries(values)) {
+		return values.filter(
+			(x: DateSpanValue) => x.date_end_unix >= boundary
+		) as T[];
+	}
 
-  throw new Error(`Incompatible timestamps are used in value ${values[0]}`);
+	throw new Error(`Incompatible timestamps are used in value ${values[0]}`);
 }
 
 function getTimeframeBoundaryUnix(timeframe: TimeframeOption, today: Date) {
-  if (timeframe === 'all') {
-    return 0;
-  }
-  const days = getDaysForTimeframe(timeframe);
-  return Math.floor(today.getTime() / 1000) - days * DAY_IN_SECONDS;
+	if (timeframe === 'all') {
+		return 0;
+	}
+	const days = getDaysForTimeframe(timeframe);
+	return Math.floor(today.getTime() / 1000) - days * DAY_IN_SECONDS;
 }

@@ -1,9 +1,9 @@
 import {
-  Combobox,
-  ComboboxInput,
-  ComboboxList,
-  ComboboxOption,
-  ComboboxPopover,
+	Combobox,
+	ComboboxInput,
+	ComboboxList,
+	ComboboxOption,
+	ComboboxPopover,
 } from '@reach/combobox';
 import css from '@styled-system/css';
 import { matchSorter } from 'match-sorter';
@@ -18,14 +18,14 @@ import { useBreakpoints } from '~/utils/use-breakpoints';
 import { useThrottle } from '~/utils/use-throttle';
 
 type TOption = {
-  displayName?: string;
-  name: string;
+	displayName?: string;
+	name: string;
 };
 
 type TProps<Option extends TOption> = {
-  options: Option[];
-  placeholder: string;
-  onSelect: (option: Option) => void;
+	options: Option[];
+	placeholder: string;
+	onSelect: (option: Option) => void;
 };
 
 /**
@@ -44,93 +44,104 @@ type TProps<Option extends TOption> = {
  * ```
  */
 export function ComboBox<Option extends TOption>(props: TProps<Option>) {
-  const { options, placeholder } = props;
+	const { options, placeholder } = props;
 
-  const { siteText } = useIntl();
+	const { siteText } = useIntl();
 
-  const router = useRouter();
-  const { code } = router.query;
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [inputValue, setInputValue] = useState<string>('');
-  const results = useSearchedOptions<Option>(inputValue, options);
-  const breakpoints = useBreakpoints();
-  const isLargeScreen = breakpoints.md;
-  const hasRegionSelected = !!code;
+	const router = useRouter();
+	const { code } = router.query;
+	const inputRef = useRef<HTMLInputElement>(null);
+	const [inputValue, setInputValue] = useState<string>('');
+	const results = useSearchedOptions<Option>(inputValue, options);
+	const breakpoints = useBreakpoints();
+	const isLargeScreen = breakpoints.md;
+	const hasRegionSelected = !!code;
 
-  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
-    setInputValue(event.target.value);
-  }
+	function handleInputChange(
+		event: React.ChangeEvent<HTMLInputElement>
+	): void {
+		setInputValue(event.target.value);
+	}
 
-  function handleSelect(name: string): void {
-    if (!name) {
-      return;
-    }
+	function handleSelect(name: string): void {
+		if (!name) {
+			return;
+		}
 
-    const option = options.find(
-      (option) => option.name === name || option.displayName === name
-    );
+		const option = options.find(
+			(option) => option.name === name || option.displayName === name
+		);
 
-    assert(option, `Failed to find option for name ${name}`);
+		assert(option, `Failed to find option for name ${name}`);
 
-    props.onSelect(option);
+		props.onSelect(option);
 
-    /**
-     * If blur gets called immediately it does not work for some reason.
-     */
-    setTimeout(() => {
-      inputRef.current?.blur();
-    }, 1);
-  }
+		/**
+		 * If blur gets called immediately it does not work for some reason.
+		 */
+		setTimeout(() => {
+			inputRef.current?.blur();
+		}, 1);
+	}
 
-  useEffect(() => {
-    if (!inputRef.current?.value && isLargeScreen && !hasRegionSelected) {
-      inputRef.current?.focus();
-    }
-  }, [isLargeScreen, hasRegionSelected]);
+	useEffect(() => {
+		if (!inputRef.current?.value && isLargeScreen && !hasRegionSelected) {
+			inputRef.current?.focus();
+		}
+	}, [isLargeScreen, hasRegionSelected]);
 
-  return (
-    <Box role="search" css={css({ '[data-reach-combobox]': { px: 3, py: 4 } })}>
-      <Combobox openOnFocus onSelect={handleSelect}>
-        <ComboboxInput
-          ref={inputRef}
-          onChange={handleInputChange}
-          placeholder={placeholder}
-        />
-        <ComboboxPopover>
-          {results.length > 0 ? (
-            <ComboboxList>
-              {results.map((option, index) => (
-                <ComboboxOption
-                  key={`${index}-${option.name}`}
-                  value={option.displayName || option.name}
-                />
-              ))}
-            </ComboboxList>
-          ) : (
-            <span>{siteText.common.zoekveld_geen_resultaten}</span>
-          )}
-        </ComboboxPopover>
-      </Combobox>
-      <ComboBoxStyles />
-    </Box>
-  );
+	return (
+		<Box
+			role="search"
+			css={css({ '[data-reach-combobox]': { px: 3, py: 4 } })}
+		>
+			<Combobox openOnFocus onSelect={handleSelect}>
+				<ComboboxInput
+					ref={inputRef}
+					onChange={handleInputChange}
+					placeholder={placeholder}
+				/>
+				<ComboboxPopover>
+					{results.length > 0 ? (
+						<ComboboxList>
+							{results.map((option, index) => (
+								<ComboboxOption
+									key={`${index}-${option.name}`}
+									value={option.displayName || option.name}
+								/>
+							))}
+						</ComboboxList>
+					) : (
+						<span>{siteText.common.zoekveld_geen_resultaten}</span>
+					)}
+				</ComboboxPopover>
+			</Combobox>
+			<ComboBoxStyles />
+		</Box>
+	);
 }
 
 function useSearchedOptions<Option extends TOption>(
-  term: string,
-  options: Option[]
+	term: string,
+	options: Option[]
 ): Option[] {
-  const throttledTerm = useThrottle(term, 100);
+	const throttledTerm = useThrottle(term, 100);
 
-  return useMemo(
-    () =>
-      throttledTerm.trim() === ''
-        ? options.sort((a: Option, b: Option) => a.name.localeCompare(b.name))
-        : matchSorter(options, throttledTerm.trim(), {
-            keys: [(item: Option) => item.name, 'searchTerms', 'displayName'],
-          }),
-    [throttledTerm, options]
-  );
+	return useMemo(
+		() =>
+			throttledTerm.trim() === ''
+				? options.sort((a: Option, b: Option) =>
+						a.name.localeCompare(b.name)
+				  )
+				: matchSorter(options, throttledTerm.trim(), {
+						keys: [
+							(item: Option) => item.name,
+							'searchTerms',
+							'displayName',
+						],
+				  }),
+		[throttledTerm, options]
+	);
 }
 
 const ComboBoxStyles = createGlobalStyle`

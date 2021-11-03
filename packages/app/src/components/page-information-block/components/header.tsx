@@ -12,66 +12,66 @@ import { useBreakpoints } from '~/utils/use-breakpoints';
  * So it gives more context to the page when using a screenreader. */
 
 type HeaderProps = {
-  title: string;
-  icon?: JSX.Element;
-  category?: string;
-  screenReaderCategory?: string;
+	title: string;
+	icon?: JSX.Element;
+	category?: string;
+	screenReaderCategory?: string;
 };
 
 export function Header({
-  icon,
-  title,
-  category,
-  screenReaderCategory,
+	icon,
+	title,
+	category,
+	screenReaderCategory,
 }: HeaderProps) {
-  const breakpoints = useBreakpoints();
-  const isMediumScreen = breakpoints.md;
+	const breakpoints = useBreakpoints();
+	const isMediumScreen = breakpoints.md;
 
-  return (
-    <GridLayout>
-      {icon && !isMediumScreen && <Icon gridArea="topIcon">{icon}</Icon>}
-      {category && (
-        <Box gridArea="category">
-          <Heading level={1} variant="subtitle2">
-            {category}
-            {screenReaderCategory && (
-              <VisuallyHidden>{`- ${screenReaderCategory}`}</VisuallyHidden>
-            )}
-          </Heading>
-        </Box>
-      )}
-      {icon && isMediumScreen && <Icon gridArea="sideIcon">{icon}</Icon>}
-      <Heading
-        level={1}
-        as="h2"
-        hyphens="auto"
-        css={css({ gridArea: 'title' })}
-      >
-        {title}
-      </Heading>
-    </GridLayout>
-  );
+	return (
+		<GridLayout>
+			{icon && !isMediumScreen && <Icon gridArea="topIcon">{icon}</Icon>}
+			{category && (
+				<Box gridArea="category">
+					<Heading level={1} variant="subtitle2">
+						{category}
+						{screenReaderCategory && (
+							<VisuallyHidden>{`- ${screenReaderCategory}`}</VisuallyHidden>
+						)}
+					</Heading>
+				</Box>
+			)}
+			{icon && isMediumScreen && <Icon gridArea="sideIcon">{icon}</Icon>}
+			<Heading
+				level={1}
+				as="h2"
+				hyphens="auto"
+				css={css({ gridArea: 'title' })}
+			>
+				{title}
+			</Heading>
+		</GridLayout>
+	);
 }
 
 const GridLayout = styled(Box)`
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-areas:
-    '. topIcon'
-    '. category'
-    'sideIcon title';
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-areas:
+		'. topIcon'
+		'. category'
+		'sideIcon title';
 `;
 
 const Icon = styled.span<{ gridArea: 'topIcon' | 'sideIcon' }>((x) =>
-  css({
-    mt: '-0.6rem',
-    mr: 3,
-    gridArea: x.gridArea,
-    height: '3.5rem',
+	css({
+		mt: '-0.6rem',
+		mr: 3,
+		gridArea: x.gridArea,
+		height: '3.5rem',
 
-    svg: {
-      height: '3.5rem',
-      width: 'auto',
-    },
-  })
+		svg: {
+			height: '3.5rem',
+			width: 'auto',
+		},
+	})
 );

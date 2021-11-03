@@ -1,9 +1,9 @@
 import {
-  formatStyle,
-  getLastFilledValue,
-  isDateSpanValue,
-  KpiConfiguration,
-  TimestampedValue,
+	formatStyle,
+	getLastFilledValue,
+	isDateSpanValue,
+	KpiConfiguration,
+	TimestampedValue,
 } from '@corona-dashboard/common';
 import { Clock } from '@corona-dashboard/icons';
 import css from '@styled-system/css';
@@ -20,131 +20,131 @@ import { Markdown } from '../markdown';
 import { Metadata, MetadataProps } from '../metadata';
 
 interface InlineKpiProps {
-  configuration: KpiConfiguration;
-  date?: string;
+	configuration: KpiConfiguration;
+	date?: string;
 }
 
 interface ServerData {
-  values: Record<string, any>[];
-  last_value: Record<string, any>;
+	values: Record<string, any>[];
+	last_value: Record<string, any>;
 }
 
 function getDataUrl(configuration: KpiConfiguration, date?: string) {
-  const { code, area, metricName, metricProperty } = configuration;
-  const suffix = isDefined(date) ? `?end=${date}` : '';
-  return `/api/data/timeseries/${
-    code ?? area
-  }/${metricName}/${metricProperty}${suffix}`;
+	const { code, area, metricName, metricProperty } = configuration;
+	const suffix = isDefined(date) ? `?end=${date}` : '';
+	return `/api/data/timeseries/${
+		code ?? area
+	}/${metricName}/${metricProperty}${suffix}`;
 }
 
 export function InlineKpi({ configuration, date }: InlineKpiProps) {
-  const { siteText, formatDateFromSeconds } = useIntl();
+	const { siteText, formatDateFromSeconds } = useIntl();
 
-  const { data } = useSWRImmutable<ServerData>(
-    getDataUrl(configuration, date),
-    (url: string) => fetch(url).then((_) => _.json())
-  );
-  const { data: differenceData } = useDifferenceData(configuration);
+	const { data } = useSWRImmutable<ServerData>(
+		getDataUrl(configuration, date),
+		(url: string) => fetch(url).then((_) => _.json())
+	);
+	const { data: differenceData } = useDifferenceData(configuration);
 
-  if (!isDefined(data) || !isDefined(differenceData)) {
-    return (
-      <Box width={{ _: '100%', md: '50%' }}>
-        <Clock width="3em" height="3em" />
-      </Box>
-    );
-  }
+	if (!isDefined(data) || !isDefined(differenceData)) {
+		return (
+			<Box width={{ _: '100%', md: '50%' }}>
+				<Clock width="3em" height="3em" />
+			</Box>
+		);
+	}
 
-  const allData = configuration.differenceKey?.length
-    ? {
-        [configuration.metricName]: {
-          ...data,
-        },
-        difference: {
-          [configuration.differenceKey]: differenceData,
-        },
-      }
-    : {
-        [configuration.metricName]: {
-          ...data,
-        },
-      };
+	const allData = configuration.differenceKey?.length
+		? {
+				[configuration.metricName]: {
+					...data,
+				},
+				difference: {
+					[configuration.differenceKey]: differenceData,
+				},
+		  }
+		: {
+				[configuration.metricName]: {
+					...data,
+				},
+		  };
 
-  const title = get(siteText, configuration.titleKey.split('.'), '');
-  const source = get(siteText, configuration.sourceKey.split('.'), '');
+	const title = get(siteText, configuration.titleKey.split('.'), '');
+	const source = get(siteText, configuration.sourceKey.split('.'), '');
 
-  const lastValue = getLastValue(data, configuration.metricName);
+	const lastValue = getLastValue(data, configuration.metricName);
 
-  const metadataDate = isDateSpanValue(lastValue)
-    ? formatDateSpanString(
-        lastValue.date_start_unix,
-        lastValue.date_end_unix,
-        formatDateFromSeconds
-      )
-    : formatDateValueString(lastValue.date_unix, formatDateFromSeconds);
+	const metadataDate = isDateSpanValue(lastValue)
+		? formatDateSpanString(
+				lastValue.date_start_unix,
+				lastValue.date_end_unix,
+				formatDateFromSeconds
+		  )
+		: formatDateValueString(lastValue.date_unix, formatDateFromSeconds);
 
-  return (
-    <ErrorBoundary>
-      <Box width={{ _: '100%', md: '50%' }}>
-        <KpiTile
-          title={title}
-          iconName={configuration.icon}
-          metadata={{
-            source,
-            date: metadataDate,
-          }}
-        >
-          {isPresent(differenceData) && (
-            <PageKpi
-              data={allData}
-              metricName={configuration.metricName}
-              metricProperty={configuration.metricProperty}
-              differenceKey={configuration.differenceKey}
-              isMovingAverageDifference={
-                configuration.isMovingAverageDifference
-              }
-              isAmount={configuration.isAmount}
-            />
-          )}
-          {!isPresent(differenceData) && (
-            <PageKpi
-              data={allData}
-              metricName={configuration.metricName}
-              metricProperty={configuration.metricProperty}
-              isAmount={configuration.isAmount}
-            />
-          )}
-        </KpiTile>
-      </Box>
-    </ErrorBoundary>
-  );
+	return (
+		<ErrorBoundary>
+			<Box width={{ _: '100%', md: '50%' }}>
+				<KpiTile
+					title={title}
+					iconName={configuration.icon}
+					metadata={{
+						source,
+						date: metadataDate,
+					}}
+				>
+					{isPresent(differenceData) && (
+						<PageKpi
+							data={allData}
+							metricName={configuration.metricName}
+							metricProperty={configuration.metricProperty}
+							differenceKey={configuration.differenceKey}
+							isMovingAverageDifference={
+								configuration.isMovingAverageDifference
+							}
+							isAmount={configuration.isAmount}
+						/>
+					)}
+					{!isPresent(differenceData) && (
+						<PageKpi
+							data={allData}
+							metricName={configuration.metricName}
+							metricProperty={configuration.metricProperty}
+							isAmount={configuration.isAmount}
+						/>
+					)}
+				</KpiTile>
+			</Box>
+		</ErrorBoundary>
+	);
 }
 
 function useDifferenceData(configuration: KpiConfiguration) {
-  const differenceKey = configuration.differenceKey
-    ? configuration.differenceKey
-    : 'unknown';
-  return useSWRImmutable(
-    `/api/data/timeseries/${
-      configuration.code ?? configuration.area
-    }/difference/${differenceKey}`,
-    (url: string) =>
-      fetch(url)
-        .then((_) => {
-          if (!_.ok) {
-            return null;
-          }
-          return _.json();
-        })
-        .catch((_) => null)
-  );
+	const differenceKey = configuration.differenceKey
+		? configuration.differenceKey
+		: 'unknown';
+	return useSWRImmutable(
+		`/api/data/timeseries/${
+			configuration.code ?? configuration.area
+		}/difference/${differenceKey}`,
+		(url: string) =>
+			fetch(url)
+				.then((_) => {
+					if (!_.ok) {
+						return null;
+					}
+					return _.json();
+				})
+				.catch((_) => null)
+	);
 }
 
 interface KpiTileProps {
-  title: string;
-  description?: string;
-  children?: ReactNode;
-  metadata?: MetadataProps;
-  iconName: string;
+	title: string;
+	description?: string;
+	children?: ReactNode;
+	metadata?: MetadataProps;
+	iconName: string;
 }
 
 /**
@@ -152,77 +152,82 @@ interface KpiTileProps {
  * Description can be both plain text and html strings.
  */
 function KpiTile({
-  title,
-  description,
-  children,
-  metadata,
-  iconName,
+	title,
+	description,
+	children,
+	metadata,
+	iconName,
 }: KpiTileProps) {
-  return (
-    <>
-      <Box spacing={3}>
-        <Box
-          display="flex"
-          flexDirection="row"
-          flexWrap="nowrap"
-          alignItems="center"
-          spacingHorizontal={{ md: 2 }}
-          pr={{ md: 2 }}
-        >
-          <div
-            aria-hidden={true}
-            css={css({
-              background: `url(/icons/app/${iconName}) no-repeat top left`,
-              width: '30px',
-              height: '40px',
-              color: '#000',
-            })}
-          />
+	return (
+		<>
+			<Box spacing={3}>
+				<Box
+					display="flex"
+					flexDirection="row"
+					flexWrap="nowrap"
+					alignItems="center"
+					spacingHorizontal={{ md: 2 }}
+					pr={{ md: 2 }}
+				>
+					<div
+						aria-hidden={true}
+						css={css({
+							background: `url(/icons/app/${iconName}) no-repeat top left`,
+							width: '30px',
+							height: '40px',
+							color: '#000',
+						})}
+					/>
 
-          <Heading level={3} as="h4" hyphens="auto" style={{ margin: 0 }}>
-            {title}
-          </Heading>
-        </Box>
-        {children && <Box spacing={3}>{children}</Box>}
+					<Heading
+						level={3}
+						as="h4"
+						hyphens="auto"
+						style={{ margin: 0 }}
+					>
+						{title}
+					</Heading>
+				</Box>
+				{children && <Box spacing={3}>{children}</Box>}
 
-        {description && (
-          <Box maxWidth="400px" fontSize={2} lineHeight={2}>
-            <Markdown content={description} />
-          </Box>
-        )}
-      </Box>
+				{description && (
+					<Box maxWidth="400px" fontSize={2} lineHeight={2}>
+						<Markdown content={description} />
+					</Box>
+				)}
+			</Box>
 
-      {metadata && (
-        <Box pt={2}>
-          <Metadata {...metadata} />
-        </Box>
-      )}
-    </>
-  );
+			{metadata && (
+				<Box pt={2}>
+					<Metadata {...metadata} />
+				</Box>
+			)}
+		</>
+	);
 }
 
 function formatDateSpanString(
-  startDate: number,
-  endDate: number,
-  format: (v: number, s?: formatStyle) => string
+	startDate: number,
+	endDate: number,
+	format: (v: number, s?: formatStyle) => string
 ) {
-  return `${format(startDate, 'weekday-medium')}} - ${format(
-    endDate,
-    'weekday-medium'
-  )}`;
+	return `${format(startDate, 'weekday-medium')}} - ${format(
+		endDate,
+		'weekday-medium'
+	)}`;
 }
 
 function formatDateValueString(
-  date: number,
-  format: (v: number, s?: formatStyle) => string
+	date: number,
+	format: (v: number, s?: formatStyle) => string
 ) {
-  return format(date, 'medium');
+	return format(date, 'medium');
 }
 
 function getLastValue(data: ServerData, metricName: string): TimestampedValue {
-  return (
-    metricNamesHoldingPartialData.includes(metricName)
-      ? getLastFilledValue(data as any)
-      : get(data, ['last_value'])
-  ) as TimestampedValue;
+	return (
+		metricNamesHoldingPartialData.includes(metricName)
+			? getLastFilledValue(data as any)
+			: get(data, ['last_value'])
+	) as TimestampedValue;
 }

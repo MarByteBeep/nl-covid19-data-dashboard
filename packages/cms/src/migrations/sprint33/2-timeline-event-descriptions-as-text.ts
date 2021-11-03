@@ -22,57 +22,57 @@ const client = getClient('migration');
 // NOTE: This query should eventually return an empty set of documents to mark the migration
 // as complete
 function fetchDocuments() {
-  return client.fetch(
-    /* groq */ `*[_type == 'timelineEventCollection' && defined(timelineEvents) && timelineEvents[0].description._type == 'localeString'][0...100]{_id, timelineEvents}`
-  );
+	return client.fetch(
+		/* groq */ `*[_type == 'timelineEventCollection' && defined(timelineEvents) && timelineEvents[0].description._type == 'localeString'][0...100]{_id, timelineEvents}`
+	);
 }
 
 function buildPatches(collections: any[]) {
-  return collections.map((collection) => ({
-    id: collection._id,
-    patch: {
-      set: {
-        timelineEvents: changeEventDescriptionsToLocaleText(
-          collection.timelineEvents
-        ),
-      },
-    },
-  }));
+	return collections.map((collection) => ({
+		id: collection._id,
+		patch: {
+			set: {
+				timelineEvents: changeEventDescriptionsToLocaleText(
+					collection.timelineEvents
+				),
+			},
+		},
+	}));
 }
 
 function createTransaction(patches: any[]) {
-  return patches.reduce(
-    (tx, patch) => tx.patch(patch.id, patch.patch),
-    client.transaction()
-  );
+	return patches.reduce(
+		(tx, patch) => tx.patch(patch.id, patch.patch),
+		client.transaction()
+	);
 }
 
 function changeEventDescriptionsToLocaleText(events: any) {
-  return events.map((e: any) => ({
-    ...e,
-    description: { ...e.description, _type: 'localeText' },
-  }));
+	return events.map((e: any) => ({
+		...e,
+		description: { ...e.description, _type: 'localeText' },
+	}));
 }
 
 async function migrateNextBatch(): Promise<any> {
-  const documents = await fetchDocuments();
-  const patches = buildPatches(documents);
-  if (patches.length === 0) {
-    console.log('No more documents to migrate!');
-    return null;
-  }
-  console.log(
-    `Migrating batch:\n %s`,
-    patches
-      .map((patch) => `${patch.id} => ${JSON.stringify(patch.patch)}`)
-      .join('\n')
-  );
-  const transaction = createTransaction(patches);
-  await transaction.commit();
-  return migrateNextBatch();
+	const documents = await fetchDocuments();
+	const patches = buildPatches(documents);
+	if (patches.length === 0) {
+		console.log('No more documents to migrate!');
+		return null;
+	}
+	console.log(
+		`Migrating batch:\n %s`,
+		patches
+			.map((patch) => `${patch.id} => ${JSON.stringify(patch.patch)}`)
+			.join('\n')
+	);
+	const transaction = createTransaction(patches);
+	await transaction.commit();
+	return migrateNextBatch();
 }
 
 migrateNextBatch().catch((err) => {
-  console.error(err);
-  process.exit(1);
+	console.error(err);
+	process.exit(1);
 });

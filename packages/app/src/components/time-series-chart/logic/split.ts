@@ -1,7 +1,7 @@
 export type SplitPoint = {
-  value: number;
-  color: string;
-  label: string;
+	value: number;
+	color: string;
+	label: string;
 };
 
 /**
@@ -15,26 +15,26 @@ export type SplitPoint = {
  * went for the first split point.
  */
 export function findSplitPointForValue(
-  splitPoints: SplitPoint[],
-  value?: number | null
+	splitPoints: SplitPoint[],
+	value?: number | null
 ) {
-  const index = findSplitIndexForValue(splitPoints, value);
+	const index = findSplitIndexForValue(splitPoints, value);
 
-  return splitPoints[index];
+	return splitPoints[index];
 }
 
 function findSplitIndexForValue(
-  splitPoints: SplitPoint[],
-  value?: number | null
+	splitPoints: SplitPoint[],
+	value?: number | null
 ) {
-  /**
-   * If the value is 0 or null we return the first split
-   */
-  if (!value) {
-    return 0;
-  }
+	/**
+	 * If the value is 0 or null we return the first split
+	 */
+	if (!value) {
+		return 0;
+	}
 
-  const index = splitPoints.findIndex((split) => split.value >= value);
+	const index = splitPoints.findIndex((split) => split.value >= value);
 
-  return index === -1 ? splitPoints.length - 1 : index;
+	return index === -1 ? splitPoints.length - 1 : index;
 }

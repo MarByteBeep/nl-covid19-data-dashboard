@@ -1,15 +1,15 @@
 // Combine base url with page specific options
 export function assemblePreviewUrl({
-  options,
+	options,
 }: {
-  options: { previewURL: string };
+	options: { previewURL: string };
 }) {
-  const { previewURL } = options;
+	const { previewURL } = options;
 
-  if (!previewURL) {
-    console.warn('Missing previewURL', { previewURL });
-    return '';
-  }
+	if (!previewURL) {
+		console.warn('Missing previewURL', { previewURL });
+		return '';
+	}
 
-  return `${previewURL}`;
+	return `${previewURL}`;
 }

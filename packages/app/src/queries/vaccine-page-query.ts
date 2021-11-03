@@ -1,5 +1,5 @@
 export function getVaccinePageQuery(locale: string) {
-  return `
+	return `
   *[_type=='vaccinationsPage']{
     "pageDescription": pageDescription.${locale},
     "pageLinks": [...usefulLinks[]{

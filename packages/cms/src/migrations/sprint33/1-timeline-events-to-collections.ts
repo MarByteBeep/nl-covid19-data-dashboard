@@ -23,96 +23,98 @@ const client = getClient('migration');
 // NOTE: This query should eventually return an empty set of documents to mark the migration
 // as complete
 function fetchDocuments() {
-  return client.fetch(/* groq */ `*[_type == 'timeSeries' && defined(timelineEvents) &&
+	return client.fetch(/* groq */ `*[_type == 'timeSeries' && defined(timelineEvents) &&
     (!defined(timelineEventCollections) || length(timelineEventCollections) ==
     0)][0...100] {_id, timelineEvents, metricName, scope}`);
 }
 
 function createCollections(docs: any[]) {
-  return Promise.all(
-    docs.map(async (doc) => {
-      const existingCollection = (
-        await client.fetch(
-          /* groq */ `*[_type == 'timelineEventCollection' && name == $name]
+	return Promise.all(
+		docs.map(async (doc) => {
+			const existingCollection = (
+				await client.fetch(
+					/* groq */ `*[_type == 'timelineEventCollection' && name == $name]
         { _id }`,
-          {
-            name: `${doc.scope} - ${titleByMetricName[doc.metricName]}`,
-          }
-        )
-      )[0];
+					{
+						name: `${doc.scope} - ${
+							titleByMetricName[doc.metricName]
+						}`,
+					}
+				)
+			)[0];
 
-      if (existingCollection) {
-        return {
-          collection: existingCollection,
-          timeSeriesId: doc._id,
-        };
-      }
+			if (existingCollection) {
+				return {
+					collection: existingCollection,
+					timeSeriesId: doc._id,
+				};
+			}
 
-      return {
-        collection: await client.create({
-          _type: 'timelineEventCollection',
-          name: `${doc.scope} - ${titleByMetricName[doc.metricName]}`,
-          timelineEvents: doc.timelineEvents,
-        }),
-        timeSeriesId: doc._id,
-      };
-    })
-  );
+			return {
+				collection: await client.create({
+					_type: 'timelineEventCollection',
+					name: `${doc.scope} - ${titleByMetricName[doc.metricName]}`,
+					timelineEvents: doc.timelineEvents,
+				}),
+				timeSeriesId: doc._id,
+			};
+		})
+	);
 }
 
 function buildPatches(
-  collections: { collection: any; timeSeriesId: string }[]
+	collections: { collection: any; timeSeriesId: string }[]
 ) {
-  return collections.map((collection) => ({
-    id: collection.timeSeriesId,
-    patch: {
-      set: {
-        timelineEventCollections: [
-          {
-            _type: 'reference',
-            _key: uuidv4(),
-            _ref: collection.collection._id,
-          },
-        ],
-      },
-    },
-  }));
+	return collections.map((collection) => ({
+		id: collection.timeSeriesId,
+		patch: {
+			set: {
+				timelineEventCollections: [
+					{
+						_type: 'reference',
+						_key: uuidv4(),
+						_ref: collection.collection._id,
+					},
+				],
+			},
+		},
+	}));
 }
 
 function createTransaction(patches: any[]) {
-  return patches.reduce(
-    (tx, patch) => tx.patch(patch.id, patch.patch),
-    client.transaction()
-  );
+	return patches.reduce(
+		(tx, patch) => tx.patch(patch.id, patch.patch),
+		client.transaction()
+	);
 }
 
 async function migrateNextBatch(): Promise<any> {
-  const documents = await fetchDocuments();
-  const newCollections = await createCollections(documents);
-  const patches = buildPatches(newCollections);
-  if (patches.length === 0) {
-    console.log('No more documents to migrate!');
-    return null;
-  }
-  console.log(
-    `Migrating batch:\n %s`,
-    patches
-      .map((patch) => `${patch.id} => ${JSON.stringify(patch.patch)}`)
-      .join('\n')
-  );
-  const transaction = createTransaction(patches);
-  await transaction.commit();
-  return migrateNextBatch();
+	const documents = await fetchDocuments();
+	const newCollections = await createCollections(documents);
+	const patches = buildPatches(newCollections);
+	if (patches.length === 0) {
+		console.log('No more documents to migrate!');
+		return null;
+	}
+	console.log(
+		`Migrating batch:\n %s`,
+		patches
+			.map((patch) => `${patch.id} => ${JSON.stringify(patch.patch)}`)
+			.join('\n')
+	);
+	const transaction = createTransaction(patches);
+	await transaction.commit();
+	return migrateNextBatch();
 }
 
 migrateNextBatch().catch((err) => {
-  console.error(err);
-  process.exit(1);
+	console.error(err);
+	process.exit(1);
 });
 
 const titleByMetricName: Record<string, string | undefined> = {
-  tested_overall: 'Positief geteste mensen',
-  sewer: 'Rioolwater metingen',
-  hospital_nice: 'Ziekenhuisopnames',
-  intensive_care_nice: 'Intensive care-opnames',
+	tested_overall: 'Positief geteste mensen',
+	sewer: 'Rioolwater metingen',
+	hospital_nice: 'Ziekenhuisopnames',
+	intensive_care_nice: 'Intensive care-opnames',
 };

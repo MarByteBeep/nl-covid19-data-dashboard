@@ -19,80 +19,82 @@ import { getClient } from '../../client';
 const client = getClient('development');
 
 const fetchFigureExplanations = () =>
-  client.fetch(`*[_type == 'cijferVerantwoordingItem' && group == null]`);
+	client.fetch(`*[_type == 'cijferVerantwoordingItem' && group == null]`);
 const fetchDefaultGroup = () =>
-  client.fetch(`*[_type == 'cijferVerantwoordingGroups'][0]`);
+	client.fetch(`*[_type == 'cijferVerantwoordingGroups'][0]`);
 
 const buildPatches = (docs: any[], group: any) =>
-  docs
-    .map((doc) => ({
-      id: doc._id,
-      patch: {
-        set: {
-          ...doc,
-          _type: 'cijferVerantwoordingItem',
-          group: {
-            _type: 'reference',
-            _ref: group._id,
-          },
-        },
-        // this will cause the transaction to fail if the documents has been
-        // modified since it was fetched.
-        ifRevisionID: doc._rev,
-      },
-    }))
-    .filter((x) => x !== undefined);
+	docs
+		.map((doc) => ({
+			id: doc._id,
+			patch: {
+				set: {
+					...doc,
+					_type: 'cijferVerantwoordingItem',
+					group: {
+						_type: 'reference',
+						_ref: group._id,
+					},
+				},
+				// this will cause the transaction to fail if the documents has been
+				// modified since it was fetched.
+				ifRevisionID: doc._rev,
+			},
+		}))
+		.filter((x) => x !== undefined);
 
 const createTransaction = (patches: any[]) =>
-  patches.reduce(
-    (tx, patch) => tx.patch(patch.id, patch.patch),
-    client.transaction()
-  );
+	patches.reduce(
+		(tx, patch) => tx.patch(patch.id, patch.patch),
+		client.transaction()
+	);
 
 const commitTransaction = (tx: any) => tx.commit();
 
 const createDefaultGroup = async () => {
-  const doc = {
-    _type: 'cijferVerantwoordingGroups',
-    group: {
-      _type: 'localeString',
-      nl: 'Algemeen',
-      en: 'General',
-    },
-  };
+	const doc = {
+		_type: 'cijferVerantwoordingGroups',
+		group: {
+			_type: 'localeString',
+			nl: 'Algemeen',
+			en: 'General',
+		},
+	};
 
-  return client.create(doc);
+	return client.create(doc);
 };
 
 const migrateNextBatch = async (): Promise<any> => {
-  let group = await fetchDefaultGroup();
-  if (group === null) {
-    group = await createDefaultGroup();
-  }
+	let group = await fetchDefaultGroup();
+	if (group === null) {
+		group = await createDefaultGroup();
+	}
 
-  const documents = await fetchFigureExplanations();
+	const documents = await fetchFigureExplanations();
 
-  const patches = buildPatches(documents, group);
+	const patches = buildPatches(documents, group);
 
-  if (patches.length === 0) {
-    console.log('No more documents to migrate!');
-    return null;
-  }
+	if (patches.length === 0) {
+		console.log('No more documents to migrate!');
+		return null;
+	}
 
-  console.log(
-    `Migrating batch:\n %s`,
-    patches
-      .map((patch: any) => `${patch.id} => ${JSON.stringify(patch.patch)}`)
-      .join('\n')
-  );
-  const transaction = createTransaction(patches);
+	console.log(
+		`Migrating batch:\n %s`,
+		patches
+			.map(
+				(patch: any) => `${patch.id} => ${JSON.stringify(patch.patch)}`
+			)
+			.join('\n')
+	);
+	const transaction = createTransaction(patches);
 
-  await commitTransaction(transaction);
+	await commitTransaction(transaction);
 
-  return migrateNextBatch();
+	return migrateNextBatch();
 };
 
 migrateNextBatch().catch((err: any) => {
-  console.error(err);
-  process.exit(1);
+	console.error(err);
+	process.exit(1);
 });

@@ -1,11 +1,11 @@
 import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import type { MetricKeys } from '.';
 import type {
-  GmCollection,
-  GmDifference,
-  NlDifference,
-  VrCollection,
-  VrDifference,
+	GmCollection,
+	GmDifference,
+	NlDifference,
+	VrCollection,
+	VrDifference,
 } from './data';
 
 /**
@@ -29,15 +29,15 @@ import type {
  *
  */
 export type KeysOfType<T, U, B = false> = {
-  [P in keyof T]: B extends true
-    ? T[P] extends U
-      ? U extends T[P]
-        ? P
-        : never
-      : never
-    : T[P] extends U
-    ? P
-    : never;
+	[P in keyof T]: B extends true
+		? T[P] extends U
+			? U extends T[P]
+				? P
+				: never
+			: never
+		: T[P] extends U
+		? P
+		: never;
 }[keyof T];
 
 /**
@@ -60,26 +60,26 @@ export type KeysOfType<T, U, B = false> = {
 export type PickByType<T, U, B = false> = Pick<T, KeysOfType<T, U, B>>;
 
 export type Metric<T> = {
-  values: T[];
-  last_value: T;
+	values: T[];
+	last_value: T;
 };
 
 export type GmCollectionMetricName = MetricKeys<GmCollection>;
 export type VrCollectionMetricName = MetricKeys<VrCollection>;
 
 export type DifferenceKey =
-  | keyof NlDifference
-  | keyof VrDifference
-  | keyof GmDifference;
+	| keyof NlDifference
+	| keyof VrDifference
+	| keyof GmDifference;
 
 export interface VrGeoProperties {
-  vrcode: string;
-  vrname: string;
+	vrcode: string;
+	vrname: string;
 }
 export interface GmGeoProperties {
-  gemnaam: string;
-  gemcode: string;
-  gmcode: string;
+	gemnaam: string;
+	gemcode: string;
+	gmcode: string;
 }
 
 export type InGeoProperties = { ISO_A3: string };
@@ -87,23 +87,23 @@ export type InGeoProperties = { ISO_A3: string };
 export type InGeoJSON = FeatureCollection<MultiPolygon, InGeoProperties>;
 
 export type GmGeoJSON = FeatureCollection<
-  MultiPolygon | Polygon,
-  GmGeoProperties
+	MultiPolygon | Polygon,
+	GmGeoProperties
 >;
 
 export type VrGeoJSON = FeatureCollection<
-  MultiPolygon | Polygon,
-  VrGeoProperties
+	MultiPolygon | Polygon,
+	VrGeoProperties
 >;
 
 export type ChoroplethThresholdsValue<T extends number = number> = {
-  color: string;
-  threshold: T;
-  label?: string;
-  /**
-   * Optionally define the label which explains the "end" of a threshold
-   */
-  endLabel?: string;
+	color: string;
+	threshold: T;
+	label?: string;
+	/**
+	 * Optionally define the label which explains the "end" of a threshold
+	 */
+	endLabel?: string;
 };
 
 export type Dictionary<T> = Partial<Record<string, T>>;

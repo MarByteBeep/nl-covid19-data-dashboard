@@ -10,35 +10,35 @@ import type { FuncKeywordDefinition } from 'ajv';
  *
  */
 export const equalsRootProperty: FuncKeywordDefinition = {
-  keyword: 'equalsRootProperty',
-  type: 'string',
-  errors: true,
-  validate: function validateRootPropertyEquality(
-    schema: any,
-    data: any,
-    _parentSchema?: any,
-    _dataPath?: string,
-    _parentData?: any | any[],
-    _parentDataProperty?: string | number,
-    rootData?: any | any[]
-  ): boolean {
-    if (rootData) {
-      const rootValue = (rootData as any)[schema as string];
-      const validated = data === rootValue;
-      if (!validated) {
-        (validateRootPropertyEquality as any).errors = [
-          {
-            keyword: 'equalsRootProperty',
-            message: `The property '${_dataPath}' value '${data}' must be equal to the root property '${schema}' value '${rootValue}'`,
-            params: {
-              keyword: 'equalsRootProperty',
-              value: schema,
-            },
-          },
-        ];
-      }
-      return validated;
-    }
-    return true;
-  },
+	keyword: 'equalsRootProperty',
+	type: 'string',
+	errors: true,
+	validate: function validateRootPropertyEquality(
+		schema: any,
+		data: any,
+		_parentSchema?: any,
+		_dataPath?: string,
+		_parentData?: any | any[],
+		_parentDataProperty?: string | number,
+		rootData?: any | any[]
+	): boolean {
+		if (rootData) {
+			const rootValue = (rootData as any)[schema as string];
+			const validated = data === rootValue;
+			if (!validated) {
+				(validateRootPropertyEquality as any).errors = [
+					{
+						keyword: 'equalsRootProperty',
+						message: `The property '${_dataPath}' value '${data}' must be equal to the root property '${schema}' value '${rootValue}'`,
+						params: {
+							keyword: 'equalsRootProperty',
+							value: schema,
+						},
+					},
+				];
+			}
+			return validated;
+		}
+		return true;
+	},
 };

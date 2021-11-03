@@ -1,103 +1,103 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "title": "vr",
-  "required": [
-    "last_generated",
-    "proto_name",
-    "name",
-    "code",
-    "tested_overall",
-    "hospital_nice",
-    "tested_ggd",
-    "nursing_home",
-    "sewer",
-    "sewer_per_installation",
-    "difference",
-    "deceased_rivm",
-    "deceased_cbs",
-    "elderly_at_home",
-    "disability_care",
-    "behavior",
-    "tested_overall_sum",
-    "hospital_nice_sum",
-    "g_number",
-    "situations",
-    "vaccine_coverage_per_age_group"
-  ],
-  "additionalProperties": false,
-  "properties": {
-    "last_generated": {
-      "type": "string"
-    },
-    "proto_name": {
-      "$ref": "#/$defs/vr_code"
-    },
-    "name": {
-      "$ref": "#/$defs/vr_code"
-    },
-    "code": {
-      "$ref": "#/$defs/vr_code"
-    },
-    "static_values": {
-      "$ref": "__static_values.json"
-    },
-    "difference": {
-      "$ref": "__difference.json"
-    },
-    "g_number": {
-      "$ref": "g_number.json"
-    },
-    "sewer": {
-      "$ref": "sewer.json"
-    },
-    "sewer_per_installation": {
-      "$ref": "sewer_per_installation.json"
-    },
-    "tested_overall": {
-      "$ref": "tested_overall.json"
-    },
-    "hospital_nice": {
-      "$ref": "hospital_nice.json"
-    },
-    "tested_ggd": {
-      "$ref": "tested_ggd.json"
-    },
-    "nursing_home": {
-      "$ref": "nursing_home.json"
-    },
-    "disability_care": {
-      "$ref": "disability_care.json"
-    },
-    "behavior": {
-      "$ref": "behavior.json"
-    },
-    "deceased_rivm": {
-      "$ref": "deceased_rivm.json"
-    },
-    "deceased_cbs": {
-      "$ref": "deceased_cbs.json"
-    },
-    "elderly_at_home": {
-      "$ref": "elderly_at_home.json"
-    },
-    "tested_overall_sum": {
-      "$ref": "tested_overall_sum.json"
-    },
-    "hospital_nice_sum": {
-      "$ref": "hospital_nice_sum.json"
-    },
-    "situations": {
-      "$ref": "situations.json"
-    },
-    "vaccine_coverage_per_age_group": {
-      "$ref": "vaccine_coverage_per_age_group.json"
-    }
-  },
-  "$defs": {
-    "vr_code": {
-      "type": "string",
-      "pattern": "^VR[0-9]+$"
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"title": "vr",
+	"required": [
+		"last_generated",
+		"proto_name",
+		"name",
+		"code",
+		"tested_overall",
+		"hospital_nice",
+		"tested_ggd",
+		"nursing_home",
+		"sewer",
+		"sewer_per_installation",
+		"difference",
+		"deceased_rivm",
+		"deceased_cbs",
+		"elderly_at_home",
+		"disability_care",
+		"behavior",
+		"tested_overall_sum",
+		"hospital_nice_sum",
+		"g_number",
+		"situations",
+		"vaccine_coverage_per_age_group"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"last_generated": {
+			"type": "string"
+		},
+		"proto_name": {
+			"$ref": "#/$defs/vr_code"
+		},
+		"name": {
+			"$ref": "#/$defs/vr_code"
+		},
+		"code": {
+			"$ref": "#/$defs/vr_code"
+		},
+		"static_values": {
+			"$ref": "__static_values.json"
+		},
+		"difference": {
+			"$ref": "__difference.json"
+		},
+		"g_number": {
+			"$ref": "g_number.json"
+		},
+		"sewer": {
+			"$ref": "sewer.json"
+		},
+		"sewer_per_installation": {
+			"$ref": "sewer_per_installation.json"
+		},
+		"tested_overall": {
+			"$ref": "tested_overall.json"
+		},
+		"hospital_nice": {
+			"$ref": "hospital_nice.json"
+		},
+		"tested_ggd": {
+			"$ref": "tested_ggd.json"
+		},
+		"nursing_home": {
+			"$ref": "nursing_home.json"
+		},
+		"disability_care": {
+			"$ref": "disability_care.json"
+		},
+		"behavior": {
+			"$ref": "behavior.json"
+		},
+		"deceased_rivm": {
+			"$ref": "deceased_rivm.json"
+		},
+		"deceased_cbs": {
+			"$ref": "deceased_cbs.json"
+		},
+		"elderly_at_home": {
+			"$ref": "elderly_at_home.json"
+		},
+		"tested_overall_sum": {
+			"$ref": "tested_overall_sum.json"
+		},
+		"hospital_nice_sum": {
+			"$ref": "hospital_nice_sum.json"
+		},
+		"situations": {
+			"$ref": "situations.json"
+		},
+		"vaccine_coverage_per_age_group": {
+			"$ref": "vaccine_coverage_per_age_group.json"
+		}
+	},
+	"$defs": {
+		"vr_code": {
+			"type": "string",
+			"pattern": "^VR[0-9]+$"
+		}
+	}
 }

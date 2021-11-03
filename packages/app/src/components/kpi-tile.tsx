@@ -4,10 +4,10 @@ import { Box } from './base';
 import { Metadata, MetadataProps } from './metadata';
 import { Heading } from './typography';
 interface KpiTileProps {
-  title: string;
-  description?: string;
-  children?: React.ReactNode;
-  metadata?: MetadataProps;
+	title: string;
+	description?: string;
+	children?: React.ReactNode;
+	metadata?: MetadataProps;
 }
 
 /**
@@ -15,25 +15,25 @@ interface KpiTileProps {
  * Description can be both plain text and html strings.
  */
 export function KpiTile({
-  title,
-  description,
-  children,
-  metadata,
+	title,
+	description,
+	children,
+	metadata,
 }: KpiTileProps) {
-  return (
-    <Tile>
-      <Box spacing={3}>
-        <Heading level={3}>{title}</Heading>
-        {children && <Box spacing={3}>{children}</Box>}
+	return (
+		<Tile>
+			<Box spacing={3}>
+				<Heading level={3}>{title}</Heading>
+				{children && <Box spacing={3}>{children}</Box>}
 
-        {description && (
-          <Box maxWidth="400px" fontSize={2} lineHeight={2}>
-            <Markdown content={description} />
-          </Box>
-        )}
-      </Box>
+				{description && (
+					<Box maxWidth="400px" fontSize={2} lineHeight={2}>
+						<Markdown content={description} />
+					</Box>
+				)}
+			</Box>
 
-      {metadata && <Metadata {...metadata} isTileFooter />}
-    </Tile>
-  );
+			{metadata && <Metadata {...metadata} isTileFooter />}
+		</Tile>
+	);
 }

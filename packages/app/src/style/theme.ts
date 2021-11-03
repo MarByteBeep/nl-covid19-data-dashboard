@@ -23,8 +23,8 @@ export type SpaceValue = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
  * same size and h5 being bigger then h4.
  */
 const fonts = {
-  body: "'RO Sans', Calibri, sans-serif",
-  code: "source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace",
+	body: "'RO Sans', Calibri, sans-serif",
+	code: "source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace",
 } as const;
 
 // prettier-ignore
@@ -42,9 +42,9 @@ const fontSizes = [
 ] as const;
 
 export const fontWeights = {
-  normal: 400,
-  bold: 600,
-  heavy: 700,
+	normal: 400,
+	bold: 600,
+	heavy: 700,
 } as const;
 
 const lineHeights = [1.2, 1.3, 1.5] as const;
@@ -64,11 +64,11 @@ const lineHeights = [1.2, 1.3, 1.5] as const;
  */
 
 interface Breakpoints extends Array<string> {
-  xs: string;
-  sm: string;
-  md: string;
-  lg: string;
-  xl: string;
+	xs: string;
+	sm: string;
+	md: string;
+	lg: string;
+	xl: string;
 }
 
 // @ts-expect-error ignore error, missing props are assigned after this line
@@ -80,39 +80,39 @@ breakpoints.lg = breakpoints[3]; // ~1200px
 breakpoints.xl = breakpoints[4]; // ~1600px
 
 const mediaQueries = {
-  xs: `screen and (min-width: ${breakpoints[0]})`,
-  sm: `screen and (min-width: ${breakpoints[1]})`,
-  md: `screen and (min-width: ${breakpoints[2]})`,
-  lg: `screen and (min-width: ${breakpoints[3]})`,
-  xl: `screen and (min-width: ${breakpoints[4]})`,
+	xs: `screen and (min-width: ${breakpoints[0]})`,
+	sm: `screen and (min-width: ${breakpoints[1]})`,
+	md: `screen and (min-width: ${breakpoints[2]})`,
+	lg: `screen and (min-width: ${breakpoints[3]})`,
+	xl: `screen and (min-width: ${breakpoints[4]})`,
 } as const;
 
 const radii = [0, 5, 10];
 
 const shadows = {
-  tile: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-  tooltip: '0px 2px 12px rgba(0, 0, 0, 0.1)',
+	tile: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+	tooltip: '0px 2px 12px rgba(0, 0, 0, 0.1)',
 } as const;
 
 const sizes = {
-  maxWidth: 1400,
-  infoWidth: 1000,
-  contentWidth: 700,
-  maxWidthText: 600,
+	maxWidth: 1400,
+	infoWidth: 1000,
+	contentWidth: 700,
+	maxWidthText: 600,
 };
 
 const theme = {
-  fonts,
-  fontSizes,
-  fontWeights,
-  lineHeights,
-  breakpoints,
-  mediaQueries,
-  space,
-  colors,
-  radii,
-  shadows,
-  sizes,
+	fonts,
+	fontSizes,
+	fontWeights,
+	lineHeights,
+	breakpoints,
+	mediaQueries,
+	space,
+	colors,
+	radii,
+	shadows,
+	sizes,
 } as const;
 
 type Theme = typeof theme;
@@ -123,6 +123,6 @@ export default theme;
  * Tell styled-components the shape of our theme
  */
 declare module 'styled-components' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface DefaultTheme extends Theme {}
+	// eslint-disable-next-line @typescript-eslint/no-empty-interface
+	export interface DefaultTheme extends Theme {}
 }

@@ -4,30 +4,30 @@ import inTopology from '../topo-json/in.topo.json';
 import nlTopology from '../topo-json/nl-vr-gm.topo.json';
 
 export type CodedGeoProperties = {
-  code: string;
+	code: string;
 };
 
 export type CodedGeoJSON = FeatureCollection<
-  MultiPolygon | Polygon,
-  CodedGeoProperties
+	MultiPolygon | Polygon,
+	CodedGeoProperties
 >;
 
 export const nlGeo = topojson.feature(
-  nlTopology,
-  nlTopology.objects.nl_features
+	nlTopology,
+	nlTopology.objects.nl_features
 ) as CodedGeoJSON;
 
 export const vrGeo = topojson.feature(
-  nlTopology,
-  nlTopology.objects.vr_features
+	nlTopology,
+	nlTopology.objects.vr_features
 ) as CodedGeoJSON;
 
 export const gmGeo = topojson.feature(
-  nlTopology,
-  nlTopology.objects.gm_features
+	nlTopology,
+	nlTopology.objects.gm_features
 ) as CodedGeoJSON;
 
 export const inGeo = topojson.feature(
-  inTopology,
-  inTopology.objects.in_features
+	inTopology,
+	inTopology.objects.in_features
 ) as CodedGeoJSON;

@@ -23,380 +23,413 @@ import { VaccineStockPerSupplierChart } from '~/domain/vaccine/vaccine-stock-per
 import { useIntl } from '~/intl';
 import { useFeature } from '~/lib/features';
 import {
-  createElementsQuery,
-  ElementsQueryResult,
-  getTimelineEvents,
+	createElementsQuery,
+	ElementsQueryResult,
+	getTimelineEvents,
 } from '~/queries/create-elements-query';
 import {
-  createPageArticlesQuery,
-  PageArticlesQueryResult,
+	createPageArticlesQuery,
+	PageArticlesQueryResult,
 } from '~/queries/create-page-articles-query';
 import { getVaccinePageQuery } from '~/queries/vaccine-page-query';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import {
-  createGetChoroplethData,
-  createGetContent,
-  getLastGeneratedDate,
-  getNlData,
-  selectNlData,
+	createGetChoroplethData,
+	createGetContent,
+	getLastGeneratedDate,
+	getNlData,
+	selectNlData,
 } from '~/static-props/get-data';
 import { VaccinationPageQuery } from '~/types/cms';
 import { replaceVariablesInText } from '~/utils/replace-variables-in-text';
 
 export const getStaticProps = createGetStaticProps(
-  getLastGeneratedDate,
-  selectNlData(
-    'vaccine_administered_doctors',
-    'vaccine_administered_ggd_ghor',
-    'vaccine_administered_ggd',
-    'vaccine_administered_hospitals_and_care_institutions',
-    'vaccine_administered_planned',
-    'vaccine_administered_total',
-    'vaccine_coverage_per_age_group',
-    'vaccine_coverage',
-    'vaccine_delivery_per_supplier',
-    'vaccine_stock',
-    'vaccine_vaccinated_or_support',
-    'vaccine_coverage_per_age_group_estimated',
-    'intensive_care_vaccination_status'
-  ),
-  () => selectDeliveryAndAdministrationData(getNlData().data),
-  createGetContent<{
-    page: VaccinationPageQuery;
-    highlight: PageArticlesQueryResult;
-    elements: ElementsQueryResult;
-  }>((context) => {
-    const { locale } = context;
-    return `{
+	getLastGeneratedDate,
+	selectNlData(
+		'vaccine_administered_doctors',
+		'vaccine_administered_ggd_ghor',
+		'vaccine_administered_ggd',
+		'vaccine_administered_hospitals_and_care_institutions',
+		'vaccine_administered_planned',
+		'vaccine_administered_total',
+		'vaccine_coverage_per_age_group',
+		'vaccine_coverage',
+		'vaccine_delivery_per_supplier',
+		'vaccine_stock',
+		'vaccine_vaccinated_or_support',
+		'vaccine_coverage_per_age_group_estimated',
+		'intensive_care_vaccination_status'
+	),
+	() => selectDeliveryAndAdministrationData(getNlData().data),
+	createGetContent<{
+		page: VaccinationPageQuery;
+		highlight: PageArticlesQueryResult;
+		elements: ElementsQueryResult;
+	}>((context) => {
+		const { locale } = context;
+		return `{
       "page": ${getVaccinePageQuery(locale)},
       "highlight": ${createPageArticlesQuery('vaccinationsPage', locale)},
       "elements": ${createElementsQuery(
-        'nl',
-        ['vaccine_coverage', 'vaccine_administered'],
-        locale
-      )}
+			'nl',
+			['vaccine_coverage', 'vaccine_administered'],
+			locale
+		)}
     }`;
-  }),
-  createGetChoroplethData({
-    gm: ({ vaccine_coverage_per_age_group }) => {
-      if (isDefined(vaccine_coverage_per_age_group)) {
-        return selectVaccineCoverageData(vaccine_coverage_per_age_group);
-      }
-      return vaccine_coverage_per_age_group ?? null;
-    },
-    vr: ({ vaccine_coverage_per_age_group }) => {
-      if (isDefined(vaccine_coverage_per_age_group)) {
-        return selectVaccineCoverageData(vaccine_coverage_per_age_group);
-      }
-      return vaccine_coverage_per_age_group ?? null;
-    },
-  })
+	}),
+	createGetChoroplethData({
+		gm: ({ vaccine_coverage_per_age_group }) => {
+			if (isDefined(vaccine_coverage_per_age_group)) {
+				return selectVaccineCoverageData(
+					vaccine_coverage_per_age_group
+				);
+			}
+			return vaccine_coverage_per_age_group ?? null;
+		},
+		vr: ({ vaccine_coverage_per_age_group }) => {
+			if (isDefined(vaccine_coverage_per_age_group)) {
+				return selectVaccineCoverageData(
+					vaccine_coverage_per_age_group
+				);
+			}
+			return vaccine_coverage_per_age_group ?? null;
+		},
+	})
 );
 
 const VaccinationPage = (props: StaticProps<typeof getStaticProps>) => {
-  const {
-    content,
-    choropleth,
-    selectedNlData: data,
-    lastGenerated,
-    deliveryAndAdministration,
-  } = props;
-  const { siteText, formatNumber, formatDateFromSeconds } = useIntl();
+	const {
+		content,
+		choropleth,
+		selectedNlData: data,
+		lastGenerated,
+		deliveryAndAdministration,
+	} = props;
+	const { siteText, formatNumber, formatDateFromSeconds } = useIntl();
 
-  const text = siteText.vaccinaties;
+	const text = siteText.vaccinaties;
 
-  const vaccinationChoroplethFeature = useFeature('nlVaccinationChoropleth');
-  const vaccineCoverageEstimatedFeature = useFeature(
-    'nlVaccineCoverageEstimated'
-  );
-  const vaccinationPerAgeGroupFeature = useFeature('nlVaccinationPerAgeGroup');
+	const vaccinationChoroplethFeature = useFeature('nlVaccinationChoropleth');
+	const vaccineCoverageEstimatedFeature = useFeature(
+		'nlVaccineCoverageEstimated'
+	);
+	const vaccinationPerAgeGroupFeature = useFeature(
+		'nlVaccinationPerAgeGroup'
+	);
 
-  const vaccineAdministeredGgdFeature = useFeature('nlVaccineAdministeredGgd');
-  const vaccineAdministeredHospitalsAndCareInstitutionsFeature = useFeature(
-    'nlVaccineAdministeredHospitalsAndCareInstitutions'
-  );
-  const vaccineAdministeredDoctorsFeature = useFeature(
-    'nlVaccineAdministeredDoctors'
-  );
-  const vaccineAdministeredGgdGhorFeature = useFeature(
-    'nlVaccineAdministeredGgdGhor'
-  );
+	const vaccineAdministeredGgdFeature = useFeature(
+		'nlVaccineAdministeredGgd'
+	);
+	const vaccineAdministeredHospitalsAndCareInstitutionsFeature = useFeature(
+		'nlVaccineAdministeredHospitalsAndCareInstitutions'
+	);
+	const vaccineAdministeredDoctorsFeature = useFeature(
+		'nlVaccineAdministeredDoctors'
+	);
+	const vaccineAdministeredGgdGhorFeature = useFeature(
+		'nlVaccineAdministeredGgdGhor'
+	);
 
-  const vaccinationStatusFeature = useFeature('nlVaccinationVaccinationStatus');
+	const vaccinationStatusFeature = useFeature(
+		'nlVaccinationVaccinationStatus'
+	);
 
-  const metadata = {
-    ...siteText.nationaal_metadata,
-    title: text.metadata.title,
-    description: text.metadata.description,
-  };
+	const metadata = {
+		...siteText.nationaal_metadata,
+		title: text.metadata.title,
+		description: text.metadata.description,
+	};
 
-  const vaccineCoverageEstimatedLastValue =
-    data.vaccine_coverage_per_age_group_estimated.last_value;
-  const lastValueVaccinationStatus =
-    data.intensive_care_vaccination_status.last_value;
+	const vaccineCoverageEstimatedLastValue =
+		data.vaccine_coverage_per_age_group_estimated.last_value;
+	const lastValueVaccinationStatus =
+		data.intensive_care_vaccination_status.last_value;
 
-  return (
-    <Layout {...metadata} lastGenerated={lastGenerated}>
-      <NlLayout>
-        <TileList>
-          {text.belangrijk_bericht && !isEmpty(text.belangrijk_bericht) && (
-            <WarningTile
-              isFullWidth
-              message={text.belangrijk_bericht}
-              variant="emphasis"
-            />
-          )}
+	return (
+		<Layout {...metadata} lastGenerated={lastGenerated}>
+			<NlLayout>
+				<TileList>
+					{text.belangrijk_bericht &&
+						!isEmpty(text.belangrijk_bericht) && (
+							<WarningTile
+								isFullWidth
+								message={text.belangrijk_bericht}
+								variant="emphasis"
+							/>
+						)}
 
-          <PageInformationBlock
-            title={text.title}
-            category={text.category}
-            icon={<VaccinatieIcon />}
-            description={content.page.pageDescription}
-            metadata={{
-              datumsText: text.datums,
-              dateOrRange: data.vaccine_administered_total.last_value.date_unix,
-              dateOfInsertionUnix:
-                data.vaccine_administered_total.last_value
-                  .date_of_insertion_unix,
-              dataSources: [],
-            }}
-            pageLinks={content.page.pageLinks}
-            referenceLink={text.reference.href}
-            articles={content.highlight.articles}
-          />
-          {vaccineCoverageEstimatedFeature.isEnabled && (
-            <VaccineCoverageToggleTile
-              title={text.vaccination_grade_toggle_tile.title}
-              source={text.vaccination_grade_toggle_tile.source}
-              descriptionFooter={
-                text.vaccination_grade_toggle_tile.description_footer
-              }
-              dateUnix={vaccineCoverageEstimatedLastValue.date_unix}
-              age18Plus={{
-                fully_vaccinated:
-                  vaccineCoverageEstimatedLastValue.age_18_plus_fully_vaccinated,
-                has_one_shot:
-                  vaccineCoverageEstimatedLastValue.age_18_plus_has_one_shot,
-                birthyear:
-                  vaccineCoverageEstimatedLastValue.age_18_plus_birthyear,
-              }}
-              age12Plus={{
-                fully_vaccinated:
-                  vaccineCoverageEstimatedLastValue.age_12_plus_fully_vaccinated,
-                has_one_shot:
-                  vaccineCoverageEstimatedLastValue.age_12_plus_has_one_shot,
-                birthyear:
-                  vaccineCoverageEstimatedLastValue.age_12_plus_birthyear,
-              }}
-              numFractionDigits={1}
-            />
-          )}
-          {vaccinationPerAgeGroupFeature.isEnabled && (
-            <VaccineCoveragePerAgeGroup
-              title={siteText.vaccinaties.vaccination_coverage.title}
-              description={
-                siteText.vaccinaties.vaccination_coverage.toelichting
-              }
-              sortingOrder={[
-                '81+',
-                '71-80',
-                '61-70',
-                '51-60',
-                '41-50',
-                '31-40',
-                '18-30',
-                '12-17',
-              ]}
-              metadata={{
-                datumsText: text.datums,
-                date: data.vaccine_coverage_per_age_group.values[0].date_unix,
-                source: siteText.vaccinaties.vaccination_coverage.bronnen.rivm,
-              }}
-              values={data.vaccine_coverage_per_age_group.values}
-            />
-          )}
+					<PageInformationBlock
+						title={text.title}
+						category={text.category}
+						icon={<VaccinatieIcon />}
+						description={content.page.pageDescription}
+						metadata={{
+							datumsText: text.datums,
+							dateOrRange:
+								data.vaccine_administered_total.last_value
+									.date_unix,
+							dateOfInsertionUnix:
+								data.vaccine_administered_total.last_value
+									.date_of_insertion_unix,
+							dataSources: [],
+						}}
+						pageLinks={content.page.pageLinks}
+						referenceLink={text.reference.href}
+						articles={content.highlight.articles}
+					/>
+					{vaccineCoverageEstimatedFeature.isEnabled && (
+						<VaccineCoverageToggleTile
+							title={text.vaccination_grade_toggle_tile.title}
+							source={text.vaccination_grade_toggle_tile.source}
+							descriptionFooter={
+								text.vaccination_grade_toggle_tile
+									.description_footer
+							}
+							dateUnix={
+								vaccineCoverageEstimatedLastValue.date_unix
+							}
+							age18Plus={{
+								fully_vaccinated:
+									vaccineCoverageEstimatedLastValue.age_18_plus_fully_vaccinated,
+								has_one_shot:
+									vaccineCoverageEstimatedLastValue.age_18_plus_has_one_shot,
+								birthyear:
+									vaccineCoverageEstimatedLastValue.age_18_plus_birthyear,
+							}}
+							age12Plus={{
+								fully_vaccinated:
+									vaccineCoverageEstimatedLastValue.age_12_plus_fully_vaccinated,
+								has_one_shot:
+									vaccineCoverageEstimatedLastValue.age_12_plus_has_one_shot,
+								birthyear:
+									vaccineCoverageEstimatedLastValue.age_12_plus_birthyear,
+							}}
+							numFractionDigits={1}
+						/>
+					)}
+					{vaccinationPerAgeGroupFeature.isEnabled && (
+						<VaccineCoveragePerAgeGroup
+							title={
+								siteText.vaccinaties.vaccination_coverage.title
+							}
+							description={
+								siteText.vaccinaties.vaccination_coverage
+									.toelichting
+							}
+							sortingOrder={[
+								'81+',
+								'71-80',
+								'61-70',
+								'51-60',
+								'41-50',
+								'31-40',
+								'18-30',
+								'12-17',
+							]}
+							metadata={{
+								datumsText: text.datums,
+								date: data.vaccine_coverage_per_age_group
+									.values[0].date_unix,
+								source: siteText.vaccinaties
+									.vaccination_coverage.bronnen.rivm,
+							}}
+							values={data.vaccine_coverage_per_age_group.values}
+						/>
+					)}
 
-          {vaccinationStatusFeature.isEnabled && (
-            <ChartTile
-              title={text.vaccination_status_chart.title}
-              metadata={{
-                isTileFooter: true,
-                date: [
-                  lastValueVaccinationStatus.date_start_unix,
-                  lastValueVaccinationStatus.date_end_unix,
-                ],
-                source: {
-                  ...text.vaccination_status_chart.source,
-                },
-              }}
-              description={replaceVariablesInText(
-                text.vaccination_status_chart.description,
-                {
-                  amountOfPeople: formatNumber(
-                    lastValueVaccinationStatus.total_amount_of_people
-                  ),
-                  date_start: formatDateFromSeconds(
-                    lastValueVaccinationStatus.date_start_unix
-                  ),
-                  date_end: formatDateFromSeconds(
-                    lastValueVaccinationStatus.date_end_unix,
-                    'medium'
-                  ),
-                }
-              )}
-            >
-              <PieChart
-                data={lastValueVaccinationStatus}
-                dataConfig={[
-                  {
-                    metricProperty: 'not_vaccinated',
-                    color: colors.data.yellow,
-                    label: text.vaccination_status_chart.labels.not_vaccinated,
-                  },
-                  {
-                    metricProperty: 'has_one_shot',
-                    color: colors.data.partial_vaccination,
-                    label: text.vaccination_status_chart.labels.has_one_shot,
-                  },
-                  {
-                    metricProperty: 'fully_vaccinated',
-                    color: colors.data.primary,
-                    label:
-                      text.vaccination_status_chart.labels.fully_vaccinated,
-                  },
-                ]}
-              />
-            </ChartTile>
-          )}
+					{vaccinationStatusFeature.isEnabled && (
+						<ChartTile
+							title={text.vaccination_status_chart.title}
+							metadata={{
+								isTileFooter: true,
+								date: [
+									lastValueVaccinationStatus.date_start_unix,
+									lastValueVaccinationStatus.date_end_unix,
+								],
+								source: {
+									...text.vaccination_status_chart.source,
+								},
+							}}
+							description={replaceVariablesInText(
+								text.vaccination_status_chart.description,
+								{
+									amountOfPeople: formatNumber(
+										lastValueVaccinationStatus.total_amount_of_people
+									),
+									date_start: formatDateFromSeconds(
+										lastValueVaccinationStatus.date_start_unix
+									),
+									date_end: formatDateFromSeconds(
+										lastValueVaccinationStatus.date_end_unix,
+										'medium'
+									),
+								}
+							)}
+						>
+							<PieChart
+								data={lastValueVaccinationStatus}
+								dataConfig={[
+									{
+										metricProperty: 'not_vaccinated',
+										color: colors.data.yellow,
+										label: text.vaccination_status_chart
+											.labels.not_vaccinated,
+									},
+									{
+										metricProperty: 'has_one_shot',
+										color: colors.data.partial_vaccination,
+										label: text.vaccination_status_chart
+											.labels.has_one_shot,
+									},
+									{
+										metricProperty: 'fully_vaccinated',
+										color: colors.data.primary,
+										label: text.vaccination_status_chart
+											.labels.fully_vaccinated,
+									},
+								]}
+							/>
+						</ChartTile>
+					)}
 
-          {vaccinationChoroplethFeature.isEnabled && (
-            <VaccineCoverageChoroplethPerGm data={choropleth} />
-          )}
+					{vaccinationChoroplethFeature.isEnabled && (
+						<VaccineCoverageChoroplethPerGm data={choropleth} />
+					)}
 
-          <VaccinationsOverTimeTile
-            coverageData={data.vaccine_coverage}
-            deliveryAndAdministrationData={deliveryAndAdministration}
-            vaccineAdministeredTotalLastValue={
-              data.vaccine_administered_total.last_value
-            }
-            vaccineAdministeredPlannedLastValue={
-              data.vaccine_administered_planned.last_value
-            }
-            timelineEvents={{
-              coverage: getTimelineEvents(
-                content.elements.timeSeries,
-                'vaccine_coverage'
-              ),
-              deliveryAndAdministration: getTimelineEvents(
-                content.elements.timeSeries,
-                'vaccine_administered'
-              ),
-            }}
-          />
+					<VaccinationsOverTimeTile
+						coverageData={data.vaccine_coverage}
+						deliveryAndAdministrationData={
+							deliveryAndAdministration
+						}
+						vaccineAdministeredTotalLastValue={
+							data.vaccine_administered_total.last_value
+						}
+						vaccineAdministeredPlannedLastValue={
+							data.vaccine_administered_planned.last_value
+						}
+						timelineEvents={{
+							coverage: getTimelineEvents(
+								content.elements.timeSeries,
+								'vaccine_coverage'
+							),
+							deliveryAndAdministration: getTimelineEvents(
+								content.elements.timeSeries,
+								'vaccine_administered'
+							),
+						}}
+					/>
 
-          {vaccineAdministeredGgdFeature.isEnabled &&
-            vaccineAdministeredHospitalsAndCareInstitutionsFeature.isEnabled &&
-            vaccineAdministeredDoctorsFeature.isEnabled &&
-            vaccineAdministeredGgdGhorFeature.isEnabled && (
-              <VaccineAdministrationsKpiSection data={data} />
-            )}
+					{vaccineAdministeredGgdFeature.isEnabled &&
+						vaccineAdministeredHospitalsAndCareInstitutionsFeature.isEnabled &&
+						vaccineAdministeredDoctorsFeature.isEnabled &&
+						vaccineAdministeredGgdGhorFeature.isEnabled && (
+							<VaccineAdministrationsKpiSection data={data} />
+						)}
 
-          <Spacer pb={3} />
+					<Spacer pb={3} />
 
-          <PageInformationBlock
-            title={text.section_archived.title}
-            description={text.section_archived.description}
-          />
+					<PageInformationBlock
+						title={text.section_archived.title}
+						description={text.section_archived.description}
+					/>
 
-          <VaccineDeliveryBarChart data={data.vaccine_delivery_per_supplier} />
+					<VaccineDeliveryBarChart
+						data={data.vaccine_delivery_per_supplier}
+					/>
 
-          <VaccineStockPerSupplierChart values={data.vaccine_stock.values} />
+					<VaccineStockPerSupplierChart
+						values={data.vaccine_stock.values}
+					/>
 
-          <ChartTile
-            title={text.grafiek_draagvlak.titel}
-            description={text.grafiek_draagvlak.omschrijving}
-            metadata={{
-              datumsText: siteText.vaccinaties.grafiek_draagvlak.metadata_tekst,
-              date: [
-                data.vaccine_vaccinated_or_support.last_value.date_start_unix,
-                data.vaccine_vaccinated_or_support.last_value.date_end_unix,
-              ],
-            }}
-          >
-            <TimeSeriesChart
-              accessibility={{
-                key: 'vaccines_support_over_time_chart',
-              }}
-              tooltipTitle={text.grafiek_draagvlak.titel}
-              values={data.vaccine_vaccinated_or_support.values}
-              numGridLines={20}
-              tickValues={[0, 25, 50, 75, 100]}
-              dataOptions={{
-                isPercentage: true,
-                forcedMaximumValue: 100,
-              }}
-              seriesConfig={[
-                {
-                  type: 'line',
-                  metricProperty: 'percentage_70_plus',
-                  label: replaceVariablesInText(
-                    text.grafiek_draagvlak.leeftijd_jaar,
-                    { ageGroup: '70+' }
-                  ),
-                  color: colors.data.multiseries.magenta,
-                },
-                {
-                  type: 'line',
-                  metricProperty: 'percentage_55_69',
-                  label: replaceVariablesInText(
-                    text.grafiek_draagvlak.leeftijd_jaar,
-                    { ageGroup: '55 - 69' }
-                  ),
-                  color: colors.data.multiseries.orange,
-                },
-                {
-                  type: 'line',
-                  metricProperty: 'percentage_40_54',
-                  label: replaceVariablesInText(
-                    text.grafiek_draagvlak.leeftijd_jaar,
-                    { ageGroup: '40 - 54' }
-                  ),
-                  color: colors.data.multiseries.turquoise,
-                },
-                {
-                  type: 'line',
-                  metricProperty: 'percentage_25_39',
-                  label: replaceVariablesInText(
-                    text.grafiek_draagvlak.leeftijd_jaar,
-                    { ageGroup: '25 - 39' }
-                  ),
-                  color: colors.data.multiseries.yellow,
-                },
-                {
-                  type: 'line',
-                  metricProperty: 'percentage_16_24',
-                  label: replaceVariablesInText(
-                    text.grafiek_draagvlak.leeftijd_jaar,
-                    { ageGroup: '16 - 24' }
-                  ),
-                  color: colors.data.multiseries.cyan,
-                },
-                {
-                  type: 'invisible',
-                  metricProperty: 'percentage_average',
-                  label: siteText.common.totaal,
-                  isPercentage: true,
-                },
-              ]}
-            />
-          </ChartTile>
-        </TileList>
-      </NlLayout>
-    </Layout>
-  );
+					<ChartTile
+						title={text.grafiek_draagvlak.titel}
+						description={text.grafiek_draagvlak.omschrijving}
+						metadata={{
+							datumsText:
+								siteText.vaccinaties.grafiek_draagvlak
+									.metadata_tekst,
+							date: [
+								data.vaccine_vaccinated_or_support.last_value
+									.date_start_unix,
+								data.vaccine_vaccinated_or_support.last_value
+									.date_end_unix,
+							],
+						}}
+					>
+						<TimeSeriesChart
+							accessibility={{
+								key: 'vaccines_support_over_time_chart',
+							}}
+							tooltipTitle={text.grafiek_draagvlak.titel}
+							values={data.vaccine_vaccinated_or_support.values}
+							numGridLines={20}
+							tickValues={[0, 25, 50, 75, 100]}
+							dataOptions={{
+								isPercentage: true,
+								forcedMaximumValue: 100,
+							}}
+							seriesConfig={[
+								{
+									type: 'line',
+									metricProperty: 'percentage_70_plus',
+									label: replaceVariablesInText(
+										text.grafiek_draagvlak.leeftijd_jaar,
+										{ ageGroup: '70+' }
+									),
+									color: colors.data.multiseries.magenta,
+								},
+								{
+									type: 'line',
+									metricProperty: 'percentage_55_69',
+									label: replaceVariablesInText(
+										text.grafiek_draagvlak.leeftijd_jaar,
+										{ ageGroup: '55 - 69' }
+									),
+									color: colors.data.multiseries.orange,
+								},
+								{
+									type: 'line',
+									metricProperty: 'percentage_40_54',
+									label: replaceVariablesInText(
+										text.grafiek_draagvlak.leeftijd_jaar,
+										{ ageGroup: '40 - 54' }
+									),
+									color: colors.data.multiseries.turquoise,
+								},
+								{
+									type: 'line',
+									metricProperty: 'percentage_25_39',
+									label: replaceVariablesInText(
+										text.grafiek_draagvlak.leeftijd_jaar,
+										{ ageGroup: '25 - 39' }
+									),
+									color: colors.data.multiseries.yellow,
+								},
+								{
+									type: 'line',
+									metricProperty: 'percentage_16_24',
+									label: replaceVariablesInText(
+										text.grafiek_draagvlak.leeftijd_jaar,
+										{ ageGroup: '16 - 24' }
+									),
+									color: colors.data.multiseries.cyan,
+								},
+								{
+									type: 'invisible',
+									metricProperty: 'percentage_average',
+									label: siteText.common.totaal,
+									isPercentage: true,
+								},
+							]}
+						/>
+					</ChartTile>
+				</TileList>
+			</NlLayout>
+		</Layout>
+	);
 };
 
 export default VaccinationPage;

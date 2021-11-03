@@ -1,71 +1,71 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "title": "gm",
-  "additionalProperties": false,
-  "required": [
-    "last_generated",
-    "proto_name",
-    "name",
-    "code",
-    "tested_overall_sum",
-    "tested_overall",
-    "hospital_nice_sum",
-    "hospital_nice",
-    "deceased_rivm",
-    "difference",
-    "static_values",
-    "sewer",
-    "vaccine_coverage_per_age_group"
-  ],
-  "properties": {
-    "last_generated": {
-      "type": "string"
-    },
-    "proto_name": {
-      "$ref": "#/$defs/gm_code"
-    },
-    "name": {
-      "$ref": "#/$defs/gm_code"
-    },
-    "code": {
-      "$ref": "#/$defs/gm_code"
-    },
-    "static_values": {
-      "$ref": "__static_values.json"
-    },
-    "deceased_rivm": {
-      "$ref": "deceased_rivm.json"
-    },
-    "difference": {
-      "$ref": "__difference.json"
-    },
-    "hospital_nice_sum": {
-      "$ref": "hospital_nice_sum.json"
-    },
-    "hospital_nice": {
-      "$ref": "hospital_nice.json"
-    },
-    "tested_overall_sum": {
-      "$ref": "tested_overall_sum.json"
-    },
-    "tested_overall": {
-      "$ref": "tested_overall.json"
-    },
-    "sewer": {
-      "$ref": "sewer.json"
-    },
-    "sewer_per_installation": {
-      "$ref": "sewer_per_installation.json"
-    },
-    "vaccine_coverage_per_age_group": {
-      "$ref": "vaccine_coverage_per_age_group.json"
-    }
-  },
-  "$defs": {
-    "gm_code": {
-      "type": "string",
-      "pattern": "^GM[0-9]+$"
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"title": "gm",
+	"additionalProperties": false,
+	"required": [
+		"last_generated",
+		"proto_name",
+		"name",
+		"code",
+		"tested_overall_sum",
+		"tested_overall",
+		"hospital_nice_sum",
+		"hospital_nice",
+		"deceased_rivm",
+		"difference",
+		"static_values",
+		"sewer",
+		"vaccine_coverage_per_age_group"
+	],
+	"properties": {
+		"last_generated": {
+			"type": "string"
+		},
+		"proto_name": {
+			"$ref": "#/$defs/gm_code"
+		},
+		"name": {
+			"$ref": "#/$defs/gm_code"
+		},
+		"code": {
+			"$ref": "#/$defs/gm_code"
+		},
+		"static_values": {
+			"$ref": "__static_values.json"
+		},
+		"deceased_rivm": {
+			"$ref": "deceased_rivm.json"
+		},
+		"difference": {
+			"$ref": "__difference.json"
+		},
+		"hospital_nice_sum": {
+			"$ref": "hospital_nice_sum.json"
+		},
+		"hospital_nice": {
+			"$ref": "hospital_nice.json"
+		},
+		"tested_overall_sum": {
+			"$ref": "tested_overall_sum.json"
+		},
+		"tested_overall": {
+			"$ref": "tested_overall.json"
+		},
+		"sewer": {
+			"$ref": "sewer.json"
+		},
+		"sewer_per_installation": {
+			"$ref": "sewer_per_installation.json"
+		},
+		"vaccine_coverage_per_age_group": {
+			"$ref": "vaccine_coverage_per_age_group.json"
+		}
+	},
+	"$defs": {
+		"gm_code": {
+			"type": "string",
+			"pattern": "^GM[0-9]+$"
+		}
+	}
 }

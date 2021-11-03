@@ -5,26 +5,26 @@ import { Content } from '~/domain/layout/content';
 import { Layout } from '~/domain/layout/layout';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import {
-  createGetContent,
-  getLastGeneratedDate,
+	createGetContent,
+	getLastGeneratedDate,
 } from '~/static-props/get-data';
 import { RichContentBlock } from '~/types/cms';
 
 interface ContactData {
-  title: string | null;
-  description: RichContentBlock[] | null;
+	title: string | null;
+	description: RichContentBlock[] | null;
 }
 
 export const getStaticProps = createGetStaticProps(
-  getLastGeneratedDate,
-  createGetContent<ContactData>((context) => {
-    const { locale } = context;
+	getLastGeneratedDate,
+	createGetContent<ContactData>((context) => {
+		const { locale } = context;
 
-    return `*[_type == 'contact']{
+		return `*[_type == 'contact']{
       title,
       "description": {
         "_type": description._type,
@@ -38,35 +38,37 @@ export const getStaticProps = createGetStaticProps(
       }
     }[0]
     `;
-  })
+	})
 );
 
 const Contact = (props: StaticProps<typeof getStaticProps>) => {
-  const { siteText } = useIntl();
-  const { content, lastGenerated } = props;
+	const { siteText } = useIntl();
+	const { content, lastGenerated } = props;
 
-  return (
-    <Layout {...siteText.contact_metadata} lastGenerated={lastGenerated}>
-      <Head>
-        <link
-          key="dc-type"
-          rel="dcterms:type"
-          href="https://standaarden.overheid.nl/owms/terms/webpagina"
-        />
-        <link
-          key="dc-type-title"
-          rel="dcterms:type"
-          href="https://standaarden.overheid.nl/owms/terms/webpagina"
-          title="webpagina"
-        />
-      </Head>
+	return (
+		<Layout {...siteText.contact_metadata} lastGenerated={lastGenerated}>
+			<Head>
+				<link
+					key="dc-type"
+					rel="dcterms:type"
+					href="https://standaarden.overheid.nl/owms/terms/webpagina"
+				/>
+				<link
+					key="dc-type-title"
+					rel="dcterms:type"
+					href="https://standaarden.overheid.nl/owms/terms/webpagina"
+					title="webpagina"
+				/>
+			</Head>
 
-      <Content>
-        {content.title && <Heading level={1}>{content.title}</Heading>}
-        {content.description && <RichContent blocks={content.description} />}
-      </Content>
-    </Layout>
-  );
+			<Content>
+				{content.title && <Heading level={1}>{content.title}</Heading>}
+				{content.description && (
+					<RichContent blocks={content.description} />
+				)}
+			</Content>
+		</Layout>
+	);
 };
 
 export default Contact;

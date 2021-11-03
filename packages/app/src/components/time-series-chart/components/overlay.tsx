@@ -6,9 +6,9 @@ import { Box } from '~/components/base';
 import { Bounds, Padding } from '../logic';
 
 interface OverlayProps {
-  bounds: Bounds;
-  padding: Padding;
-  children: ReactNode;
+	bounds: Bounds;
+	padding: Padding;
+	children: ReactNode;
 }
 
 /**
@@ -17,18 +17,18 @@ interface OverlayProps {
  * that need to render exactly in that space.
  */
 export function Overlay({ bounds, padding, children }: OverlayProps) {
-  return (
-    <Box
-      height={bounds.height}
-      width={bounds.width}
-      position="absolute"
-      top={padding.top}
-      left={padding.left}
-      style={{
-        pointerEvents: 'none',
-      }}
-    >
-      {children}
-    </Box>
-  );
+	return (
+		<Box
+			height={bounds.height}
+			width={bounds.width}
+			position="absolute"
+			top={padding.top}
+			left={padding.left}
+			style={{
+				pointerEvents: 'none',
+			}}
+		>
+			{children}
+		</Box>
+	);
 }

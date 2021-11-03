@@ -8,27 +8,27 @@ import { Content } from '~/domain/layout/content';
 import { Layout } from '~/domain/layout/layout';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import {
-  createGetContent,
-  getLastGeneratedDate,
+	createGetContent,
+	getLastGeneratedDate,
 } from '~/static-props/get-data';
 import { CollapsibleList, RichContentBlock } from '~/types/cms';
 import { getSkipLinkId } from '~/utils/skip-links';
 
 interface VerantwoordingData {
-  title: string | null;
-  description: RichContentBlock[] | null;
-  collapsibleList: CollapsibleList[];
+	title: string | null;
+	description: RichContentBlock[] | null;
+	collapsibleList: CollapsibleList[];
 }
 
 export const getStaticProps = createGetStaticProps(
-  getLastGeneratedDate,
-  createGetContent<VerantwoordingData>((context) => {
-    const { locale = 'nl' } = context;
-    return `*[_type == 'cijferVerantwoording']{
+	getLastGeneratedDate,
+	createGetContent<VerantwoordingData>((context) => {
+		const { locale = 'nl' } = context;
+		return `*[_type == 'cijferVerantwoording']{
       ...,
       "description": {
         "_type": description._type,
@@ -54,61 +54,74 @@ export const getStaticProps = createGetStaticProps(
       }]
     }[0]
     `;
-  })
+	})
 );
 
 const Verantwoording = (props: StaticProps<typeof getStaticProps>) => {
-  const { siteText } = useIntl();
-  const { content, lastGenerated } = props;
+	const { siteText } = useIntl();
+	const { content, lastGenerated } = props;
 
-  const groups = groupBy<CollapsibleList>(
-    content.collapsibleList,
-    (x) => x.group
-  );
+	const groups = groupBy<CollapsibleList>(
+		content.collapsibleList,
+		(x) => x.group
+	);
 
-  return (
-    <Layout {...siteText.verantwoording_metadata} lastGenerated={lastGenerated}>
-      <Head>
-        <link
-          key="dc-type"
-          rel="dcterms:type"
-          href="https://standaarden.overheid.nl/owms/terms/webpagina"
-        />
-        <link
-          key="dc-type-title"
-          rel="dcterms:type"
-          href="https://standaarden.overheid.nl/owms/terms/webpagina"
-          title="webpagina"
-        />
-      </Head>
+	return (
+		<Layout
+			{...siteText.verantwoording_metadata}
+			lastGenerated={lastGenerated}
+		>
+			<Head>
+				<link
+					key="dc-type"
+					rel="dcterms:type"
+					href="https://standaarden.overheid.nl/owms/terms/webpagina"
+				/>
+				<link
+					key="dc-type-title"
+					rel="dcterms:type"
+					href="https://standaarden.overheid.nl/owms/terms/webpagina"
+					title="webpagina"
+				/>
+			</Head>
 
-      <Content>
-        <Box spacing={4}>
-          {content.title && <Heading level={1}>{content.title}</Heading>}
-          {content.description && <RichContent blocks={content.description} />}
-          {Object.entries(groups).map(([group, collapsibleItems]) => (
-            <Box as="article" key={group} spacing={3}>
-              <Heading level={3} as="h2">
-                {group}
-              </Heading>
-              <div>
-                {collapsibleItems.map((item) => {
-                  const id = getSkipLinkId(item.title);
-                  return item.content ? (
-                    <CollapsibleSection key={id} id={id} summary={item.title}>
-                      <Box pt={2} pb={4}>
-                        <RichContent blocks={item.content} />
-                      </Box>
-                    </CollapsibleSection>
-                  ) : null;
-                })}
-              </div>
-            </Box>
-          ))}
-        </Box>
-      </Content>
-    </Layout>
-  );
+			<Content>
+				<Box spacing={4}>
+					{content.title && (
+						<Heading level={1}>{content.title}</Heading>
+					)}
+					{content.description && (
+						<RichContent blocks={content.description} />
+					)}
+					{Object.entries(groups).map(([group, collapsibleItems]) => (
+						<Box as="article" key={group} spacing={3}>
+							<Heading level={3} as="h2">
+								{group}
+							</Heading>
+							<div>
+								{collapsibleItems.map((item) => {
+									const id = getSkipLinkId(item.title);
+									return item.content ? (
+										<CollapsibleSection
+											key={id}
+											id={id}
+											summary={item.title}
+										>
+											<Box pt={2} pb={4}>
+												<RichContent
+													blocks={item.content}
+												/>
+											</Box>
+										</CollapsibleSection>
+									) : null;
+								})}
+							</div>
+						</Box>
+					))}
+				</Box>
+			</Content>
+		</Layout>
+	);
 };
 
 export default Verantwoording;

@@ -13,15 +13,17 @@ import { createDate } from '~/utils/create-date';
  */
 
 export function useFormatDateRange(dateStartUnix: number, dateEndUnix: number) {
-  const { formatDate } = useIntl();
+	const { formatDate } = useIntl();
 
-  const dateFrom = createDate(dateStartUnix);
-  const dateTo = createDate(dateEndUnix);
+	const dateFrom = createDate(dateStartUnix);
+	const dateTo = createDate(dateEndUnix);
 
-  const isSameMonth = dateFrom.getMonth() === dateTo.getMonth();
+	const isSameMonth = dateFrom.getMonth() === dateTo.getMonth();
 
-  const dateFromText = isSameMonth ? dateFrom.getDate() : formatDate(dateFrom);
-  const dateToText = formatDate(dateTo);
+	const dateFromText = isSameMonth
+		? dateFrom.getDate()
+		: formatDate(dateFrom);
+	const dateToText = formatDate(dateTo);
 
-  return [dateFromText, dateToText] as const;
+	return [dateFromText, dateToText] as const;
 }

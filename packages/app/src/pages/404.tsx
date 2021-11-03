@@ -3,25 +3,25 @@ import { Content } from '~/domain/layout/content';
 import { Layout } from '~/domain/layout/layout';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import { getLastGeneratedDate } from '~/static-props/get-data';
 
 export const getStaticProps = createGetStaticProps(getLastGeneratedDate);
 
 const NotFound = (props: StaticProps<typeof getStaticProps>) => {
-  const { lastGenerated } = props;
-  const { siteText } = useIntl();
+	const { lastGenerated } = props;
+	const { siteText } = useIntl();
 
-  return (
-    <Layout {...siteText.notfound_metadata} lastGenerated={lastGenerated}>
-      <Content>
-        <Heading level={1}>{siteText.notfound_titel.text}</Heading>
-        <Text>{siteText.notfound_beschrijving.text}</Text>
-      </Content>
-    </Layout>
-  );
+	return (
+		<Layout {...siteText.notfound_metadata} lastGenerated={lastGenerated}>
+			<Content>
+				<Heading level={1}>{siteText.notfound_titel.text}</Heading>
+				<Text>{siteText.notfound_beschrijving.text}</Text>
+			</Content>
+		</Layout>
+	);
 };
 
 export default NotFound;

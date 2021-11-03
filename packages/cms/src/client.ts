@@ -6,7 +6,7 @@ import path from 'path';
 import sanityJson from '../sanity.json';
 
 dotenv.config({
-  path: path.resolve(process.cwd(), '.env.local'),
+	path: path.resolve(process.cwd(), '.env.local'),
 });
 
 /**
@@ -19,20 +19,20 @@ dotenv.config({
  */
 
 const clientConfig: ClientConfig = {
-  apiVersion: '2021-03-25',
-  projectId: sanityJson.api.projectId,
-  useCdn: false,
+	apiVersion: '2021-03-25',
+	projectId: sanityJson.api.projectId,
+	useCdn: false,
 };
 
 export function getClient(dataset = 'development') {
-  /**
-   * This is an undocumented feature. Taken from the Sanity CLI code.
-   */
-  const tokenFromLogIn = getUserConfig().get('authToken');
+	/**
+	 * This is an undocumented feature. Taken from the Sanity CLI code.
+	 */
+	const tokenFromLogIn = getUserConfig().get('authToken');
 
-  return sanityClient({
-    ...clientConfig,
-    dataset,
-    token: tokenFromLogIn || process.env.SANITY_TOKEN,
-  });
+	return sanityClient({
+		...clientConfig,
+		dataset,
+		token: tokenFromLogIn || process.env.SANITY_TOKEN,
+	});
 }

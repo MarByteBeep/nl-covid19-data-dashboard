@@ -1,7 +1,7 @@
 import {
-  isDateSpanValue,
-  isDateValue,
-  TimestampedValue,
+	isDateSpanValue,
+	isDateValue,
+	TimestampedValue,
 } from '@corona-dashboard/common';
 import { mapValues, omit, pick } from 'lodash';
 
@@ -12,16 +12,16 @@ import { mapValues, omit, pick } from 'lodash';
  * omitted.
  */
 export function calculateSeriesMaximum(series: SeriesValue[]) {
-  function sumTrendPointValue(point: SeriesValue) {
-    return Object.values(omit(point, ['__date'])).reduce(
-      (sum, v) => sum + v,
-      0
-    );
-  }
+	function sumTrendPointValue(point: SeriesValue) {
+		return Object.values(omit(point, ['__date'])).reduce(
+			(sum, v) => sum + v,
+			0
+		);
+	}
 
-  const stackedSumValues = series.map(sumTrendPointValue);
+	const stackedSumValues = series.map(sumTrendPointValue);
 
-  return Math.max(...stackedSumValues);
+	return Math.max(...stackedSumValues);
 }
 
 /**
@@ -34,11 +34,11 @@ export function calculateSeriesMaximum(series: SeriesValue[]) {
  * data. This can be a daily timestamp or date span.
  */
 export type SeriesValue = {
-  __date: Date;
+	__date: Date;
 } & { [key: string]: number };
 
 function timestampToDate(d: number) {
-  return new Date(d * 1000);
+	return new Date(d * 1000);
 }
 
 /**
@@ -46,35 +46,35 @@ function timestampToDate(d: number) {
  * container.
  */
 export function getSeriesData<T extends TimestampedValue>(
-  metricValues: TimestampedValue[],
-  metricProperties: (keyof T)[]
+	metricValues: TimestampedValue[],
+	metricProperties: (keyof T)[]
 ): SeriesValue[] {
-  return metricValues.map(
-    (x) =>
-      ({
-        ...mapValues(pick(x, metricProperties), (v) => v),
-        __date: getDateFromValue(x),
-      } as SeriesValue)
-  );
+	return metricValues.map(
+		(x) =>
+			({
+				...mapValues(pick(x, metricProperties), (v) => v),
+				__date: getDateFromValue(x),
+			} as SeriesValue)
+	);
 }
 
 function getDateFromValue<T extends TimestampedValue>(value: T) {
-  if (isDateValue(value)) {
-    return timestampToDate(value.date_unix);
-  }
+	if (isDateValue(value)) {
+		return timestampToDate(value.date_unix);
+	}
 
-  if (isDateSpanValue(value)) {
-    return timestampToDate(value.date_start_unix);
-  }
+	if (isDateSpanValue(value)) {
+		return timestampToDate(value.date_start_unix);
+	}
 
-  throw new Error(`Incompatible timestamps are used in value ${value}`);
+	throw new Error(`Incompatible timestamps are used in value ${value}`);
 }
 
 export function getTotalSumForMetricProperty(
-  values: Record<string, number>[],
-  metricProperty: string
+	values: Record<string, number>[],
+	metricProperty: string
 ) {
-  return values.reduce((acc, v) => acc + v[metricProperty] || 0, 0);
+	return values.reduce((acc, v) => acc + v[metricProperty] || 0, 0);
 }
 
 /**
@@ -98,28 +98,28 @@ export function getTotalSumForMetricProperty(
  */
 
 export function getWeekInfo(d: Date) {
-  // Copy date so don't modify original
-  d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  // Set to nearest Thursday: current date + 4 - current day number Make
-  // Sunday's day number 7
-  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-  // Get first day of year
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  // Calculate full weeks to nearest Thursday
-  const weekNumber = Math.ceil(
-    ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
-  );
+	// Copy date so don't modify original
+	d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+	// Set to nearest Thursday: current date + 4 - current day number Make
+	// Sunday's day number 7
+	d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+	// Get first day of year
+	const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+	// Calculate full weeks to nearest Thursday
+	const weekNumber = Math.ceil(
+		((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7
+	);
 
-  const weekStartDate = new Date(d.getTime());
-  weekStartDate.setUTCDate(weekStartDate.getUTCDate() - 3);
+	const weekStartDate = new Date(d.getTime());
+	weekStartDate.setUTCDate(weekStartDate.getUTCDate() - 3);
 
-  const weekEndDate = new Date(d.getTime());
-  weekEndDate.setUTCDate(weekEndDate.getUTCDate() + 3);
+	const weekEndDate = new Date(d.getTime());
+	weekEndDate.setUTCDate(weekEndDate.getUTCDate() + 3);
 
-  return {
-    year: d.getUTCFullYear(),
-    weekNumber,
-    weekStartDate,
-    weekEndDate,
-  } as const;
+	return {
+		year: d.getUTCFullYear(),
+		weekNumber,
+		weekStartDate,
+		weekEndDate,
+	} as const;
 }

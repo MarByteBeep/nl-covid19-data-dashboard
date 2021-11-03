@@ -11,7 +11,7 @@ import { createTextDocument } from './logic/create-text-document';
  * But if a situation arises where the mutations file becomes out of sync with the Sanity dataset, this script can help fix this.
  */
 const cli = meow(
-  `
+	`
         Usage
           $ lokalize:add
     
@@ -21,65 +21,67 @@ const cli = meow(
         Examples
           $ lokalize:add --dataset=production
     `,
-  {
-    flags: {
-      dataset: {
-        type: 'string',
-        default: 'development',
-      },
-    },
-  }
+	{
+		flags: {
+			dataset: {
+				type: 'string',
+				default: 'development',
+			},
+		},
+	}
 );
 
 (async function run() {
-  const dataset = cli.flags.dataset;
-  const sanityClient = getClient(dataset);
+	const dataset = cli.flags.dataset;
+	const sanityClient = getClient(dataset);
 
-  const newKeyResponse = (await prompts({
-    type: 'text',
-    name: 'newKey',
-    message: 'Specify the name of the new key:',
-    onState,
-  })) as { newKey: string };
+	const newKeyResponse = (await prompts({
+		type: 'text',
+		name: 'newKey',
+		message: 'Specify the name of the new key:',
+		onState,
+	})) as { newKey: string };
 
-  if (!newKeyResponse.newKey.length) {
-    console.error(chalk.red('Please provide a valid name'));
-    process.exit(1);
-  }
-  const count = await sanityClient.fetch(
-    `count(*[_type == 'lokalizeText' && key == '${newKeyResponse.newKey}'])`
-  );
-  if (count > 0) {
-    console.error(
-      chalk.red(`A document with key '${newKeyResponse.newKey}' already exists`)
-    );
-    process.exit(1);
-  }
+	if (!newKeyResponse.newKey.length) {
+		console.error(chalk.red('Please provide a valid name'));
+		process.exit(1);
+	}
+	const count = await sanityClient.fetch(
+		`count(*[_type == 'lokalizeText' && key == '${newKeyResponse.newKey}'])`
+	);
+	if (count > 0) {
+		console.error(
+			chalk.red(
+				`A document with key '${newKeyResponse.newKey}' already exists`
+			)
+		);
+		process.exit(1);
+	}
 
-  const newValueResponse = (await prompts({
-    type: 'text',
-    name: 'newValue',
-    message: 'Specify a value for the new key:',
-    onState,
-  })) as { newValue: string };
+	const newValueResponse = (await prompts({
+		type: 'text',
+		name: 'newValue',
+		message: 'Specify a value for the new key:',
+		onState,
+	})) as { newValue: string };
 
-  if (!newValueResponse.newValue.length) {
-    console.error(chalk.red('Please provide a valid value'));
-    process.exit(1);
-  }
+	if (!newValueResponse.newValue.length) {
+		console.error(chalk.red('Please provide a valid value'));
+		process.exit(1);
+	}
 
-  await sanityClient.create(
-    createTextDocument(newKeyResponse.newKey, newValueResponse.newValue)
-  );
+	await sanityClient.create(
+		createTextDocument(newKeyResponse.newKey, newValueResponse.newValue)
+	);
 
-  console.log(
-    chalk.green(
-      `New lokalize document with key '${newKeyResponse.newKey}' and value '${newValueResponse.newValue}' was created`
-    )
-  );
+	console.log(
+		chalk.green(
+			`New lokalize document with key '${newKeyResponse.newKey}' and value '${newValueResponse.newValue}' was created`
+		)
+	);
 })().catch((err) => {
-  console.error(chalk.red('An error occurred:'), err.message);
-  process.exit(1);
+	console.error(chalk.red('An error occurred:'), err.message);
+	process.exit(1);
 });
 
 /**
@@ -88,9 +90,9 @@ const cli = meow(
  * see: https://github.com/terkelg/prompts/issues/252#issuecomment-778683666
  */
 function onState(state: { aborted: boolean }) {
-  if (state.aborted) {
-    process.nextTick(() => {
-      process.exit(0);
-    });
-  }
+	if (state.aborted) {
+		process.nextTick(() => {
+			process.exit(0);
+		});
+	}
 }

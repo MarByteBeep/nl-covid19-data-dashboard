@@ -1,5 +1,5 @@
 import { generateTypes } from './logic';
 
 (async function main() {
-  await generateTypes();
+	await generateTypes();
 })().catch((err) => console.error(err));

@@ -11,72 +11,74 @@ import { useHotkey } from '~/utils/hotkey/use-hotkey';
  *   the arrow-keys.
  */
 export function useHitSelection({
-  numberOfHits,
-  onSelectHit,
-  isEnabled = false,
+	numberOfHits,
+	onSelectHit,
+	isEnabled = false,
 }: {
-  numberOfHits: number;
-  onSelectHit: (index: number, openInNewWindow: boolean) => void;
-  isEnabled: boolean;
+	numberOfHits: number;
+	onSelectHit: (index: number, openInNewWindow: boolean) => void;
+	isEnabled: boolean;
 }) {
-  const [focusIndex, setFocusIndex] = useState(0);
-  const focusRef = useRef<HTMLAnchorElement>(null);
+	const [focusIndex, setFocusIndex] = useState(0);
+	const focusRef = useRef<HTMLAnchorElement>(null);
 
-  useHotkey(
-    'up',
-    () => {
-      const nextIndex = focusIndex - 1 < 0 ? numberOfHits - 1 : focusIndex - 1;
-      setFocusIndex(nextIndex);
-      maybeScrollIntoView(focusRef.current);
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+	useHotkey(
+		'up',
+		() => {
+			const nextIndex =
+				focusIndex - 1 < 0 ? numberOfHits - 1 : focusIndex - 1;
+			setFocusIndex(nextIndex);
+			maybeScrollIntoView(focusRef.current);
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  useHotkey(
-    'down',
-    () => {
-      const nextIndex = focusIndex + 1 < numberOfHits ? focusIndex + 1 : 0;
+	useHotkey(
+		'down',
+		() => {
+			const nextIndex =
+				focusIndex + 1 < numberOfHits ? focusIndex + 1 : 0;
 
-      setFocusIndex(nextIndex);
-      maybeScrollIntoView(focusRef.current);
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+			setFocusIndex(nextIndex);
+			maybeScrollIntoView(focusRef.current);
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  useHotkey(
-    'enter',
-    () => {
-      focusRef.current && onSelectHit(focusIndex, false);
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+	useHotkey(
+		'enter',
+		() => {
+			focusRef.current && onSelectHit(focusIndex, false);
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  useHotkey(
-    'command+enter',
-    () => {
-      focusRef.current && onSelectHit(focusIndex, true);
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+	useHotkey(
+		'command+enter',
+		() => {
+			focusRef.current && onSelectHit(focusIndex, true);
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  useHotkey(
-    'control+enter',
-    () => {
-      focusRef.current && onSelectHit(focusIndex, true);
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+	useHotkey(
+		'control+enter',
+		() => {
+			focusRef.current && onSelectHit(focusIndex, true);
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  return { focusIndex, setFocusIndex, focusRef };
+	return { focusIndex, setFocusIndex, focusRef };
 }
 
 function maybeScrollIntoView<T extends Element>(el: T | null | undefined) {
-  if (el) {
-    scrollIntoView(el, {
-      behavior: 'smooth',
-      scrollMode: 'if-needed',
-      block: 'nearest',
-      inline: 'nearest',
-    });
-  }
+	if (el) {
+		scrollIntoView(el, {
+			behavior: 'smooth',
+			scrollMode: 'if-needed',
+			block: 'nearest',
+			inline: 'nearest',
+		});
+	}
 }

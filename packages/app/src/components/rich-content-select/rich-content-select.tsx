@@ -10,11 +10,11 @@ import { useRichContentSelect } from './logic/use-select';
 import { Option } from './types';
 
 type RichContentSelectProps<T extends string> = {
-  initialValue?: Unpack<T>;
-  label: string;
-  onChange: (option: Option<T>) => void;
-  options: Option<T>[];
-  visuallyHiddenLabel?: boolean;
+	initialValue?: Unpack<T>;
+	label: string;
+	onChange: (option: Option<T>) => void;
+	options: Option<T>[];
+	visuallyHiddenLabel?: boolean;
 };
 
 /**
@@ -25,58 +25,65 @@ type RichContentSelectProps<T extends string> = {
  * https://w3c.github.io/aria-practices/examples/combobox/combobox-select-only.html
  */
 export function RichContentSelect<T extends string>(
-  props: RichContentSelectProps<T>
+	props: RichContentSelectProps<T>
 ) {
-  const { label, options, onChange, initialValue, visuallyHiddenLabel } = props;
+	const { label, options, onChange, initialValue, visuallyHiddenLabel } =
+		props;
 
-  const {
-    labelId,
-    selectedOption,
-    getComboboxProps,
-    getListBoxProps,
-    getListBoxOptionsProps,
-  } = useRichContentSelect(options, onChange, initialValue);
+	const {
+		labelId,
+		selectedOption,
+		getComboboxProps,
+		getListBoxProps,
+		getListBoxOptionsProps,
+	} = useRichContentSelect(options, onChange, initialValue);
 
-  return (
-    <Box pb={3}>
-      {visuallyHiddenLabel ? (
-        <VisuallyHidden as="label" id={labelId}>
-          {typeof label === 'string' ? <InlineText>{label}</InlineText> : label}
-        </VisuallyHidden>
-      ) : (
-        <label
-          id={labelId}
-          css={css({
-            display: 'block',
-            fontWeight: 'bold',
-            mb: 2,
-          })}
-        >
-          <InlineText>{label}</InlineText>
-        </label>
-      )}
+	return (
+		<Box pb={3}>
+			{visuallyHiddenLabel ? (
+				<VisuallyHidden as="label" id={labelId}>
+					{typeof label === 'string' ? (
+						<InlineText>{label}</InlineText>
+					) : (
+						label
+					)}
+				</VisuallyHidden>
+			) : (
+				<label
+					id={labelId}
+					css={css({
+						display: 'block',
+						fontWeight: 'bold',
+						mb: 2,
+					})}
+				>
+					<InlineText>{label}</InlineText>
+				</label>
+			)}
 
-      <SelectBoxRoot>
-        <SelectBox {...getComboboxProps()}>
-          {isPresent(selectedOption) && <Text>{selectedOption?.label}</Text>}
-          <ArrowIcon
-            css={css({ color: 'blue', width: '1rem' })}
-            aria-hidden="true"
-          />
-        </SelectBox>
+			<SelectBoxRoot>
+				<SelectBox {...getComboboxProps()}>
+					{isPresent(selectedOption) && (
+						<Text>{selectedOption?.label}</Text>
+					)}
+					<ArrowIcon
+						css={css({ color: 'blue', width: '1rem' })}
+						aria-hidden="true"
+					/>
+				</SelectBox>
 
-        <ListBox {...getListBoxProps()}>
-          {options &&
-            options.map((option, index) => (
-              <ListBoxOption
-                key={option.value}
-                {...getListBoxOptionsProps(index)}
-              >
-                {option.content}
-              </ListBoxOption>
-            ))}
-        </ListBox>
-      </SelectBoxRoot>
-    </Box>
-  );
+				<ListBox {...getListBoxProps()}>
+					{options &&
+						options.map((option, index) => (
+							<ListBoxOption
+								key={option.value}
+								{...getListBoxOptionsProps(index)}
+							>
+								{option.content}
+							</ListBoxOption>
+						))}
+				</ListBox>
+			</SelectBoxRoot>
+		</Box>
+	);
 }

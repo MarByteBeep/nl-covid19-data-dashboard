@@ -10,28 +10,28 @@ import { NlLayout } from '~/domain/layout/nl-layout';
 import { LockdownTable } from '~/domain/restrictions/lockdown-table';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import {
-  createGetContent,
-  getLastGeneratedDate,
+	createGetContent,
+	getLastGeneratedDate,
 } from '~/static-props/get-data';
 import { LockdownData, RoadmapData } from '~/types/cms';
 
 type MaatregelenData = {
-  lockdown: LockdownData;
-  roadmap?: RoadmapData;
-  riskLevel: {
-    level: EscalationLevelType;
-  };
+	lockdown: LockdownData;
+	roadmap?: RoadmapData;
+	riskLevel: {
+		level: EscalationLevelType;
+	};
 };
 
 export const getStaticProps = createGetStaticProps(
-  getLastGeneratedDate,
-  createGetContent<MaatregelenData>((context) => {
-    const { locale } = context;
-    return `
+	getLastGeneratedDate,
+	createGetContent<MaatregelenData>((context) => {
+		const { locale } = context;
+		return `
     {
       'lockdown': *[_type == 'lockdown']{
         ...,
@@ -55,51 +55,57 @@ export const getStaticProps = createGetStaticProps(
       // We will need the roadmap when lockdown is disabled in the CMS.
       // 'roadmap': *[_type == 'roadmap'][0]
     }`;
-  })
+	})
 );
 
 const NationalRestrictions = (props: StaticProps<typeof getStaticProps>) => {
-  const { siteText } = useIntl();
+	const { siteText } = useIntl();
 
-  const { content, lastGenerated } = props;
-  const { lockdown } = content;
+	const { content, lastGenerated } = props;
+	const { lockdown } = content;
 
-  const metadata = {
-    ...siteText.nationaal_metadata,
-  };
+	const metadata = {
+		...siteText.nationaal_metadata,
+	};
 
-  return (
-    <Layout {...metadata} lastGenerated={lastGenerated}>
-      <NlLayout>
-        <TileList>
-          <PageInformationBlock title={siteText.nationaal_maatregelen.titel} />
+	return (
+		<Layout {...metadata} lastGenerated={lastGenerated}>
+			<NlLayout>
+				<TileList>
+					<PageInformationBlock
+						title={siteText.nationaal_maatregelen.titel}
+					/>
 
-          {lockdown.showLockdown && (
-            <Tile>
-              <Box spacing={3}>
-                <Heading level={3}>{lockdown.message.title}</Heading>
-                {lockdown.message.description ? (
-                  <RichContent blocks={lockdown.message.description} />
-                ) : null}
-              </Box>
-            </Tile>
-          )}
+					{lockdown.showLockdown && (
+						<Tile>
+							<Box spacing={3}>
+								<Heading level={3}>
+									{lockdown.message.title}
+								</Heading>
+								{lockdown.message.description ? (
+									<RichContent
+										blocks={lockdown.message.description}
+									/>
+								) : null}
+							</Box>
+						</Tile>
+					)}
 
-          {lockdown.showLockdown && (
-            <Tile>
-              <Box spacing={3}>
-                <Heading level={3}>{lockdown.title}</Heading>
-                <LockdownTable
-                  data={lockdown}
-                  level={content.riskLevel.level}
-                />
-              </Box>
-            </Tile>
-          )}
-        </TileList>
-      </NlLayout>
-    </Layout>
-  );
+					{lockdown.showLockdown && (
+						<Tile>
+							<Box spacing={3}>
+								<Heading level={3}>{lockdown.title}</Heading>
+								<LockdownTable
+									data={lockdown}
+									level={content.riskLevel.level}
+								/>
+							</Box>
+						</Tile>
+					)}
+				</TileList>
+			</NlLayout>
+		</Layout>
+	);
 };
 
 export default NationalRestrictions;

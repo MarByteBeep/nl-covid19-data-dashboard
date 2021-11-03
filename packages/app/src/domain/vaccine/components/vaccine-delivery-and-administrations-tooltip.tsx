@@ -6,37 +6,37 @@ import { LineSeriesDefinition } from '~/components/time-series-chart/logic/serie
 import { VaccineDeliveryAndAdministrationsValue } from '../data-selection/select-delivery-and-administration-data';
 
 export function VaccineDeliveryAndAdministrationsTooltip<
-  T extends VaccineDeliveryAndAdministrationsValue
+	T extends VaccineDeliveryAndAdministrationsValue
 >({ data }: { data: TooltipData<T> }) {
-  const { value, configIndex, config, options, metricPropertyFormatters } =
-    data;
+	const { value, configIndex, config, options, metricPropertyFormatters } =
+		data;
 
-  const firstConfig = config
-    .filter((x): x is LineSeriesDefinition<T> => x.type === 'invisible')
-    .find((x) => x.metricProperty === 'total');
+	const firstConfig = config
+		.filter((x): x is LineSeriesDefinition<T> => x.type === 'invisible')
+		.find((x) => x.metricProperty === 'total');
 
-  const otherConfigs = config.filter((x) => x !== firstConfig);
+	const otherConfigs = config.filter((x) => x !== firstConfig);
 
-  if (!firstConfig || !otherConfigs.length) {
-    return null;
-  }
+	if (!firstConfig || !otherConfigs.length) {
+		return null;
+	}
 
-  const configs = [...otherConfigs, firstConfig];
+	const configs = [...otherConfigs, firstConfig];
 
-  return (
-    <TooltipSeriesListContainer
-      {...data}
-      timespanAnnotation={data.timespanAnnotation}
-    >
-      <Box spacing={1}>
-        <TooltipSeriesListItems
-          value={value}
-          config={configs}
-          configIndex={configIndex}
-          options={options}
-          metricPropertyFormatters={metricPropertyFormatters}
-        />
-      </Box>
-    </TooltipSeriesListContainer>
-  );
+	return (
+		<TooltipSeriesListContainer
+			{...data}
+			timespanAnnotation={data.timespanAnnotation}
+		>
+			<Box spacing={1}>
+				<TooltipSeriesListItems
+					value={value}
+					config={configs}
+					configIndex={configIndex}
+					options={options}
+					metricPropertyFormatters={metricPropertyFormatters}
+				/>
+			</Box>
+		</TooltipSeriesListContainer>
+	);
 }

@@ -16,154 +16,180 @@ import { Layout } from '~/domain/layout/layout';
 import { NlLayout } from '~/domain/layout/nl-layout';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import { getLastGeneratedDate, selectNlData } from '~/static-props/get-data';
 import { Link } from '~/utils/link';
 import { replaceComponentsInText } from '~/utils/replace-components-in-text';
 
 export const getStaticProps = createGetStaticProps(
-  getLastGeneratedDate,
-  selectNlData(
-    'difference.corona_melder_app_warning__count',
-    'corona_melder_app_warning',
-    'corona_melder_app_download'
-  )
+	getLastGeneratedDate,
+	selectNlData(
+		'difference.corona_melder_app_warning__count',
+		'corona_melder_app_warning',
+		'corona_melder_app_download'
+	)
 );
 
 const CoronamelderPage = (props: StaticProps<typeof getStaticProps>) => {
-  const { siteText, formatNumber } = useIntl();
+	const { siteText, formatNumber } = useIntl();
 
-  const { selectedNlData: data, lastGenerated } = props;
-  const { nl_gedrag, corona_melder_app } = siteText;
+	const { selectedNlData: data, lastGenerated } = props;
+	const { nl_gedrag, corona_melder_app } = siteText;
 
-  const warningLastValue = data.corona_melder_app_warning.last_value;
+	const warningLastValue = data.corona_melder_app_warning.last_value;
 
-  const metadata = {
-    ...siteText.nationaal_metadata,
-    title: nl_gedrag.metadata.title,
-    description: nl_gedrag.metadata.description,
-  };
+	const metadata = {
+		...siteText.nationaal_metadata,
+		title: nl_gedrag.metadata.title,
+		description: nl_gedrag.metadata.description,
+	};
 
-  return (
-    <Layout {...metadata} lastGenerated={lastGenerated}>
-      <NlLayout>
-        <TileList>
-          <PageInformationBlock
-            category={corona_melder_app.header.category}
-            title={corona_melder_app.header.title}
-            icon={<Phone />}
-            description={corona_melder_app.header.description}
-            metadata={{
-              datumsText: corona_melder_app.header.datums,
-              dateOrRange: warningLastValue.date_unix,
-              dateOfInsertionUnix: warningLastValue.date_of_insertion_unix,
-              dataSources: [corona_melder_app.header.bronnen.rivm],
-            }}
-            referenceLink={corona_melder_app.header.reference.href}
-          />
+	return (
+		<Layout {...metadata} lastGenerated={lastGenerated}>
+			<NlLayout>
+				<TileList>
+					<PageInformationBlock
+						category={corona_melder_app.header.category}
+						title={corona_melder_app.header.title}
+						icon={<Phone />}
+						description={corona_melder_app.header.description}
+						metadata={{
+							datumsText: corona_melder_app.header.datums,
+							dateOrRange: warningLastValue.date_unix,
+							dateOfInsertionUnix:
+								warningLastValue.date_of_insertion_unix,
+							dataSources: [
+								corona_melder_app.header.bronnen.rivm,
+							],
+						}}
+						referenceLink={corona_melder_app.header.reference.href}
+					/>
 
-          <TwoKpiSection>
-            <KpiTile
-              title={corona_melder_app.waarschuwingen.title}
-              metadata={{
-                date: warningLastValue.date_unix,
-                source: corona_melder_app.header.bronnen.rivm,
-              }}
-            >
-              <KpiValue
-                absolute={warningLastValue.count}
-                difference={data.difference.corona_melder_app_warning__count}
-                isAmount
-              />
+					<TwoKpiSection>
+						<KpiTile
+							title={corona_melder_app.waarschuwingen.title}
+							metadata={{
+								date: warningLastValue.date_unix,
+								source: corona_melder_app.header.bronnen.rivm,
+							}}
+						>
+							<KpiValue
+								absolute={warningLastValue.count}
+								difference={
+									data.difference
+										.corona_melder_app_warning__count
+								}
+								isAmount
+							/>
 
-              <Markdown
-                content={corona_melder_app.waarschuwingen.description}
-              />
-              <Text>
-                {replaceComponentsInText(
-                  corona_melder_app.waarschuwingen.total,
-                  {
-                    totalDownloads: (
-                      <span
-                        css={css({ color: 'data.primary', fontWeight: 'bold' })}
-                      >
-                        {formatNumber(
-                          data.corona_melder_app_download.last_value.count
-                        )}
-                      </span>
-                    ),
-                  }
-                )}
-              </Text>
-            </KpiTile>
+							<Markdown
+								content={
+									corona_melder_app.waarschuwingen.description
+								}
+							/>
+							<Text>
+								{replaceComponentsInText(
+									corona_melder_app.waarschuwingen.total,
+									{
+										totalDownloads: (
+											<span
+												css={css({
+													color: 'data.primary',
+													fontWeight: 'bold',
+												})}
+											>
+												{formatNumber(
+													data
+														.corona_melder_app_download
+														.last_value.count
+												)}
+											</span>
+										),
+									}
+								)}
+							</Text>
+						</KpiTile>
 
-            <Tile>
-              <Heading level={3}>{corona_melder_app.rapport.title}</Heading>
-              <Text>{corona_melder_app.rapport.description}</Text>
+						<Tile>
+							<Heading level={3}>
+								{corona_melder_app.rapport.title}
+							</Heading>
+							<Text>{corona_melder_app.rapport.description}</Text>
 
-              <Link href={corona_melder_app.rapport.link.href} passHref>
-                <a target="_blank" css={css({ display: 'flex' })}>
-                  <IconContainer>
-                    <External />
-                  </IconContainer>
-                  <span css={css({ maxWidth: 200 })}>
-                    {corona_melder_app.rapport.link.text}
-                  </span>
-                </a>
-              </Link>
-            </Tile>
-          </TwoKpiSection>
+							<Link
+								href={corona_melder_app.rapport.link.href}
+								passHref
+							>
+								<a
+									target="_blank"
+									css={css({ display: 'flex' })}
+								>
+									<IconContainer>
+										<External />
+									</IconContainer>
+									<span css={css({ maxWidth: 200 })}>
+										{corona_melder_app.rapport.link.text}
+									</span>
+								</a>
+							</Link>
+						</Tile>
+					</TwoKpiSection>
 
-          <ChartTile
-            metadata={{
-              source:
-                corona_melder_app.waarschuwingen_over_tijd_grafiek.bronnen
-                  .coronamelder,
-            }}
-            title={corona_melder_app.waarschuwingen_over_tijd_grafiek.title}
-            description={
-              corona_melder_app.waarschuwingen_over_tijd_grafiek.description
-            }
-            timeframeOptions={['all', '5weeks']}
-          >
-            {(timeframe) => (
-              <TimeSeriesChart
-                accessibility={{
-                  key: 'coronamelder_warned_daily_over_time_chart',
-                }}
-                tooltipTitle={
-                  corona_melder_app.waarschuwingen_over_tijd_grafiek.title
-                }
-                timeframe={timeframe}
-                values={data.corona_melder_app_warning.values}
-                seriesConfig={[
-                  {
-                    type: 'area',
-                    metricProperty: 'count',
-                    label:
-                      corona_melder_app.waarschuwingen_over_tijd_grafiek.labels
-                        .warnings,
-                    color: colors.data.primary,
-                  },
-                ]}
-              />
-            )}
-          </ChartTile>
-        </TileList>
-      </NlLayout>
-    </Layout>
-  );
+					<ChartTile
+						metadata={{
+							source: corona_melder_app
+								.waarschuwingen_over_tijd_grafiek.bronnen
+								.coronamelder,
+						}}
+						title={
+							corona_melder_app.waarschuwingen_over_tijd_grafiek
+								.title
+						}
+						description={
+							corona_melder_app.waarschuwingen_over_tijd_grafiek
+								.description
+						}
+						timeframeOptions={['all', '5weeks']}
+					>
+						{(timeframe) => (
+							<TimeSeriesChart
+								accessibility={{
+									key: 'coronamelder_warned_daily_over_time_chart',
+								}}
+								tooltipTitle={
+									corona_melder_app
+										.waarschuwingen_over_tijd_grafiek.title
+								}
+								timeframe={timeframe}
+								values={data.corona_melder_app_warning.values}
+								seriesConfig={[
+									{
+										type: 'area',
+										metricProperty: 'count',
+										label: corona_melder_app
+											.waarschuwingen_over_tijd_grafiek
+											.labels.warnings,
+										color: colors.data.primary,
+									},
+								]}
+							/>
+						)}
+					</ChartTile>
+				</TileList>
+			</NlLayout>
+		</Layout>
+	);
 };
 
 export default CoronamelderPage;
 
 const IconContainer = styled.span(
-  css({
-    marginRight: 3,
-    color: 'gray',
-    height: 25,
-    width: 25,
-  })
+	css({
+		marginRight: 3,
+		color: 'gray',
+		height: 25,
+		width: 25,
+	})
 );

@@ -1,17 +1,17 @@
 import { RegionalContext } from '~/integration/types';
 
 context('Regionaal - Sterfte', () => {
-  before(() => {
-    cy.beforeRegionTests('sterfte');
-  });
+	before(() => {
+		cy.beforeRegionTests('sterfte');
+	});
 
-  it('Should show the correct KPI values', function (this: RegionalContext) {
-    const rivmLastValue = this.regionData.deceased_rivm.last_value;
+	it('Should show the correct KPI values', function (this: RegionalContext) {
+		const rivmLastValue = this.regionData.deceased_rivm.last_value;
 
-    const kpiTestInfo = {
-      covid_daily: cy.formatters.formatNumber(rivmLastValue.covid_daily),
-    };
+		const kpiTestInfo = {
+			covid_daily: cy.formatters.formatNumber(rivmLastValue.covid_daily),
+		};
 
-    cy.checkKpiValues(kpiTestInfo);
-  });
+		cy.checkKpiValues(kpiTestInfo);
+	});
 });

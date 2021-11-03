@@ -8,10 +8,10 @@ import { vrCodeByGmCode } from '~/data/vr-code-by-gm-code';
  * @param code
  */
 export function getVrMunicipalsForMunicipalCode(
-  code: string
+	code: string
 ): string[] | undefined {
-  const vrcode = vrCodeByGmCode[code];
-  const municipalCodes = vrcode ? gmCodesByVrCode[vrcode] : undefined;
+	const vrcode = vrCodeByGmCode[code];
+	const municipalCodes = vrcode ? gmCodesByVrCode[vrcode] : undefined;
 
-  return municipalCodes;
+	return municipalCodes;
 }

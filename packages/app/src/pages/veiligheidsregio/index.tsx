@@ -1,7 +1,7 @@
 import {
-  colors,
-  VrCollectionHospitalNice,
-  vrData,
+	colors,
+	VrCollectionHospitalNice,
+	vrData,
 } from '@corona-dashboard/common';
 import { useMemo } from 'react';
 import { Box } from '~/components/base';
@@ -15,8 +15,8 @@ import { Layout } from '~/domain/layout/layout';
 import { VrLayout } from '~/domain/layout/vr-layout';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import { getLastGeneratedDate } from '~/static-props/get-data';
 import { useBreakpoints } from '~/utils/use-breakpoints';
@@ -26,95 +26,103 @@ import { DynamicChoropleth } from '../../components/choropleth';
 export const getStaticProps = createGetStaticProps(getLastGeneratedDate);
 
 const VrIndexPage = (props: StaticProps<typeof getStaticProps>) => {
-  const breakpoints = useBreakpoints();
-  const reverseRouter = useReverseRouter();
-  const { siteText } = useIntl();
+	const breakpoints = useBreakpoints();
+	const reverseRouter = useReverseRouter();
+	const { siteText } = useIntl();
 
-  const { lastGenerated } = props;
+	const { lastGenerated } = props;
 
-  const metadata = {
-    ...siteText.veiligheidsregio_index.metadata,
-  };
+	const metadata = {
+		...siteText.veiligheidsregio_index.metadata,
+	};
 
-  const data = useMemo(() => {
-    return vrData.map<VrCollectionHospitalNice>(
-      (x) =>
-        ({
-          vrcode: x.code,
-          admissions_on_date_of_reporting: null,
-        } as unknown as VrCollectionHospitalNice)
-    );
-  }, []);
+	const data = useMemo(() => {
+		return vrData.map<VrCollectionHospitalNice>(
+			(x) =>
+				({
+					vrcode: x.code,
+					admissions_on_date_of_reporting: null,
+				} as unknown as VrCollectionHospitalNice)
+		);
+	}, []);
 
-  return (
-    <Layout {...metadata} lastGenerated={lastGenerated}>
-      <VrLayout isLandingPage>
-        {!breakpoints.md && (
-          <Box bg="white">
-            <VrComboBox />
-          </Box>
-        )}
+	return (
+		<Layout {...metadata} lastGenerated={lastGenerated}>
+			<VrLayout isLandingPage>
+				{!breakpoints.md && (
+					<Box bg="white">
+						<VrComboBox />
+					</Box>
+				)}
 
-        <Box as="article" p={4} spacing={3}>
-          {siteText.regionaal_index.belangrijk_bericht && (
-            <WarningTile
-              message={siteText.regionaal_index.belangrijk_bericht}
-              variant="emphasis"
-            />
-          )}
+				<Box as="article" p={4} spacing={3}>
+					{siteText.regionaal_index.belangrijk_bericht && (
+						<WarningTile
+							message={
+								siteText.regionaal_index.belangrijk_bericht
+							}
+							variant="emphasis"
+						/>
+					)}
 
-          <Heading level={2} as="h1">
-            {siteText.veiligheidsregio_index.selecteer_titel}
-          </Heading>
-          <Markdown
-            content={siteText.veiligheidsregio_index.selecteer_toelichting}
-          />
+					<Heading level={2} as="h1">
+						{siteText.veiligheidsregio_index.selecteer_titel}
+					</Heading>
+					<Markdown
+						content={
+							siteText.veiligheidsregio_index
+								.selecteer_toelichting
+						}
+					/>
 
-          <Box
-            display="flex"
-            flex="1"
-            justifyContent="center"
-            height="75vh"
-            maxWidth={750}
-            maxHeight={960}
-            flexDirection="column"
-            spacing={3}
-          >
-            <ErrorBoundary>
-              <DynamicChoropleth
-                renderTarget="canvas"
-                accessibility={{
-                  key: 'municipality_navigation_map',
-                  features: ['keyboard_choropleth'],
-                }}
-                map="vr"
-                data={data}
-                minHeight={650}
-                dataConfig={{
-                  metricName: 'veiligheidsregio' as any,
-                  metricProperty: 'admissions_on_date_of_reporting',
-                  areaStroke: colors.white,
-                  areaStrokeWidth: 1,
-                  hoverFill: colors.white,
-                  hoverStrokeWidth: 3,
-                  noDataFillColor: colors.lightGray,
-                }}
-                dataOptions={{
-                  getLink: reverseRouter.vr.index,
-                }}
-                formatTooltip={(context) => (
-                  <TooltipContent
-                    title={context.featureName}
-                    link={reverseRouter.vr.index(context.dataItem.vrcode)}
-                  />
-                )}
-              />
-            </ErrorBoundary>
-          </Box>
-        </Box>
-      </VrLayout>
-    </Layout>
-  );
+					<Box
+						display="flex"
+						flex="1"
+						justifyContent="center"
+						height="75vh"
+						maxWidth={750}
+						maxHeight={960}
+						flexDirection="column"
+						spacing={3}
+					>
+						<ErrorBoundary>
+							<DynamicChoropleth
+								renderTarget="canvas"
+								accessibility={{
+									key: 'municipality_navigation_map',
+									features: ['keyboard_choropleth'],
+								}}
+								map="vr"
+								data={data}
+								minHeight={650}
+								dataConfig={{
+									metricName: 'veiligheidsregio' as any,
+									metricProperty:
+										'admissions_on_date_of_reporting',
+									areaStroke: colors.white,
+									areaStrokeWidth: 1,
+									hoverFill: colors.white,
+									hoverStrokeWidth: 3,
+									noDataFillColor: colors.lightGray,
+								}}
+								dataOptions={{
+									getLink: reverseRouter.vr.index,
+								}}
+								formatTooltip={(context) => (
+									<TooltipContent
+										title={context.featureName}
+										link={reverseRouter.vr.index(
+											context.dataItem.vrcode
+										)}
+									/>
+								)}
+							/>
+						</ErrorBoundary>
+					</Box>
+				</Box>
+			</VrLayout>
+		</Layout>
+	);
 };
 
 export default VrIndexPage;

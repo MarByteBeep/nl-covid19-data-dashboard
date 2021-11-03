@@ -12,59 +12,59 @@ import { useOnClickOutside } from '~/utils/use-on-click-outside';
 import { useTabInteractiveButton } from '~/utils/use-tab-interactive-button';
 import { ChoroplethMap } from './components/choropleth-map';
 import {
-  ChoroplethDataItem,
-  InferedDataCollection,
-  InferedMapType,
+	ChoroplethDataItem,
+	InferedDataCollection,
+	InferedMapType,
 } from './logic';
 import { ChoroplethTooltipPlacement, Tooltip } from './tooltips';
 import { TooltipFormatter, TooltipSettings } from './tooltips/types';
 
 export type DataOptions = {
-  isPercentage?: boolean;
-  getLink?: (code: string) => string;
-  getFeatureName?: (code: string) => string;
-  highlightSelection?: boolean;
-  selectedCode?: string;
-  tooltipVariables?: Record<string, Record<string, string> | string>;
-  projection?: () => GeoProjection;
+	isPercentage?: boolean;
+	getLink?: (code: string) => string;
+	getFeatureName?: (code: string) => string;
+	highlightSelection?: boolean;
+	selectedCode?: string;
+	tooltipVariables?: Record<string, Record<string, string> | string>;
+	projection?: () => GeoProjection;
 };
 
 export type OptionalDataConfig<T extends ChoroplethDataItem> = {
-  metricName: KeysOfType<InferedDataCollection<T>, T[]>;
-  metricProperty: KeysOfType<T, number | null | boolean | undefined, true>;
-  noDataFillColor?: string;
-  hoverFill?: string;
-  hoverStroke?: string;
-  hoverStrokeWidth?: number;
-  highlightStroke?: string;
-  highlightStrokeWidth?: number;
-  areaStroke?: string;
-  areaStrokeWidth?: number;
+	metricName: KeysOfType<InferedDataCollection<T>, T[]>;
+	metricProperty: KeysOfType<T, number | null | boolean | undefined, true>;
+	noDataFillColor?: string;
+	hoverFill?: string;
+	hoverStroke?: string;
+	hoverStrokeWidth?: number;
+	highlightStroke?: string;
+	highlightStrokeWidth?: number;
+	areaStroke?: string;
+	areaStrokeWidth?: number;
 };
 
 export type DataConfig<T extends ChoroplethDataItem> = Required<
-  OptionalDataConfig<T>
+	OptionalDataConfig<T>
 >;
 
 export type OptionalBoundingBoxPadding = {
-  left?: number;
-  right?: number;
-  top?: number;
-  bottom?: number;
+	left?: number;
+	right?: number;
+	top?: number;
+	bottom?: number;
 };
 
 export type ResponsiveSizeSettings = {
-  /**
-   * If the container width is equal or larger than this value, use
-   * the associated height and padding.
-   */
-  containerWidth: number;
-  heightAndPadding: HeightAndPadding;
+	/**
+	 * If the container width is equal or larger than this value, use
+	 * the associated height and padding.
+	 */
+	containerWidth: number;
+	heightAndPadding: HeightAndPadding;
 };
 
 export type HeightAndPadding = {
-  mapHeight: number;
-  padding: OptionalBoundingBoxPadding;
+	mapHeight: number;
+	padding: OptionalBoundingBoxPadding;
 };
 
 /**
@@ -72,8 +72,8 @@ export type HeightAndPadding = {
  * (So for the smallest container size)
  */
 export type ResponsiveSizeConfiguration = [
-  ...ResponsiveSizeSettings[],
-  HeightAndPadding
+	...ResponsiveSizeSettings[],
+	HeightAndPadding
 ];
 
 export type BoundingBoxPadding = Required<OptionalBoundingBoxPadding>;
@@ -81,26 +81,26 @@ export type BoundingBoxPadding = Required<OptionalBoundingBoxPadding>;
 type RenderTarget = 'svg' | 'canvas';
 
 export type ChoroplethProps<T extends ChoroplethDataItem> = {
-  accessibility: AccessibilityDefinition;
-  data: T[];
-  dataConfig: OptionalDataConfig<T>;
-  dataOptions: DataOptions;
-  map: InferedMapType<T>;
-  formatTooltip?: TooltipFormatter<T>;
-  tooltipPlacement?: ChoroplethTooltipPlacement;
-  minHeight?: number;
-  /**
-   * A default set of paddings to be used on the bounding box, if
-   * more control is needed for different screen sizes, use the
-   * dynamicSizeConfiguration instead.
-   */
-  boundingBoxPadding?: OptionalBoundingBoxPadding;
-  /**
-   * This defines an optional set of map heights and paddings based
-   * on a set of given width break points
-   */
-  responsiveSizeConfiguration?: ResponsiveSizeConfiguration;
-  renderTarget?: RenderTarget;
+	accessibility: AccessibilityDefinition;
+	data: T[];
+	dataConfig: OptionalDataConfig<T>;
+	dataOptions: DataOptions;
+	map: InferedMapType<T>;
+	formatTooltip?: TooltipFormatter<T>;
+	tooltipPlacement?: ChoroplethTooltipPlacement;
+	minHeight?: number;
+	/**
+	 * A default set of paddings to be used on the bounding box, if
+	 * more control is needed for different screen sizes, use the
+	 * dynamicSizeConfiguration instead.
+	 */
+	boundingBoxPadding?: OptionalBoundingBoxPadding;
+	/**
+	 * This defines an optional set of map heights and paddings based
+	 * on a set of given width break points
+	 */
+	responsiveSizeConfiguration?: ResponsiveSizeConfiguration;
+	renderTarget?: RenderTarget;
 };
 
 export type ChoroplethComponent = typeof Choropleth;
@@ -121,72 +121,79 @@ export type ChoroplethComponent = typeof Choropleth;
  * prop is there to help out.
  */
 export function Choropleth<T extends ChoroplethDataItem>({
-  formatTooltip,
-  tooltipPlacement,
-  ...props
+	formatTooltip,
+	tooltipPlacement,
+	...props
 }: ChoroplethProps<T>) {
-  const [tooltip, setTooltip] = useState<TooltipSettings<T>>();
-  const { siteText } = useIntl();
-  const hoverRef = useRef<SVGGElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
+	const [tooltip, setTooltip] = useState<TooltipSettings<T>>();
+	const { siteText } = useIntl();
+	const hoverRef = useRef<SVGGElement>(null);
+	const tooltipRef = useRef<HTMLDivElement>(null);
 
-  useOnClickOutside([tooltipRef, hoverRef], () => setTooltip(undefined));
+	useOnClickOutside([tooltipRef, hoverRef], () => setTooltip(undefined));
 
-  const { isTabInteractive, tabInteractiveButton, anchorEventHandlers } =
-    useTabInteractiveButton(
-      replaceVariablesInText(siteText.choropleth.a11y.tab_navigatie_button, {
-        subject: siteText.choropleth[props.map].plural,
-      })
-    );
+	const { isTabInteractive, tabInteractiveButton, anchorEventHandlers } =
+		useTabInteractiveButton(
+			replaceVariablesInText(
+				siteText.choropleth.a11y.tab_navigatie_button,
+				{
+					subject: siteText.choropleth[props.map].plural,
+				}
+			)
+		);
 
-  return (
-    <Box position="relative" height="100%">
-      {tabInteractiveButton}
-      <div
-        css={css({ bg: 'transparent', position: 'relative', height: '100%' })}
-      >
-        <ChoroplethMap
-          {...props}
-          setTooltip={setTooltip}
-          hoverRef={hoverRef}
-          isTabInteractive={isTabInteractive}
-          anchorEventHandlers={anchorEventHandlers}
-        />
+	return (
+		<Box position="relative" height="100%">
+			{tabInteractiveButton}
+			<div
+				css={css({
+					bg: 'transparent',
+					position: 'relative',
+					height: '100%',
+				})}
+			>
+				<ChoroplethMap
+					{...props}
+					setTooltip={setTooltip}
+					hoverRef={hoverRef}
+					isTabInteractive={isTabInteractive}
+					anchorEventHandlers={anchorEventHandlers}
+				/>
 
-        {tooltip && (
-          <div ref={tooltipRef} style={{ pointerEvents: 'none' }}>
-            <Tooltip
-              placement={tooltipPlacement}
-              left={tooltip.left}
-              top={tooltip.top}
-              setTooltip={setTooltip}
-              formatTooltip={formatTooltip}
-              data={tooltip.data}
-            />
-          </div>
-        )}
-      </div>
-    </Box>
-  );
+				{tooltip && (
+					<div ref={tooltipRef} style={{ pointerEvents: 'none' }}>
+						<Tooltip
+							placement={tooltipPlacement}
+							left={tooltip.left}
+							top={tooltip.top}
+							setTooltip={setTooltip}
+							formatTooltip={formatTooltip}
+							data={tooltip.data}
+						/>
+					</div>
+				)}
+			</div>
+		</Box>
+	);
 }
 
 export const DynamicChoropleth = withLoadingProps((getLoadingProps) =>
-  dynamic(() => import('./').then((mod) => mod.Choropleth), {
-    ssr: false,
-    loading: () => {
-      const {
-        map,
-        dataConfig,
-        minHeight = 500,
-        dataOptions,
-      } = getLoadingProps();
-      return (
-        <img
-          src={`/api/choropleth/${map}/${dataConfig.metricName}/${
-            dataConfig.metricProperty
-          }/${minHeight}/${dataOptions.selectedCode ?? ''}`}
-        />
-      );
-    },
-  })
+	dynamic(() => import('./').then((mod) => mod.Choropleth), {
+		ssr: false,
+		loading: () => {
+			const {
+				map,
+				dataConfig,
+				minHeight = 500,
+				dataOptions,
+			} = getLoadingProps();
+			return (
+				<img
+					src={`/api/choropleth/${map}/${dataConfig.metricName}/${
+						dataConfig.metricProperty
+					}/${minHeight}/${dataOptions.selectedCode ?? ''}`}
+				/>
+			);
+		},
+	})
 ) as ChoroplethComponent;

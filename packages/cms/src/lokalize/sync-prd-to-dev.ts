@@ -14,71 +14,71 @@ const NO_DRAFTS = '!(_id in path("drafts.**"))';
  * Both datasets should use the same document ids.
  */
 (async function run() {
-  const response = await prompts([
-    {
-      type: 'confirm',
-      name: 'isConfirmed',
-      message: outdent`
+	const response = await prompts([
+		{
+			type: 'confirm',
+			name: 'isConfirmed',
+			message: outdent`
           This script takes all texts from production and overwrites the corresponding texts in development. If previously released texts in development have been altered to use a different amount of interpolating variables, these changes will be lost.
 
           Are you sure you want to continue?
       `,
 
-      initial: false,
-    },
-  ]);
+			initial: false,
+		},
+	]);
 
-  if (!response.isConfirmed) {
-    process.exit(0);
-  }
+	if (!response.isConfirmed) {
+		process.exit(0);
+	}
 
-  const prdClient = getClient('production');
-  const devClient = getClient('development');
+	const prdClient = getClient('production');
+	const devClient = getClient('development');
 
-  const prdDocuments = (await prdClient.fetch(
-    `*[_type == 'lokalizeText' && ${NO_DRAFTS}]`
-  )) as LokalizeText[];
+	const prdDocuments = (await prdClient.fetch(
+		`*[_type == 'lokalizeText' && ${NO_DRAFTS}]`
+	)) as LokalizeText[];
 
-  const devDocuments = (await devClient.fetch(
-    `*[_type == 'lokalizeText' && ${NO_DRAFTS}]`
-  )) as LokalizeText[];
+	const devDocuments = (await devClient.fetch(
+		`*[_type == 'lokalizeText' && ${NO_DRAFTS}]`
+	)) as LokalizeText[];
 
-  const devDocumentIds = devDocuments.map((x) => x._id);
+	const devDocumentIds = devDocuments.map((x) => x._id);
 
-  const transaction = devClient.transaction();
+	const transaction = devClient.transaction();
 
-  /**
-   * Only sync the documents that are still existing in the development set,
-   * because some might have been deleted in the meantime.
-   */
-  const documentsToSync = prdDocuments.filter((x) =>
-    devDocumentIds.includes(x._id)
-  );
+	/**
+	 * Only sync the documents that are still existing in the development set,
+	 * because some might have been deleted in the meantime.
+	 */
+	const documentsToSync = prdDocuments.filter((x) =>
+		devDocumentIds.includes(x._id)
+	);
 
-  const CHUNK_SIZE = 500;
-  const chunks = chunk(documentsToSync, CHUNK_SIZE);
+	const CHUNK_SIZE = 500;
+	const chunks = chunk(documentsToSync, CHUNK_SIZE);
 
-  for (const [index, documents] of chunks.entries()) {
-    console.log(
-      `Syncing ${(index + 1) * CHUNK_SIZE}/${documentsToSync.length}`
-    );
-    documents.forEach((doc) => {
-      transaction.patch(doc._id, {
-        set: {
-          'text.nl': doc.text.nl,
-          'text.en': doc.text.en,
-          should_display_empty: doc.should_display_empty,
-          /**
-           * Never copy over the key and subject properties! Because these could
-           * have been mutated by move operations in development.
-           */
-        },
-      });
-    });
+	for (const [index, documents] of chunks.entries()) {
+		console.log(
+			`Syncing ${(index + 1) * CHUNK_SIZE}/${documentsToSync.length}`
+		);
+		documents.forEach((doc) => {
+			transaction.patch(doc._id, {
+				set: {
+					'text.nl': doc.text.nl,
+					'text.en': doc.text.en,
+					should_display_empty: doc.should_display_empty,
+					/**
+					 * Never copy over the key and subject properties! Because these could
+					 * have been mutated by move operations in development.
+					 */
+				},
+			});
+		});
 
-    await transaction.commit();
-  }
+		await transaction.commit();
+	}
 })().catch((err) => {
-  console.error('An error occurred:', err.message);
-  process.exit(1);
+	console.error('An error occurred:', err.message);
+	process.exit(1);
 });

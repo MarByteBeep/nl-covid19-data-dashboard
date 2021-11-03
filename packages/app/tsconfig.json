@@ -1,22 +1,22 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "module": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "target": "es5",
-    "allowJs": false,
-    "noEmit": true,
-    "downlevelIteration": true,
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["src/*"]
-    }
-  },
-  "references": [
-    {
-      "path": "../common"
-    }
-  ],
-  "include": ["next-env.d.ts", "src", "src/**/*.json"],
-  "exclude": ["node_modules", "../../node_modules"]
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"module": "esnext",
+		"lib": ["dom", "dom.iterable", "esnext"],
+		"target": "es5",
+		"allowJs": false,
+		"noEmit": true,
+		"downlevelIteration": true,
+		"baseUrl": ".",
+		"paths": {
+			"~/*": ["src/*"]
+		}
+	},
+	"references": [
+		{
+			"path": "../common"
+		}
+	],
+	"include": ["next-env.d.ts", "src", "src/**/*.json"],
+	"exclude": ["node_modules", "../../node_modules"]
 }

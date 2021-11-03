@@ -1,38 +1,38 @@
 {
-  "name": "corona-dashboard",
-  "private": true,
-  "license": "EUROPEAN UNION PUBLIC LICENCE v. 1.2",
-  "scripts": {
-    "prepare-release": "yarn workspace @corona-dashboard/cli prepare-release",
-    "test": "yarn workspaces foreach run test",
-    "test:ci": "yarn workspaces foreach run test:ci",
-    "bootstrap": "yarn workspaces foreach run bootstrap",
-    "clean": "yarn workspaces foreach run clean && npx rimraf .build-cache",
-    "nuke": "yarn workspaces foreach run nuke && npx rimraf node_modules",
-    "typecheck": "yarn workspaces foreach run typecheck",
-    "lint": "yarn workspaces foreach run lint",
-    "format": "yarn workspaces foreach run format",
-    "dev": "yarn workspace @corona-dashboard/app dev",
-    "download": "yarn workspace @corona-dashboard/app download",
-    "start": "yarn workspace @corona-dashboard/app start",
-    "validate-json-all": "yarn workspace @corona-dashboard/cli validate-json-all",
-    "validate-json-single": "yarn workspace @corona-dashboard/cli validate-json-single",
-    "validate-last-values": "yarn workspace @corona-dashboard/cli validate-last-values",
-    "validate-features": "yarn workspace @corona-dashboard/cli validate-features",
-    "generate-typescript": "yarn workspace @corona-dashboard/cli generate-typescript",
-    "e2e": "yarn workspace @corona-dashboard/e2e e2e",
-    "e2e:ci": "yarn workspace @corona-dashboard/e2e e2e:ci",
-    "cms": "yarn workspace @corona-dashboard/cms dev"
-  },
-  "workspaces": {
-    "packages": [
-      "packages/app",
-      "packages/cli",
-      "packages/common",
-      "packages/e2e",
-      "packages/icons",
-      "packages/cms"
-    ]
-  },
-  "packageManager": "yarn@3.1.0"
+	"name": "corona-dashboard",
+	"private": true,
+	"license": "EUROPEAN UNION PUBLIC LICENCE v. 1.2",
+	"scripts": {
+		"prepare-release": "yarn workspace @corona-dashboard/cli prepare-release",
+		"test": "yarn workspaces foreach run test",
+		"test:ci": "yarn workspaces foreach run test:ci",
+		"bootstrap": "yarn workspaces foreach run bootstrap",
+		"clean": "yarn workspaces foreach run clean && npx rimraf .build-cache",
+		"nuke": "yarn workspaces foreach run nuke && npx rimraf node_modules",
+		"typecheck": "yarn workspaces foreach run typecheck",
+		"lint": "yarn workspaces foreach run lint",
+		"format": "yarn workspaces foreach run format",
+		"dev": "yarn workspace @corona-dashboard/app dev",
+		"download": "yarn workspace @corona-dashboard/app download",
+		"start": "yarn workspace @corona-dashboard/app start",
+		"validate-json-all": "yarn workspace @corona-dashboard/cli validate-json-all",
+		"validate-json-single": "yarn workspace @corona-dashboard/cli validate-json-single",
+		"validate-last-values": "yarn workspace @corona-dashboard/cli validate-last-values",
+		"validate-features": "yarn workspace @corona-dashboard/cli validate-features",
+		"generate-typescript": "yarn workspace @corona-dashboard/cli generate-typescript",
+		"e2e": "yarn workspace @corona-dashboard/e2e e2e",
+		"e2e:ci": "yarn workspace @corona-dashboard/e2e e2e:ci",
+		"cms": "yarn workspace @corona-dashboard/cms dev"
+	},
+	"workspaces": {
+		"packages": [
+			"packages/app",
+			"packages/cli",
+			"packages/common",
+			"packages/e2e",
+			"packages/icons",
+			"packages/cms"
+		]
+	},
+	"packageManager": "yarn@3.1.0"
 }

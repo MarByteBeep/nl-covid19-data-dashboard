@@ -14,5 +14,5 @@ import { styledShouldForwardProp } from '~/utils/styled-should-forward-prop';
 type SpacerProps = SpaceProps;
 
 export const Spacer = styled.div.withConfig({
-  shouldForwardProp: styledShouldForwardProp,
+	shouldForwardProp: styledShouldForwardProp,
 })<SpacerProps>(space);

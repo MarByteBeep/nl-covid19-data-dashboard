@@ -12,17 +12,17 @@ const responsiveKeys = ['_', 'xs', 'sm', 'md', 'lg', 'xl'] as const;
  *
  */
 export function asResponsiveArray<T>(
-  value: ResponsiveValue<T>
+	value: ResponsiveValue<T>
 ): ResponsiveValue<T> {
-  return isStyleObject(value) ? createArrayValue(value) : value;
+	return isStyleObject(value) ? createArrayValue(value) : value;
 }
 
 type StyleObject<T> = Record<typeof responsiveKeys[number], T>;
 
 function isStyleObject<T>(value: ResponsiveValue<T>): value is StyleObject<T> {
-  return !Array.isArray(value) && value !== null && typeof value === 'object';
+	return !Array.isArray(value) && value !== null && typeof value === 'object';
 }
 
 function createArrayValue<T>(value: StyleObject<T>) {
-  return responsiveKeys.map((key) => value[key]) as ResponsiveValue<T>;
+	return responsiveKeys.map((key) => value[key]) as ResponsiveValue<T>;
 }

@@ -1,5 +1,5 @@
 export function getSkipLinkId(source: string): string {
-  return source.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+	return source.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 }
 
 /**
@@ -7,13 +7,13 @@ export function getSkipLinkId(source: string): string {
  * by adding -1 or -2 to duplicate IDs.
  */
 export function ensureUniqueSkipLinkIds(members: { id: string }[]): void {
-  members.forEach((member) => {
-    const catches = members.filter((x) => x.id === member.id);
+	members.forEach((member) => {
+		const catches = members.filter((x) => x.id === member.id);
 
-    if (catches.length !== 1) {
-      catches.forEach((x, index) => {
-        x.id = `${x.id}-${index + 1}`;
-      });
-    }
-  });
+		if (catches.length !== 1) {
+			catches.forEach((x, index) => {
+				x.id = `${x.id}-${index + 1}`;
+			});
+		}
+	});
 }

@@ -5,9 +5,9 @@ import { useIntl } from '~/intl';
 import { replaceVariablesInText } from '~/utils/replace-variables-in-text';
 
 interface Breadcrumb {
-  href: string;
-  title: string;
-  redirectLabel?: string;
+	href: string;
+	title: string;
+	redirectLabel?: string;
 }
 
 export const BreadcrumbsDataContext = createContext<Record<string, string>>({});
@@ -20,145 +20,147 @@ export const BreadcrumbsDataContext = createContext<Record<string, string>>({});
   { 'some-page-slug': 'Some Page Title' } as the breadcrumbsData prop to Layout. 
  */
 export const BreadcrumbsDataProvider = ({
-  value,
-  children,
+	value,
+	children,
 }: {
-  value?: Record<string, string>;
-  children: ReactNode;
+	value?: Record<string, string>;
+	children: ReactNode;
 }) => {
-  const mergedValue = useMemo(() => {
-    const gmMap = gmData.reduce(
-      (acc, curr) => ({ [curr.gemcode]: curr.name, ...acc }),
-      {}
-    );
+	const mergedValue = useMemo(() => {
+		const gmMap = gmData.reduce(
+			(acc, curr) => ({ [curr.gemcode]: curr.name, ...acc }),
+			{}
+		);
 
-    const vrMap = vrData.reduce(
-      (acc, curr) => ({ [curr.code]: curr.name, ...acc }),
-      {}
-    );
+		const vrMap = vrData.reduce(
+			(acc, curr) => ({ [curr.code]: curr.name, ...acc }),
+			{}
+		);
 
-    return {
-      ...(value ? value : {}),
-      ...gmMap,
-      ...vrMap,
-    };
-  }, [value]);
+		return {
+			...(value ? value : {}),
+			...gmMap,
+			...vrMap,
+		};
+	}, [value]);
 
-  return (
-    <BreadcrumbsDataContext.Provider value={mergedValue}>
-      {children}
-    </BreadcrumbsDataContext.Provider>
-  );
+	return (
+		<BreadcrumbsDataContext.Provider value={mergedValue}>
+			{children}
+		</BreadcrumbsDataContext.Provider>
+	);
 };
 
 // VR/GM pages that are NOT in Actueel should have a redirect label
 
 export function useBreadcrumbs(): Breadcrumb[] {
-  const { pathname, query } = useRouter();
-  const { siteText } = useIntl();
-  const ctx = useContext(BreadcrumbsDataContext);
+	const { pathname, query } = useRouter();
+	const { siteText } = useIntl();
+	const ctx = useContext(BreadcrumbsDataContext);
 
-  return useMemo(() => {
-    const getQueryParameter = (str: string) => {
-      // Extract text between square brackets: https://stackoverflow.com/questions/2403122/regular-expression-to-extract-text-between-square-brackets
-      const regexp = /(\[([^\]]+)\])/;
-      const matches = str.match(regexp);
-      const param = matches?.[2];
-      return { key: param };
-    };
+	return useMemo(() => {
+		const getQueryParameter = (str: string) => {
+			// Extract text between square brackets: https://stackoverflow.com/questions/2403122/regular-expression-to-extract-text-between-square-brackets
+			const regexp = /(\[([^\]]+)\])/;
+			const matches = str.match(regexp);
+			const param = matches?.[2];
+			return { key: param };
+		};
 
-    const convertQueryParameter = (str: string): string => {
-      const { key } = getQueryParameter(str);
-      return key ? (query[key] as string) : str;
-    };
+		const convertQueryParameter = (str: string): string => {
+			const { key } = getQueryParameter(str);
+			return key ? (query[key] as string) : str;
+		};
 
-    const getTitle = (str: string): string => {
-      if (str === '') return siteText.breadcrumbs.paths.actueel;
+		const getTitle = (str: string): string => {
+			if (str === '') return siteText.breadcrumbs.paths.actueel;
 
-      const { key } = getQueryParameter(str);
-      str = convertQueryParameter(str);
+			const { key } = getQueryParameter(str);
+			str = convertQueryParameter(str);
 
-      if (key) {
-        // retrieve the page title from the context
-        const pageTitle = ctx[query[key] as string];
-        return pageTitle ? pageTitle : str;
-      }
+			if (key) {
+				// retrieve the page title from the context
+				const pageTitle = ctx[query[key] as string];
+				return pageTitle ? pageTitle : str;
+			}
 
-      return siteText.breadcrumbs.paths[
-        str as keyof typeof siteText.breadcrumbs.paths
-      ];
-    };
+			return siteText.breadcrumbs.paths[
+				str as keyof typeof siteText.breadcrumbs.paths
+			];
+		};
 
-    const getRedirectLabel = (str: string): string | undefined => {
-      str = convertQueryParameter(str);
+		const getRedirectLabel = (str: string): string | undefined => {
+			str = convertQueryParameter(str);
 
-      switch (str) {
-        case 'landelijk':
-        case 'actueel': {
-          return replaceVariablesInText(
-            siteText.breadcrumbs.redirects.template,
-            {
-              page: siteText.breadcrumbs.redirects[
-                str as keyof typeof siteText.breadcrumbs.redirects
-              ],
-            }
-          );
-        }
-        case 'veiligheidsregio':
-        case 'gemeente': {
-          // /gemeente and /veiligheidsregio and their /actueel counterparts do not redirect, return.
-          return undefined;
-        }
-        default: {
-          // actueel pages, apart from 'actueel' itself, have no redirects. Return early
-          if (pathname.includes('actueel')) return;
+			switch (str) {
+				case 'landelijk':
+				case 'actueel': {
+					return replaceVariablesInText(
+						siteText.breadcrumbs.redirects.template,
+						{
+							page: siteText.breadcrumbs.redirects[
+								str as keyof typeof siteText.breadcrumbs.redirects
+							],
+						}
+					);
+				}
+				case 'veiligheidsregio':
+				case 'gemeente': {
+					// /gemeente and /veiligheidsregio and their /actueel counterparts do not redirect, return.
+					return undefined;
+				}
+				default: {
+					// actueel pages, apart from 'actueel' itself, have no redirects. Return early
+					if (pathname.includes('actueel')) return;
 
-          // this is the more complex case where we have a str with a gm/vr code
-          if (str.includes('GM') || str.includes('VR')) {
-            const pageTemplate = replaceVariablesInText(
-              siteText.breadcrumbs.redirects[
-                str.includes('GM') ? 'gemeente' : 'veiligheidsregio'
-              ],
-              {
-                name: ctx[str],
-              }
-            );
+					// this is the more complex case where we have a str with a gm/vr code
+					if (str.includes('GM') || str.includes('VR')) {
+						const pageTemplate = replaceVariablesInText(
+							siteText.breadcrumbs.redirects[
+								str.includes('GM')
+									? 'gemeente'
+									: 'veiligheidsregio'
+							],
+							{
+								name: ctx[str],
+							}
+						);
 
-            return replaceVariablesInText(
-              siteText.breadcrumbs.redirects.template,
-              {
-                page: pageTemplate,
-              }
-            );
-          }
-        }
-      }
-    };
+						return replaceVariablesInText(
+							siteText.breadcrumbs.redirects.template,
+							{
+								page: pageTemplate,
+							}
+						);
+					}
+				}
+			}
+		};
 
-    // '/' gets split into ['', '']. Make sure it doesn't.
-    let arr = pathname === '/' ? [''] : pathname.split('/');
-    // filter out '' when 'actueel' is in the path, as we'll have a double Actueel breadcrumb otherwise
-    arr = arr.includes('actueel') ? arr.filter((x) => x !== '') : arr;
+		// '/' gets split into ['', '']. Make sure it doesn't.
+		let arr = pathname === '/' ? [''] : pathname.split('/');
+		// filter out '' when 'actueel' is in the path, as we'll have a double Actueel breadcrumb otherwise
+		arr = arr.includes('actueel') ? arr.filter((x) => x !== '') : arr;
 
-    const breadcrumbs = arr
-      .map((x, index, arr) => {
-        const href = [...arr.slice(0, index), x]
-          .map(convertQueryParameter)
-          .join('/');
+		const breadcrumbs = arr
+			.map((x, index, arr) => {
+				const href = [...arr.slice(0, index), x]
+					.map(convertQueryParameter)
+					.join('/');
 
-        return {
-          href: href.startsWith('/') ? href : `/${href}`,
-          title: getTitle(x),
-          redirectLabel: getRedirectLabel(x),
-        };
-      })
-      .filter((x) => {
-        // filter out the link to Actueel on all pages but / and the /actueel/.../... pages
-        if (pathname === '/') return true;
-        if (pathname.includes('actueel')) return true;
-        return x.href !== '/';
-      });
+				return {
+					href: href.startsWith('/') ? href : `/${href}`,
+					title: getTitle(x),
+					redirectLabel: getRedirectLabel(x),
+				};
+			})
+			.filter((x) => {
+				// filter out the link to Actueel on all pages but / and the /actueel/.../... pages
+				if (pathname === '/') return true;
+				if (pathname.includes('actueel')) return true;
+				return x.href !== '/';
+			});
 
-    return breadcrumbs;
-  }, [ctx, pathname, query, siteText]);
+		return breadcrumbs;
+	}, [ctx, pathname, query, siteText]);
 }

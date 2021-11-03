@@ -1,7 +1,7 @@
 import {
-  isDateSpanValue,
-  isDateValue,
-  TimestampedValue,
+	isDateSpanValue,
+	isDateValue,
+	TimestampedValue,
 } from '@corona-dashboard/common';
 import { isBoolean, last } from 'lodash';
 import { useMemo } from 'react';
@@ -30,54 +30,61 @@ const HALF_DAY_IN_SECONDS = 12 * 60 * 60;
  *
  */
 export function useGappedLineAnnotations<T extends TimestampedValue>(
-  values: T[],
-  property: keyof T,
-  label: string
+	values: T[],
+	property: keyof T,
+	label: string
 ) {
-  return useMemo(() => {
-    return values.reduce<TimespanAnnotationConfig[]>(
-      (newItems, item, index, array) => {
-        const value = item[property] as unknown;
-        if (!hasValue(value)) {
-          const startDate =
-            (isDateValue(item)
-              ? item.date_unix
-              : isDateSpanValue(item)
-              ? item.date_start_unix
-              : NaN) - HALF_DAY_IN_SECONDS;
+	return useMemo(() => {
+		return values.reduce<TimespanAnnotationConfig[]>(
+			(newItems, item, index, array) => {
+				const value = item[property] as unknown;
+				if (!hasValue(value)) {
+					const startDate =
+						(isDateValue(item)
+							? item.date_unix
+							: isDateSpanValue(item)
+							? item.date_start_unix
+							: NaN) - HALF_DAY_IN_SECONDS;
 
-          const endDate =
-            (isDateValue(item)
-              ? item.date_unix
-              : isDateSpanValue(item)
-              ? item.date_end_unix
-              : NaN) + HALF_DAY_IN_SECONDS;
+					const endDate =
+						(isDateValue(item)
+							? item.date_unix
+							: isDateSpanValue(item)
+							? item.date_end_unix
+							: NaN) + HALF_DAY_IN_SECONDS;
 
-          let currentAnnotation = last(newItems);
-          if (!isDefined(currentAnnotation) || !isNaN(currentAnnotation.end)) {
-            currentAnnotation = { start: startDate, end: NaN, label };
-            newItems.push(currentAnnotation);
-          }
+					let currentAnnotation = last(newItems);
+					if (
+						!isDefined(currentAnnotation) ||
+						!isNaN(currentAnnotation.end)
+					) {
+						currentAnnotation = {
+							start: startDate,
+							end: NaN,
+							label,
+						};
+						newItems.push(currentAnnotation);
+					}
 
-          /**
-           * If this is either the last item in the list or the next
-           * item in the list has a valid property, this means the current
-           * annotation ends here, so we assign the end date.
-           */
-          if (
-            index === array.length - 1 ||
-            hasValue(array[index + 1]?.[property])
-          ) {
-            currentAnnotation.end = endDate;
-          }
-        }
-        return newItems;
-      },
-      []
-    );
-  }, [values, property, label]);
+					/**
+					 * If this is either the last item in the list or the next
+					 * item in the list has a valid property, this means the current
+					 * annotation ends here, so we assign the end date.
+					 */
+					if (
+						index === array.length - 1 ||
+						hasValue(array[index + 1]?.[property])
+					) {
+						currentAnnotation.end = endDate;
+					}
+				}
+				return newItems;
+			},
+			[]
+		);
+	}, [values, property, label]);
 }
 
 function hasValue(value: unknown) {
-  return isBoolean(value) ? value === true : isPresent(value);
+	return isBoolean(value) ? value === true : isPresent(value);
 }

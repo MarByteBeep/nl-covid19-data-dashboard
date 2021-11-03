@@ -1,9 +1,9 @@
 import { GetStaticPropsContext } from 'next';
 
 export function getVariantsPageQuery(context: GetStaticPropsContext) {
-  const { locale } = context;
+	const { locale } = context;
 
-  return `
+	return `
   *[_type=='variantsPage']{
     "pageLinks": [...pageLinks[]{
       "title": title.${locale},

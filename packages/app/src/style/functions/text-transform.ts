@@ -3,17 +3,22 @@ import { styleFn, ResponsiveValue } from 'styled-system';
 import { isDefined } from 'ts-is-present';
 import { asResponsiveArray } from '../utils';
 export interface TextTransformProps {
-  textTransform?: ResponsiveValue<
-    'none' | 'capitalize' | 'uppercase' | 'lowercase' | 'initial' | 'inherit'
-  >;
+	textTransform?: ResponsiveValue<
+		| 'none'
+		| 'capitalize'
+		| 'uppercase'
+		| 'lowercase'
+		| 'initial'
+		| 'inherit'
+	>;
 }
 
 export const textTransform: styleFn = (x: TextTransformProps) => {
-  if (isDefined(x.textTransform)) {
-    const value = asResponsiveArray(x.textTransform);
+	if (isDefined(x.textTransform)) {
+		const value = asResponsiveArray(x.textTransform);
 
-    return css({
-      textTransform: value,
-    });
-  }
+		return css({
+			textTransform: value,
+		});
+	}
 };

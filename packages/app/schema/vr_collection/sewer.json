@@ -1,22 +1,22 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "vr_collection_sewer",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["date_unix", "vrcode", "average", "date_of_insertion_unix"],
-  "properties": {
-    "date_unix": {
-      "type": "integer"
-    },
-    "vrcode": {
-      "type": "string",
-      "pattern": "^VR[0-9]+$"
-    },
-    "average": {
-      "type": ["integer", "null"]
-    },
-    "date_of_insertion_unix": {
-      "type": "integer"
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "vr_collection_sewer",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["date_unix", "vrcode", "average", "date_of_insertion_unix"],
+	"properties": {
+		"date_unix": {
+			"type": "integer"
+		},
+		"vrcode": {
+			"type": "string",
+			"pattern": "^VR[0-9]+$"
+		},
+		"average": {
+			"type": ["integer", "null"]
+		},
+		"date_of_insertion_unix": {
+			"type": "integer"
+		}
+	}
 }

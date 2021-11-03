@@ -6,5 +6,7 @@ import NextLink, { LinkProps } from 'next/link';
  */
 
 export function Link(props: LinkProps & { children?: React.ReactNode }) {
-  return <NextLink prefetch={false} scroll={false} locale={false} {...props} />;
+	return (
+		<NextLink prefetch={false} scroll={false} locale={false} {...props} />
+	);
 }

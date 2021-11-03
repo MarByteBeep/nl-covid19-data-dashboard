@@ -1,26 +1,26 @@
 import {
-  assert,
-  JsonDataScope,
-  VerboseFeature,
+	assert,
+	JsonDataScope,
+	VerboseFeature,
 } from '@corona-dashboard/common';
 import path from 'path';
 import { isDefined } from 'ts-is-present';
 import {
-  disabledMetrics,
-  schemaRootPath,
+	disabledMetrics,
+	schemaRootPath,
 } from '~/static-props/feature-flags/feature-flag-constants';
 import { loadJsonFromFile } from '~/static-props/utils/load-json-from-file';
 
 type AjvPropertyDef = { type?: MetricType; $ref: string; enum?: any[] };
 
 type AjvSchema = {
-  $schema: string;
-  type: string;
-  title: string;
-  additionalProperties: boolean;
-  required: string[];
-  properties: Record<string, AjvPropertyDef>;
-  definitions?: Record<string, AjvSchema>;
+	$schema: string;
+	type: string;
+	title: string;
+	additionalProperties: boolean;
+	required: string[];
+	properties: Record<string, AjvPropertyDef>;
+	definitions?: Record<string, AjvSchema>;
 };
 
 /**
@@ -45,168 +45,171 @@ type AjvSchema = {
  *
  */
 export function initializeFeatureFlaggedData<T>(
-  jsonData: T,
-  scope: JsonDataScope
+	jsonData: T,
+	scope: JsonDataScope
 ) {
-  const featuresFlags = getFeatureFlagsByScope(scope);
+	const featuresFlags = getFeatureFlagsByScope(scope);
 
-  featuresFlags.forEach((x) =>
-    initializeFeatureFlagDataItem(x, scope, jsonData)
-  );
+	featuresFlags.forEach((x) =>
+		initializeFeatureFlagDataItem(x, scope, jsonData)
+	);
 
-  return jsonData;
+	return jsonData;
 }
 
 function initializeFeatureFlagDataItem(
-  feature: VerboseFeature,
-  scope: JsonDataScope,
-  jsonData: any
+	feature: VerboseFeature,
+	scope: JsonDataScope,
+	jsonData: any
 ) {
-  const [rootSchema, metricSchema] = getSchema(feature, scope);
-  const metricType = getMetricType(rootSchema, feature.metricName);
-  if (metricType === 'array') {
-    if (!isDefined(jsonData[feature.metricName])) {
-      jsonData[feature.metricName] = [];
-    }
-  }
-  if (metricType === 'object') {
-    if (!isDefined(jsonData[feature.metricName])) {
-      jsonData[feature.metricName] = {};
-    }
-  }
-  if (metricType === 'ref') {
-    if (!isDefined(jsonData[feature.metricName])) {
-      jsonData[feature.metricName] = initializeRef(metricSchema);
-    }
-  }
-  if (isDefined(feature.metricProperties)) {
-    initializeMetricProperties(
-      jsonData[feature.metricName],
-      feature.metricProperties,
-      metricSchema
-    );
-  }
+	const [rootSchema, metricSchema] = getSchema(feature, scope);
+	const metricType = getMetricType(rootSchema, feature.metricName);
+	if (metricType === 'array') {
+		if (!isDefined(jsonData[feature.metricName])) {
+			jsonData[feature.metricName] = [];
+		}
+	}
+	if (metricType === 'object') {
+		if (!isDefined(jsonData[feature.metricName])) {
+			jsonData[feature.metricName] = {};
+		}
+	}
+	if (metricType === 'ref') {
+		if (!isDefined(jsonData[feature.metricName])) {
+			jsonData[feature.metricName] = initializeRef(metricSchema);
+		}
+	}
+	if (isDefined(feature.metricProperties)) {
+		initializeMetricProperties(
+			jsonData[feature.metricName],
+			feature.metricProperties,
+			metricSchema
+		);
+	}
 }
 
 function initializeMetricProperties(
-  metric: any,
-  propertyNames: string[],
-  metricSchema: AjvSchema
+	metric: any,
+	propertyNames: string[],
+	metricSchema: AjvSchema
 ) {
-  const metrics = Array.isArray(metric) ? metric : [metric];
-  metrics.forEach((m) => {
-    propertyNames.forEach((x) => {
-      if (!isDefined(metricSchema.properties[x])) {
-        throw new Error(
-          `metric property ${x} not defined in ${metricSchema.title}`
-        );
-      }
-      if (!isDefined(m[x])) {
-        m[x] = initializeProperty(metricSchema.properties[x], metricSchema);
-      }
-    });
-  });
+	const metrics = Array.isArray(metric) ? metric : [metric];
+	metrics.forEach((m) => {
+		propertyNames.forEach((x) => {
+			if (!isDefined(metricSchema.properties[x])) {
+				throw new Error(
+					`metric property ${x} not defined in ${metricSchema.title}`
+				);
+			}
+			if (!isDefined(m[x])) {
+				m[x] = initializeProperty(
+					metricSchema.properties[x],
+					metricSchema
+				);
+			}
+		});
+	});
 }
 
 function initializeRef(schema: AjvSchema): any {
-  if (schema.type === 'array') {
-    return [];
-  }
+	if (schema.type === 'array') {
+		return [];
+	}
 
-  if (!isDefined(schema.required)) {
-    return null;
-  }
+	if (!isDefined(schema.required)) {
+		return null;
+	}
 
-  return Object.fromEntries(
-    schema.required.map((x) => {
-      if (!isDefined(schema.properties[x])) {
-        throw new Error(
-          `metric property '${x}' not defined in ${schema.title}`
-        );
-      }
-      return [x, initializeProperty(schema.properties[x], schema)];
-    })
-  );
+	return Object.fromEntries(
+		schema.required.map((x) => {
+			if (!isDefined(schema.properties[x])) {
+				throw new Error(
+					`metric property '${x}' not defined in ${schema.title}`
+				);
+			}
+			return [x, initializeProperty(schema.properties[x], schema)];
+		})
+	);
 }
 
 function initializeSimpleProp(type: SimpleMetricType) {
-  switch (type) {
-    case 'boolean':
-      return true;
-    case 'array':
-      return [];
-    case 'string':
-      return '';
-    case 'number':
-    case 'integer':
-      return 0;
-    case 'object':
-      return {};
-  }
+	switch (type) {
+		case 'boolean':
+			return true;
+		case 'array':
+			return [];
+		case 'string':
+			return '';
+		case 'number':
+		case 'integer':
+			return 0;
+		case 'object':
+			return {};
+	}
 }
 
 function isStringPropType(value: any): value is SimpleMetricType {
-  return typeof value === 'string' && value !== 'ref' && value !== 'null';
+	return typeof value === 'string' && value !== 'ref' && value !== 'null';
 }
 
 function initializeProperty(prop: AjvPropertyDef, schema: AjvSchema) {
-  if (isDefined(prop.enum) && prop.enum.length) {
-    return prop.enum[0];
-  }
+	if (isDefined(prop.enum) && prop.enum.length) {
+		return prop.enum[0];
+	}
 
-  if (isStringPropType(prop.type)) {
-    return initializeSimpleProp(prop.type);
-  }
+	if (isStringPropType(prop.type)) {
+		return initializeSimpleProp(prop.type);
+	}
 
-  if (Array.isArray(prop.type)) {
-    return initializeSimpleProp(prop.type[0] as SimpleMetricType);
-  }
+	if (Array.isArray(prop.type)) {
+		return initializeSimpleProp(prop.type[0] as SimpleMetricType);
+	}
 
-  if (isDefined(prop.$ref) && prop.$ref.startsWith('#')) {
-    const key = prop.$ref.split('/').pop();
-    if (
-      isDefined(key) &&
-      isDefined(schema.definitions) &&
-      isDefined(schema.definitions[key])
-    ) {
-      const propDef = schema.definitions[key];
-      return initializeRef(propDef);
-    }
-  }
-  return null;
+	if (isDefined(prop.$ref) && prop.$ref.startsWith('#')) {
+		const key = prop.$ref.split('/').pop();
+		if (
+			isDefined(key) &&
+			isDefined(schema.definitions) &&
+			isDefined(schema.definitions[key])
+		) {
+			const propDef = schema.definitions[key];
+			return initializeRef(propDef);
+		}
+	}
+	return null;
 }
 
 function getSchema(feature: VerboseFeature, scope: JsonDataScope) {
-  const rootSchemaPath = path.join(schemaRootPath, scope, '__index.json');
-  const rootSchema = loadJsonFromFile<AjvSchema>(rootSchemaPath);
-  const metricSchemaPath = path.join(
-    schemaRootPath,
-    scope,
-    `${feature.metricName}.json`
-  );
-  const metricSchema = loadJsonFromFile<AjvSchema>(metricSchemaPath);
-  return [rootSchema, metricSchema] as const;
+	const rootSchemaPath = path.join(schemaRootPath, scope, '__index.json');
+	const rootSchema = loadJsonFromFile<AjvSchema>(rootSchemaPath);
+	const metricSchemaPath = path.join(
+		schemaRootPath,
+		scope,
+		`${feature.metricName}.json`
+	);
+	const metricSchema = loadJsonFromFile<AjvSchema>(metricSchemaPath);
+	return [rootSchema, metricSchema] as const;
 }
 
 function getFeatureFlagsByScope(scope: JsonDataScope) {
-  return disabledMetrics.filter((x) => x.dataScopes.includes(scope));
+	return disabledMetrics.filter((x) => x.dataScopes.includes(scope));
 }
 
 function getMetricType(schema: AjvSchema, metricName: string) {
-  const propertyDef = schema.properties[metricName];
-  assert(
-    isDefined(propertyDef),
-    `property ${metricName} not found on schema ${schema.title}`
-  );
-  return propertyDef.type ?? 'ref';
+	const propertyDef = schema.properties[metricName];
+	assert(
+		isDefined(propertyDef),
+		`property ${metricName} not found on schema ${schema.title}`
+	);
+	return propertyDef.type ?? 'ref';
 }
 
 type SimpleMetricType =
-  | 'array'
-  | 'object'
-  | 'string'
-  | 'integer'
-  | 'number'
-  | 'boolean';
+	| 'array'
+	| 'object'
+	| 'string'
+	| 'integer'
+	| 'number'
+	| 'boolean';
 
 type MetricType = SimpleMetricType | 'ref' | 'null' | MetricType[];

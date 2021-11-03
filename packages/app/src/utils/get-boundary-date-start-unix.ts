@@ -5,16 +5,16 @@ import { isDateValue, TimestampedValue } from '@corona-dashboard/common';
  * range of values.
  */
 export function getBoundaryDateStartUnix(
-  values: TimestampedValue[],
-  numberOfItems: number
+	values: TimestampedValue[],
+	numberOfItems: number
 ): number {
-  if (numberOfItems >= values.length) {
-    return Infinity;
-  }
+	if (numberOfItems >= values.length) {
+		return Infinity;
+	}
 
-  const boundaryValue = values[values.length - numberOfItems];
+	const boundaryValue = values[values.length - numberOfItems];
 
-  return isDateValue(boundaryValue)
-    ? boundaryValue.date_unix
-    : boundaryValue.date_start_unix;
+	return isDateValue(boundaryValue)
+		? boundaryValue.date_unix
+		: boundaryValue.date_start_unix;
 }

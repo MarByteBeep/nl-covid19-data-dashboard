@@ -1,64 +1,64 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "title": "gm_collection",
-  "additionalProperties": false,
-  "required": [
-    "last_generated",
-    "proto_name",
-    "name",
-    "code",
-    "hospital_nice",
-    "tested_overall",
-    "sewer",
-    "vaccine_coverage_per_age_group"
-  ],
-  "properties": {
-    "last_generated": {
-      "type": "string"
-    },
-    "proto_name": {
-      "$ref": "#/$defs/gm_collection_id"
-    },
-    "name": {
-      "$ref": "#/$defs/gm_collection_id"
-    },
-    "code": {
-      "$ref": "#/$defs/gm_collection_id"
-    },
-    "hospital_nice": {
-      "type": "array",
-      "maxItems": 355,
-      "items": {
-        "$ref": "hospital_nice.json"
-      }
-    },
-    "tested_overall": {
-      "type": "array",
-      "maxItems": 355,
-      "items": {
-        "$ref": "tested_overall.json"
-      }
-    },
-    "sewer": {
-      "type": "array",
-      "maxItems": 355,
-      "items": {
-        "$ref": "sewer.json"
-      }
-    },
-    "vaccine_coverage_per_age_group": {
-      "type": "array",
-      "maxItems": 1065,
-      "items": {
-        "$ref": "vaccine_coverage_per_age_group.json"
-      }
-    }
-  },
-  "$defs": {
-    "gm_collection_id": {
-      "type": "string",
-      "enum": ["GM_COLLECTION"]
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"type": "object",
+	"title": "gm_collection",
+	"additionalProperties": false,
+	"required": [
+		"last_generated",
+		"proto_name",
+		"name",
+		"code",
+		"hospital_nice",
+		"tested_overall",
+		"sewer",
+		"vaccine_coverage_per_age_group"
+	],
+	"properties": {
+		"last_generated": {
+			"type": "string"
+		},
+		"proto_name": {
+			"$ref": "#/$defs/gm_collection_id"
+		},
+		"name": {
+			"$ref": "#/$defs/gm_collection_id"
+		},
+		"code": {
+			"$ref": "#/$defs/gm_collection_id"
+		},
+		"hospital_nice": {
+			"type": "array",
+			"maxItems": 355,
+			"items": {
+				"$ref": "hospital_nice.json"
+			}
+		},
+		"tested_overall": {
+			"type": "array",
+			"maxItems": 355,
+			"items": {
+				"$ref": "tested_overall.json"
+			}
+		},
+		"sewer": {
+			"type": "array",
+			"maxItems": 355,
+			"items": {
+				"$ref": "sewer.json"
+			}
+		},
+		"vaccine_coverage_per_age_group": {
+			"type": "array",
+			"maxItems": 1065,
+			"items": {
+				"$ref": "vaccine_coverage_per_age_group.json"
+			}
+		}
+	},
+	"$defs": {
+		"gm_collection_id": {
+			"type": "string",
+			"enum": ["GM_COLLECTION"]
+		}
+	}
 }

@@ -12,8 +12,8 @@ import { Box } from '~/components/base';
 import { Text } from '~/components/typography';
 import { useIntl } from '~/intl';
 import {
-  AccessibilityDefinition,
-  useAccessibilityAnnotations,
+	AccessibilityDefinition,
+	useAccessibilityAnnotations,
 } from '~/utils/use-accessibility-annotations';
 import { AgeDemographicCoordinates } from './age-demographic-coordinates';
 import { AgeDemographicChartText, AgeDemographicDefaultValue } from './types';
@@ -22,287 +22,296 @@ import { formatAgeGroupRange } from './utils';
 export const AGE_GROUP_TOOLTIP_WIDTH = 340;
 
 interface AgeDemographicChartProps<T extends AgeDemographicDefaultValue> {
-  /**
-   * The mandatory AccessibilityDefinition provides a reference to annotate the
-   * graph with a label and description.
-   */
-  accessibility: AccessibilityDefinition;
-  coordinates: AgeDemographicCoordinates<T>;
-  text: AgeDemographicChartText;
-  onMouseMoveBar: (value: T, event: MouseEvent<SVGElement>) => void;
-  onMouseLeaveBar: () => void;
-  onKeyInput: (event: KeyboardEvent<SVGElement>) => void;
-  rightMetricProperty: KeysOfType<T, number, true>;
-  leftMetricProperty: KeysOfType<T, number, true>;
-  rightColor: Color;
-  leftColor: Color;
-  displayMaxPercentage?: number;
+	/**
+	 * The mandatory AccessibilityDefinition provides a reference to annotate the
+	 * graph with a label and description.
+	 */
+	accessibility: AccessibilityDefinition;
+	coordinates: AgeDemographicCoordinates<T>;
+	text: AgeDemographicChartText;
+	onMouseMoveBar: (value: T, event: MouseEvent<SVGElement>) => void;
+	onMouseLeaveBar: () => void;
+	onKeyInput: (event: KeyboardEvent<SVGElement>) => void;
+	rightMetricProperty: KeysOfType<T, number, true>;
+	leftMetricProperty: KeysOfType<T, number, true>;
+	rightColor: Color;
+	leftColor: Color;
+	displayMaxPercentage?: number;
 }
 
 const TickValue = ({ x, y, formattedValue }: TickRendererProps) => {
-  return (
-    <VisxText
-      x={x}
-      y={y}
-      fill={colors.annotation}
-      fontSize="1rem"
-      textAnchor="middle"
-    >
-      {formattedValue}
-    </VisxText>
-  );
+	return (
+		<VisxText
+			x={x}
+			y={y}
+			fill={colors.annotation}
+			fontSize="1rem"
+			textAnchor="middle"
+		>
+			{formattedValue}
+		</VisxText>
+	);
 };
 
 export const AgeDemographicChart = memo(
-  AgeDemographicChartWithGenerics
+	AgeDemographicChartWithGenerics
 ) as typeof AgeDemographicChartWithGenerics;
 
 function AgeDemographicChartWithGenerics<T extends AgeDemographicDefaultValue>({
-  accessibility,
-  coordinates,
-  text,
-  onKeyInput,
-  onMouseMoveBar,
-  onMouseLeaveBar,
-  rightMetricProperty,
-  leftMetricProperty,
-  rightColor,
-  leftColor,
-  displayMaxPercentage,
+	accessibility,
+	coordinates,
+	text,
+	onKeyInput,
+	onMouseMoveBar,
+	onMouseLeaveBar,
+	rightMetricProperty,
+	leftMetricProperty,
+	rightColor,
+	leftColor,
+	displayMaxPercentage,
 }: AgeDemographicChartProps<T>) {
-  const {
-    width,
-    height,
-    numTicks,
-    xMax,
-    yMax,
-    axisWidth,
-    leftPercentageScale,
-    leftPercentagePoint,
-    rightPercentageScale,
-    rightPercentagePoint,
-    ageGroupRangeScale,
-    ageGroupRangePoint,
-    ageGroupRange,
-    margin,
-    values,
-  } = coordinates;
+	const {
+		width,
+		height,
+		numTicks,
+		xMax,
+		yMax,
+		axisWidth,
+		leftPercentageScale,
+		leftPercentagePoint,
+		rightPercentageScale,
+		rightPercentagePoint,
+		ageGroupRangeScale,
+		ageGroupRangePoint,
+		ageGroupRange,
+		margin,
+		values,
+	} = coordinates;
 
-  const { formatPercentage } = useIntl();
+	const { formatPercentage } = useIntl();
 
-  const annotations = useAccessibilityAnnotations(accessibility);
+	const annotations = useAccessibilityAnnotations(accessibility);
 
-  const hasClippedValue = !!values.find(
-    (value) =>
-      getIsClipped(value[leftMetricProperty], displayMaxPercentage) ||
-      getIsClipped(value[rightMetricProperty], displayMaxPercentage)
-  );
+	const hasClippedValue = !!values.find(
+		(value) =>
+			getIsClipped(value[leftMetricProperty], displayMaxPercentage) ||
+			getIsClipped(value[rightMetricProperty], displayMaxPercentage)
+	);
 
-  return (
-    <Box>
-      {annotations.descriptionElement}
-      <svg
-        {...annotations.props}
-        width={width}
-        viewBox={`0 0 ${width} ${height}`}
-        role="img"
-        tabIndex={0}
-        onKeyUp={(event) => onKeyInput(event)}
-        css={css({
-          width: '100%',
-          overflow: 'visible',
-          '&:focus': {
-            outline: 'none',
-          },
-          // For the bottom axes, the tickLabelProps or labelProps won't change the fontSize
-          '.visx-axis-bottom tspan': {
-            fontSize: 12,
-          },
-        })}
-      >
-        <VisxText
-          textAnchor="end"
-          verticalAnchor="start"
-          y={0}
-          x={width / 2 - axisWidth / 2}
-          fill="black"
-          fontWeight="bold"
-          fontSize="1rem"
-          width={xMax - 10}
-        >
-          {text.left_title}
-        </VisxText>
-        <VisxText
-          textAnchor="start"
-          verticalAnchor="start"
-          y={0}
-          x={width / 2 + axisWidth / 2}
-          fill="black"
-          fontWeight="bold"
-          fontSize="1rem"
-          width={xMax - 10}
-        >
-          {text.right_title}
-        </VisxText>
+	return (
+		<Box>
+			{annotations.descriptionElement}
+			<svg
+				{...annotations.props}
+				width={width}
+				viewBox={`0 0 ${width} ${height}`}
+				role="img"
+				tabIndex={0}
+				onKeyUp={(event) => onKeyInput(event)}
+				css={css({
+					width: '100%',
+					overflow: 'visible',
+					'&:focus': {
+						outline: 'none',
+					},
+					// For the bottom axes, the tickLabelProps or labelProps won't change the fontSize
+					'.visx-axis-bottom tspan': {
+						fontSize: 12,
+					},
+				})}
+			>
+				<VisxText
+					textAnchor="end"
+					verticalAnchor="start"
+					y={0}
+					x={width / 2 - axisWidth / 2}
+					fill="black"
+					fontWeight="bold"
+					fontSize="1rem"
+					width={xMax - 10}
+				>
+					{text.left_title}
+				</VisxText>
+				<VisxText
+					textAnchor="start"
+					verticalAnchor="start"
+					y={0}
+					x={width / 2 + axisWidth / 2}
+					fill="black"
+					fontWeight="bold"
+					fontSize="1rem"
+					width={xMax - 10}
+				>
+					{text.right_title}
+				</VisxText>
 
-        {/* Vertical lines */}
-        <GridColumns
-          scale={leftPercentageScale}
-          width={xMax}
-          height={yMax}
-          left={margin.left}
-          top={margin.top}
-          numTicks={numTicks}
-          stroke={colors.silver}
-        />
+				{/* Vertical lines */}
+				<GridColumns
+					scale={leftPercentageScale}
+					width={xMax}
+					height={yMax}
+					left={margin.left}
+					top={margin.top}
+					numTicks={numTicks}
+					stroke={colors.silver}
+				/>
 
-        <GridColumns
-          scale={rightPercentageScale}
-          width={xMax}
-          height={yMax}
-          left={width / 2 + axisWidth / 2}
-          top={margin.top}
-          numTicks={numTicks}
-          stroke={colors.silver}
-        />
+				<GridColumns
+					scale={rightPercentageScale}
+					width={xMax}
+					height={yMax}
+					left={width / 2 + axisWidth / 2}
+					top={margin.top}
+					numTicks={numTicks}
+					stroke={colors.silver}
+				/>
 
-        <StyledPatternLines
-          id="is-clipped-pattern-left"
-          height={6}
-          width={6}
-          stroke={leftColor}
-          strokeWidth={2}
-          orientation={['diagonalRightToLeft']}
-        />
+				<StyledPatternLines
+					id="is-clipped-pattern-left"
+					height={6}
+					width={6}
+					stroke={leftColor}
+					strokeWidth={2}
+					orientation={['diagonalRightToLeft']}
+				/>
 
-        <StyledPatternLines
-          id="is-clipped-pattern-right"
-          height={6}
-          width={6}
-          stroke={rightColor}
-          strokeWidth={2}
-          orientation={['diagonal']}
-        />
+				<StyledPatternLines
+					id="is-clipped-pattern-right"
+					height={6}
+					width={6}
+					stroke={rightColor}
+					strokeWidth={2}
+					orientation={['diagonal']}
+				/>
 
-        {values.map((value, index) => {
-          const leftPercentageWidth = xMax - leftPercentagePoint(value);
-          const rightPercentageWidth = rightPercentagePoint(value);
+				{values.map((value, index) => {
+					const leftPercentageWidth =
+						xMax - leftPercentagePoint(value);
+					const rightPercentageWidth = rightPercentagePoint(value);
 
-          const isClippedLeftGroup = getIsClipped(
-            value[leftMetricProperty],
-            displayMaxPercentage
-          );
+					const isClippedLeftGroup = getIsClipped(
+						value[leftMetricProperty],
+						displayMaxPercentage
+					);
 
-          const isClippedRightGroup = getIsClipped(
-            value[rightMetricProperty],
-            displayMaxPercentage
-          );
+					const isClippedRightGroup = getIsClipped(
+						value[rightMetricProperty],
+						displayMaxPercentage
+					);
 
-          const isClippedValue = isClippedLeftGroup || isClippedRightGroup;
+					const isClippedValue =
+						isClippedLeftGroup || isClippedRightGroup;
 
-          return (
-            <StyledGroup
-              key={index}
-              onMouseMove={(event) => onMouseMoveBar(value, event)}
-              onMouseLeave={onMouseLeaveBar}
-            >
-              {/* This bar takes all width to display the background color on hover */}
-              <StyledHoverBar
-                x={margin.left}
-                y={ageGroupRangePoint(value)}
-                height={ageGroupRangeScale.bandwidth()}
-                width={width - margin.left - margin.right}
-              />
-              <Bar
-                x={width / 2 - axisWidth / 2 - leftPercentageWidth}
-                y={ageGroupRangePoint(value)}
-                height={ageGroupRangeScale.bandwidth()}
-                width={leftPercentageWidth}
-                css={css({
-                  fill: isClippedLeftGroup
-                    ? `url(#is-clipped-pattern-left)`
-                    : leftColor,
-                })}
-              />
-              <VisxText
-                textAnchor="middle"
-                verticalAnchor="middle"
-                fontSize="12"
-                y={
-                  ageGroupRangePoint(value) + ageGroupRangeScale.bandwidth() / 2
-                }
-                x={width / 2}
-                fill={colors.annotation}
-              >
-                {formatAgeGroupRange(ageGroupRange(value)) +
-                  (isClippedValue ? ' *' : '')}
-              </VisxText>
-              <Bar
-                x={width / 2 + axisWidth / 2}
-                y={ageGroupRangePoint(value)}
-                height={ageGroupRangeScale.bandwidth()}
-                width={rightPercentageWidth}
-                css={css({
-                  fill: isClippedRightGroup
-                    ? `url(#is-clipped-pattern-right)`
-                    : rightColor,
-                })}
-              />
-            </StyledGroup>
-          );
-        })}
+					return (
+						<StyledGroup
+							key={index}
+							onMouseMove={(event) =>
+								onMouseMoveBar(value, event)
+							}
+							onMouseLeave={onMouseLeaveBar}
+						>
+							{/* This bar takes all width to display the background color on hover */}
+							<StyledHoverBar
+								x={margin.left}
+								y={ageGroupRangePoint(value)}
+								height={ageGroupRangeScale.bandwidth()}
+								width={width - margin.left - margin.right}
+							/>
+							<Bar
+								x={
+									width / 2 -
+									axisWidth / 2 -
+									leftPercentageWidth
+								}
+								y={ageGroupRangePoint(value)}
+								height={ageGroupRangeScale.bandwidth()}
+								width={leftPercentageWidth}
+								css={css({
+									fill: isClippedLeftGroup
+										? `url(#is-clipped-pattern-left)`
+										: leftColor,
+								})}
+							/>
+							<VisxText
+								textAnchor="middle"
+								verticalAnchor="middle"
+								fontSize="12"
+								y={
+									ageGroupRangePoint(value) +
+									ageGroupRangeScale.bandwidth() / 2
+								}
+								x={width / 2}
+								fill={colors.annotation}
+							>
+								{formatAgeGroupRange(ageGroupRange(value)) +
+									(isClippedValue ? ' *' : '')}
+							</VisxText>
+							<Bar
+								x={width / 2 + axisWidth / 2}
+								y={ageGroupRangePoint(value)}
+								height={ageGroupRangeScale.bandwidth()}
+								width={rightPercentageWidth}
+								css={css({
+									fill: isClippedRightGroup
+										? `url(#is-clipped-pattern-right)`
+										: rightColor,
+								})}
+							/>
+						</StyledGroup>
+					);
+				})}
 
-        {/* Axis lines, match up with the vertical lines */}
-        <AxisBottom
-          scale={leftPercentageScale}
-          left={margin.left}
-          top={height - margin.bottom}
-          numTicks={numTicks}
-          hideTicks={true}
-          hideAxisLine={true}
-          tickFormat={(a) => `${formatPercentage(a)}%`}
-          tickComponent={TickValue}
-        />
+				{/* Axis lines, match up with the vertical lines */}
+				<AxisBottom
+					scale={leftPercentageScale}
+					left={margin.left}
+					top={height - margin.bottom}
+					numTicks={numTicks}
+					hideTicks={true}
+					hideAxisLine={true}
+					tickFormat={(a) => `${formatPercentage(a)}%`}
+					tickComponent={TickValue}
+				/>
 
-        <AxisBottom
-          scale={rightPercentageScale}
-          left={width / 2 + axisWidth / 2}
-          top={height - margin.bottom}
-          numTicks={numTicks}
-          hideTicks={true}
-          hideAxisLine={true}
-          tickFormat={(a) => `${formatPercentage(a)}%`}
-          tickComponent={TickValue}
-        />
-      </svg>
+				<AxisBottom
+					scale={rightPercentageScale}
+					left={width / 2 + axisWidth / 2}
+					top={height - margin.bottom}
+					numTicks={numTicks}
+					hideTicks={true}
+					hideAxisLine={true}
+					tickFormat={(a) => `${formatPercentage(a)}%`}
+					tickComponent={TickValue}
+				/>
+			</svg>
 
-      {hasClippedValue && (
-        <Text color="gray">* {text.clipped_value_message}</Text>
-      )}
-    </Box>
-  );
+			{hasClippedValue && (
+				<Text color="gray">* {text.clipped_value_message}</Text>
+			)}
+		</Box>
+	);
 }
 
 const StyledPatternLines = styled(PatternLines)<{ stroke: Color }>((p) =>
-  css({ stroke: p.stroke })
+	css({ stroke: p.stroke })
 );
 
 const StyledGroup = styled(Group)({});
 const StyledHoverBar = styled(Bar)(
-  css({
-    fill: 'transparent',
-    // transparent stroke is to capture mouse movements in between bars for the tooltip
-    stroke: 'transparent',
-    strokeWidth: 12,
+	css({
+		fill: 'transparent',
+		// transparent stroke is to capture mouse movements in between bars for the tooltip
+		stroke: 'transparent',
+		strokeWidth: 12,
 
-    [`${StyledGroup}:hover &`]: {
-      fill: 'lightBlue',
-    },
-  })
+		[`${StyledGroup}:hover &`]: {
+			fill: 'lightBlue',
+		},
+	})
 );
 
 function getIsClipped(value: number, maxValue: number | undefined) {
-  if (!maxValue) return false;
+	if (!maxValue) return false;
 
-  return value * 100 > maxValue;
+	return value * 100 > maxValue;
 }

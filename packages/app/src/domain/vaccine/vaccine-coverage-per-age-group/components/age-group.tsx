@@ -3,29 +3,29 @@ import { InlineText } from '~/components/typography';
 import { useIntl } from '~/intl';
 import { replaceVariablesInText } from '~/utils/replace-variables-in-text';
 interface AgeGroupProps {
-  range: string;
-  ageGroupTotal?: number;
-  birthyear_range: string;
+	range: string;
+	ageGroupTotal?: number;
+	birthyear_range: string;
 }
 
 export function AgeGroup({
-  range,
-  ageGroupTotal,
-  birthyear_range,
+	range,
+	ageGroupTotal,
+	birthyear_range,
 }: AgeGroupProps) {
-  const { siteText, formatNumber } = useIntl();
-  const { templates } = siteText.vaccinaties.vaccination_coverage;
+	const { siteText, formatNumber } = useIntl();
+	const { templates } = siteText.vaccinaties.vaccination_coverage;
 
-  const totalText = replaceVariablesInText(templates.agegroup.total_people, {
-    total: formatNumber(ageGroupTotal),
-  });
+	const totalText = replaceVariablesInText(templates.agegroup.total_people, {
+		total: formatNumber(ageGroupTotal),
+	});
 
-  return (
-    <Box display="flex" flexDirection="column">
-      <InlineText fontWeight="bold">{range}</InlineText>
-      <InlineText variant="label1">
-        {`${birthyear_range}${ageGroupTotal ? `: ${totalText}` : ''}`}
-      </InlineText>
-    </Box>
-  );
+	return (
+		<Box display="flex" flexDirection="column">
+			<InlineText fontWeight="bold">{range}</InlineText>
+			<InlineText variant="label1">
+				{`${birthyear_range}${ageGroupTotal ? `: ${totalText}` : ''}`}
+			</InlineText>
+		</Box>
+	);
 }

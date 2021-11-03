@@ -1,13 +1,13 @@
 import {
-  colors,
-  NlHospitalNicePerAgeGroupValue,
-  NlIntensiveCareNicePerAgeGroupValue,
+	colors,
+	NlHospitalNicePerAgeGroupValue,
+	NlIntensiveCareNicePerAgeGroupValue,
 } from '@corona-dashboard/common';
 import { Spacer } from '~/components/base';
 import { ErrorBoundary } from '~/components/error-boundary';
 import {
-  InteractiveLegend,
-  SelectOption,
+	InteractiveLegend,
+	SelectOption,
 } from '~/components/interactive-legend';
 import { Legend, LegendItem } from '~/components/legend';
 import { TimeSeriesChart } from '~/components/time-series-chart';
@@ -22,114 +22,117 @@ import { useList } from '~/utils/use-list';
 import { BASE_SERIES_CONFIG } from './series-config';
 
 type NLHospitalAdmissionPerAgeGroupValue =
-  | NlIntensiveCareNicePerAgeGroupValue
-  | NlHospitalNicePerAgeGroupValue;
+	| NlIntensiveCareNicePerAgeGroupValue
+	| NlHospitalNicePerAgeGroupValue;
 
 interface AdmissionsPerAgeGroup {
-  values: NLHospitalAdmissionPerAgeGroupValue[];
-  timeframe: 'all' | '5weeks';
-  /**
-   * The mandatory AccessibilityDefinition provides a reference to annotate the
-   * graph with a label and description.
-   */
-  accessibility: AccessibilityDefinition;
+	values: NLHospitalAdmissionPerAgeGroupValue[];
+	timeframe: 'all' | '5weeks';
+	/**
+	 * The mandatory AccessibilityDefinition provides a reference to annotate the
+	 * graph with a label and description.
+	 */
+	accessibility: AccessibilityDefinition;
 }
 
 export function AdmissionsPerAgeGroup({
-  values,
-  timeframe,
-  accessibility,
+	values,
+	timeframe,
+	accessibility,
 }: AdmissionsPerAgeGroup) {
-  const { siteText } = useIntl();
-  const { list, toggle, clear } = useList<string>();
-  const breakpoints = useBreakpoints(true);
+	const { siteText } = useIntl();
+	const { list, toggle, clear } = useList<string>();
+	const breakpoints = useBreakpoints(true);
 
-  const text = siteText.admissions_per_age_group_chart;
+	const text = siteText.admissions_per_age_group_chart;
 
-  const underReportedDateStart = getBoundaryDateStartUnix(values, 1);
-  const alwaysEnabled = ['admissions_overall_per_million'];
+	const underReportedDateStart = getBoundaryDateStartUnix(values, 1);
+	const alwaysEnabled = ['admissions_overall_per_million'];
 
-  /* Enrich config with dynamic data / locale */
-  const seriesConfig: LineSeriesDefinition<NLHospitalAdmissionPerAgeGroupValue>[] =
-    BASE_SERIES_CONFIG.map((baseAgeGroup) => {
-      return {
-        ...baseAgeGroup,
-        type: 'line',
-        shape: 'line',
-        label:
-          baseAgeGroup.metricProperty in text.legend
-            ? text.legend[baseAgeGroup.metricProperty]
-            : baseAgeGroup.metricProperty,
-      };
-    });
+	/* Enrich config with dynamic data / locale */
+	const seriesConfig: LineSeriesDefinition<NLHospitalAdmissionPerAgeGroupValue>[] =
+		BASE_SERIES_CONFIG.map((baseAgeGroup) => {
+			return {
+				...baseAgeGroup,
+				type: 'line',
+				shape: 'line',
+				label:
+					baseAgeGroup.metricProperty in text.legend
+						? text.legend[baseAgeGroup.metricProperty]
+						: baseAgeGroup.metricProperty,
+			};
+		});
 
-  /**
-   * Chart:
-   * - when nothing selected: all items
-   * - otherwise: selected items + always enabled items
-   */
-  const compareList = list.concat(...alwaysEnabled);
-  const chartConfig = seriesConfig.filter(
-    (item) =>
-      compareList.includes(item.metricProperty) ||
-      compareList.length === alwaysEnabled.length
-  );
+	/**
+	 * Chart:
+	 * - when nothing selected: all items
+	 * - otherwise: selected items + always enabled items
+	 */
+	const compareList = list.concat(...alwaysEnabled);
+	const chartConfig = seriesConfig.filter(
+		(item) =>
+			compareList.includes(item.metricProperty) ||
+			compareList.length === alwaysEnabled.length
+	);
 
-  const interactiveLegendOptions: SelectOption[] = seriesConfig.filter(
-    (item) => !alwaysEnabled.includes(item.metricProperty)
-  );
+	const interactiveLegendOptions: SelectOption[] = seriesConfig.filter(
+		(item) => !alwaysEnabled.includes(item.metricProperty)
+	);
 
-  /* Static legend contains always enabled items and the under reported item */
-  const staticLegendItems = seriesConfig
-    .filter((item) => alwaysEnabled.includes(item.metricProperty))
-    .map<LegendItem>((item) => ({
-      label: item.label,
-      shape: 'custom' as const,
-      shapeComponent: <SeriesIcon config={item} />,
-    }))
-    .concat([
-      {
-        shape: 'square' as const,
-        color: colors.data.underReported,
-        label: text.line_chart_legend_inaccurate_label,
-      },
-    ]);
+	/* Static legend contains always enabled items and the under reported item */
+	const staticLegendItems = seriesConfig
+		.filter((item) => alwaysEnabled.includes(item.metricProperty))
+		.map<LegendItem>((item) => ({
+			label: item.label,
+			shape: 'custom' as const,
+			shapeComponent: <SeriesIcon config={item} />,
+		}))
+		.concat([
+			{
+				shape: 'square' as const,
+				color: colors.data.underReported,
+				label: text.line_chart_legend_inaccurate_label,
+			},
+		]);
 
-  /* Conditionally let tooltip span over multiple columns */
-  const hasTwoColumns = list.length === 0 || list.length > 4;
+	/* Conditionally let tooltip span over multiple columns */
+	const hasTwoColumns = list.length === 0 || list.length > 4;
 
-  return (
-    <ErrorBoundary>
-      <InteractiveLegend
-        helpText={text.legend_help_text}
-        selectOptions={interactiveLegendOptions}
-        selection={list}
-        onToggleItem={toggle}
-        onReset={clear}
-      />
-      <Spacer mb={2} />
-      <TimeSeriesChart
-        accessibility={accessibility}
-        values={values}
-        timeframe={timeframe}
-        seriesConfig={chartConfig}
-        minHeight={breakpoints.md ? 300 : 250}
-        disableLegend
-        formatTooltip={(data) => (
-          <TooltipSeriesList data={data} hasTwoColumns={hasTwoColumns} />
-        )}
-        dataOptions={{
-          timespanAnnotations: [
-            {
-              start: underReportedDateStart,
-              end: Infinity,
-              label: text.line_chart_legend_inaccurate_label,
-              shortLabel: text.tooltip_labels.inaccurate,
-            },
-          ],
-        }}
-      />
-      <Legend items={staticLegendItems} />
-    </ErrorBoundary>
-  );
+	return (
+		<ErrorBoundary>
+			<InteractiveLegend
+				helpText={text.legend_help_text}
+				selectOptions={interactiveLegendOptions}
+				selection={list}
+				onToggleItem={toggle}
+				onReset={clear}
+			/>
+			<Spacer mb={2} />
+			<TimeSeriesChart
+				accessibility={accessibility}
+				values={values}
+				timeframe={timeframe}
+				seriesConfig={chartConfig}
+				minHeight={breakpoints.md ? 300 : 250}
+				disableLegend
+				formatTooltip={(data) => (
+					<TooltipSeriesList
+						data={data}
+						hasTwoColumns={hasTwoColumns}
+					/>
+				)}
+				dataOptions={{
+					timespanAnnotations: [
+						{
+							start: underReportedDateStart,
+							end: Infinity,
+							label: text.line_chart_legend_inaccurate_label,
+							shortLabel: text.tooltip_labels.inaccurate,
+						},
+					],
+				}}
+			/>
+			<Legend items={staticLegendItems} />
+		</ErrorBoundary>
+	);
 }

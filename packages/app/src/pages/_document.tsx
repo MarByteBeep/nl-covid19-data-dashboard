@@ -1,77 +1,77 @@
 import Document, {
-  DocumentContext,
-  Head,
-  Html,
-  Main,
-  NextScript,
+	DocumentContext,
+	Head,
+	Html,
+	Main,
+	NextScript,
 } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
 import xss from 'xss';
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
-    /**
-     * Code taken from https://medium.com/swlh/server-side-rendering-styled-components-with-nextjs-1db1353e915e
-     */
-    const sheet = new ServerStyleSheet();
-    const originalRenderPage = ctx.renderPage;
+	static async getInitialProps(ctx: DocumentContext) {
+		/**
+		 * Code taken from https://medium.com/swlh/server-side-rendering-styled-components-with-nextjs-1db1353e915e
+		 */
+		const sheet = new ServerStyleSheet();
+		const originalRenderPage = ctx.renderPage;
 
-    try {
-      ctx.renderPage = () =>
-        originalRenderPage({
-          enhanceApp: (App) => (props) =>
-            sheet.collectStyles(<App {...props} />),
-        });
+		try {
+			ctx.renderPage = () =>
+				originalRenderPage({
+					enhanceApp: (App) => (props) =>
+						sheet.collectStyles(<App {...props} />),
+				});
 
-      const initialProps = await Document.getInitialProps(ctx);
+			const initialProps = await Document.getInitialProps(ctx);
 
-      return {
-        ...initialProps,
-        styles: (
-          <>
-            {initialProps.styles}
-            {sheet.getStyleElement()}
-          </>
-        ),
-      };
-    } finally {
-      sheet.seal();
-    }
-  }
+			return {
+				...initialProps,
+				styles: (
+					<>
+						{initialProps.styles}
+						{sheet.getStyleElement()}
+					</>
+				),
+			};
+		} finally {
+			sheet.seal();
+		}
+	}
 
-  render() {
-    return (
-      <Html className="has-no-js">
-        <Head>
-          <script src="/init.js" />
-          <Fonts />
-        </Head>
-        <body>
-          <Main />
+	render() {
+		return (
+			<Html className="has-no-js">
+				<Head>
+					<script src="/init.js" />
+					<Fonts />
+				</Head>
+				<body>
+					<Main />
 
-          <noscript>
-            <img
-              src="https://statistiek.rijksoverheid.nl/piwik/piwik.php?idsite=7939&rec=1"
-              style={{ border: 0 }}
-              alt=""
-            />
-          </noscript>
+					<noscript>
+						<img
+							src="https://statistiek.rijksoverheid.nl/piwik/piwik.php?idsite=7939&rec=1"
+							style={{ border: 0 }}
+							alt=""
+						/>
+					</noscript>
 
-          <NextScript />
-        </body>
-      </Html>
-    );
-  }
+					<NextScript />
+				</body>
+			</Html>
+		);
+	}
 }
 
 export default MyDocument;
 
 function Fonts() {
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: xss(
-          `
+	return (
+		<style
+			dangerouslySetInnerHTML={{
+				__html: xss(
+					`
 @font-face {
   font-family: 'RO Sans';
   font-weight: normal;
@@ -99,8 +99,8 @@ function Fonts() {
   font-display: swap;
 }
       `.trim()
-        ),
-      }}
-    />
-  );
+				),
+			}}
+		/>
+	);
 }

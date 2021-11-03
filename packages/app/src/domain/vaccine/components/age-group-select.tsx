@@ -11,65 +11,71 @@ import { parseBirthyearRange } from '../logic/parse-birthyear-range';
 export type AgeGroup = '12+' | '12-17' | '18+';
 
 const AGE_GROUPS = [
-  {
-    ageGroup: '12+',
-    birthyearRange: '-2009',
-  },
-  {
-    ageGroup: '12-17',
-    birthyearRange: '2004-2009',
-  },
-  {
-    ageGroup: '18+',
-    birthyearRange: '-2003',
-  },
+	{
+		ageGroup: '12+',
+		birthyearRange: '-2009',
+	},
+	{
+		ageGroup: '12-17',
+		birthyearRange: '2004-2009',
+	},
+	{
+		ageGroup: '18+',
+		birthyearRange: '-2003',
+	},
 ] as const;
 
 type AgeGroupSelectProps = {
-  onChange: (value: AgeGroup) => void;
-  initialValue?: AgeGroup;
+	onChange: (value: AgeGroup) => void;
+	initialValue?: AgeGroup;
 };
 
 export function AgeGroupSelect(props: AgeGroupSelectProps) {
-  const { onChange, initialValue = '18+' } = props;
+	const { onChange, initialValue = '18+' } = props;
 
-  const { siteText } = useIntl();
+	const { siteText } = useIntl();
 
-  const options: Option<AgeGroup>[] = useMemo(
-    () =>
-      AGE_GROUPS.map((el) => {
-        const birthyearRange = parseBirthyearRange(el.birthyearRange);
+	const options: Option<AgeGroup>[] = useMemo(
+		() =>
+			AGE_GROUPS.map((el) => {
+				const birthyearRange = parseBirthyearRange(el.birthyearRange);
 
-        if (isPresent(birthyearRange)) {
-          return {
-            value: el.ageGroup,
-            label: siteText.vaccinaties.age_groups[el.ageGroup],
-            content: (
-              <Box>
-                <Text fontWeight="bold">
-                  {siteText.vaccinaties.age_groups[el.ageGroup]}
-                </Text>
-                <Text>
-                  {replaceVariablesInText(
-                    siteText.vaccinaties.birthyear_ranges[birthyearRange.type],
-                    birthyearRange
-                  )}
-                </Text>
-              </Box>
-            ),
-          };
-        }
-      }).filter(isPresent),
-    [siteText.vaccinaties.age_groups, siteText.vaccinaties.birthyear_ranges]
-  );
+				if (isPresent(birthyearRange)) {
+					return {
+						value: el.ageGroup,
+						label: siteText.vaccinaties.age_groups[el.ageGroup],
+						content: (
+							<Box>
+								<Text fontWeight="bold">
+									{
+										siteText.vaccinaties.age_groups[
+											el.ageGroup
+										]
+									}
+								</Text>
+								<Text>
+									{replaceVariablesInText(
+										siteText.vaccinaties.birthyear_ranges[
+											birthyearRange.type
+										],
+										birthyearRange
+									)}
+								</Text>
+							</Box>
+						),
+					};
+				}
+			}).filter(isPresent),
+		[siteText.vaccinaties.age_groups, siteText.vaccinaties.birthyear_ranges]
+	);
 
-  return (
-    <RichContentSelect
-      label={siteText.vaccinaties.age_group_dropdown.label}
-      visuallyHiddenLabel
-      initialValue={initialValue}
-      options={options}
-      onChange={(option) => onChange(option.value)}
-    />
-  );
+	return (
+		<RichContentSelect
+			label={siteText.vaccinaties.age_group_dropdown.label}
+			visuallyHiddenLabel
+			initialValue={initialValue}
+			options={options}
+			onChange={(option) => onChange(option.value)}
+		/>
+	);
 }

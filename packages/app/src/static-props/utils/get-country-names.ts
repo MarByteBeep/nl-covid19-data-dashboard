@@ -2,12 +2,12 @@ import { GetStaticPropsContext } from 'next';
 import { loadJsonFromDataFile } from './load-json-from-data-file';
 
 export function getCountryNames(context: GetStaticPropsContext) {
-  const { locale } = context;
+	const { locale } = context;
 
-  const names = loadJsonFromDataFile<Record<string, string>>(
-    `${locale}-country-names.json`,
-    'static-json'
-  );
+	const names = loadJsonFromDataFile<Record<string, string>>(
+		`${locale}-country-names.json`,
+		'static-json'
+	);
 
-  return { countryNames: names };
+	return { countryNames: names };
 }

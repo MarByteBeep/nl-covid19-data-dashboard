@@ -1,56 +1,56 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "nl_behavior_per_age_group",
-  "type": "object",
-  "properties": {
-    "keep_distance_compliance": { "$ref": "#/definitions/value" },
-    "keep_distance_support": { "$ref": "#/definitions/value" },
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "nl_behavior_per_age_group",
+	"type": "object",
+	"properties": {
+		"keep_distance_compliance": { "$ref": "#/definitions/value" },
+		"keep_distance_support": { "$ref": "#/definitions/value" },
 
-    "sneeze_cough_elbow_compliance": { "$ref": "#/definitions/value" },
-    "sneeze_cough_elbow_support": { "$ref": "#/definitions/value" },
+		"sneeze_cough_elbow_compliance": { "$ref": "#/definitions/value" },
+		"sneeze_cough_elbow_support": { "$ref": "#/definitions/value" },
 
-    "wash_hands_compliance": { "$ref": "#/definitions/value" },
-    "wash_hands_support": { "$ref": "#/definitions/value" },
+		"wash_hands_compliance": { "$ref": "#/definitions/value" },
+		"wash_hands_support": { "$ref": "#/definitions/value" },
 
-    "work_from_home_compliance": { "$ref": "#/definitions/value" },
-    "work_from_home_support": { "$ref": "#/definitions/value" },
+		"work_from_home_compliance": { "$ref": "#/definitions/value" },
+		"work_from_home_support": { "$ref": "#/definitions/value" },
 
-    "ventilate_home_compliance": { "$ref": "#/definitions/value" },
-    "ventilate_home_support": { "$ref": "#/definitions/value" },
+		"ventilate_home_compliance": { "$ref": "#/definitions/value" },
+		"ventilate_home_support": { "$ref": "#/definitions/value" },
 
-    "date_of_insertion_unix": { "type": "integer" },
-    "date_start_unix": { "type": "integer" },
-    "date_end_unix": { "type": "integer" }
-  },
-  "required": [
-    "keep_distance_compliance",
-    "keep_distance_support",
-    "sneeze_cough_elbow_compliance",
-    "sneeze_cough_elbow_support",
-    "wash_hands_compliance",
-    "wash_hands_support",
-    "work_from_home_compliance",
-    "work_from_home_support",
-    "ventilate_home_compliance",
-    "ventilate_home_support",
-    "date_of_insertion_unix",
-    "date_start_unix",
-    "date_end_unix"
-  ],
-  "additionalProperties": false,
-  "definitions": {
-    "value": {
-      "title": "nl_behavior_per_age_group_value",
-      "type": "object",
-      "properties": {
-        "16_24": { "type": ["integer", "null"] },
-        "25_39": { "type": ["integer", "null"] },
-        "40_54": { "type": ["integer", "null"] },
-        "55_69": { "type": ["integer", "null"] },
-        "70_plus": { "type": ["integer", "null"] }
-      },
-      "required": ["16_24", "25_39", "40_54", "55_69", "70_plus"],
-      "additionalProperties": false
-    }
-  }
+		"date_of_insertion_unix": { "type": "integer" },
+		"date_start_unix": { "type": "integer" },
+		"date_end_unix": { "type": "integer" }
+	},
+	"required": [
+		"keep_distance_compliance",
+		"keep_distance_support",
+		"sneeze_cough_elbow_compliance",
+		"sneeze_cough_elbow_support",
+		"wash_hands_compliance",
+		"wash_hands_support",
+		"work_from_home_compliance",
+		"work_from_home_support",
+		"ventilate_home_compliance",
+		"ventilate_home_support",
+		"date_of_insertion_unix",
+		"date_start_unix",
+		"date_end_unix"
+	],
+	"additionalProperties": false,
+	"definitions": {
+		"value": {
+			"title": "nl_behavior_per_age_group_value",
+			"type": "object",
+			"properties": {
+				"16_24": { "type": ["integer", "null"] },
+				"25_39": { "type": ["integer", "null"] },
+				"40_54": { "type": ["integer", "null"] },
+				"55_69": { "type": ["integer", "null"] },
+				"70_plus": { "type": ["integer", "null"] }
+			},
+			"required": ["16_24", "25_39", "40_54", "55_69", "70_plus"],
+			"additionalProperties": false
+		}
+	}
 }

@@ -16,12 +16,12 @@ export type Languages = typeof languages;
 export type LanguageKey = keyof Languages;
 
 export function cleanText(rawText: Record<string, unknown>) {
-  if (!hasIdsInKeys) {
-    return rawText as unknown as SiteText;
-  }
+	if (!hasIdsInKeys) {
+		return rawText as unknown as SiteText;
+	}
 
-  const flatText = flatten(rawText) as Record<string, string>;
-  const flatReplaced = removeIdsFromKeys(flatText);
+	const flatText = flatten(rawText) as Record<string, string>;
+	const flatReplaced = removeIdsFromKeys(flatText);
 
-  return unflatten(flatReplaced, { object: true }) as SiteText;
+	return unflatten(flatReplaced, { object: true }) as SiteText;
 }

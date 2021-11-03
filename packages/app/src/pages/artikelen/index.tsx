@@ -10,27 +10,27 @@ import { Heading, InlineText, Text } from '~/components/typography';
 import { ArticlesOverviewList } from '~/domain/articles/articles-overview-list';
 import { Layout } from '~/domain/layout/layout';
 import {
-  articleCategory,
-  ArticleCategoryType,
+	articleCategory,
+	ArticleCategoryType,
 } from '~/domain/topical/common/categories';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import {
-  createGetContent,
-  getLastGeneratedDate,
+	createGetContent,
+	getLastGeneratedDate,
 } from '~/static-props/get-data';
 import { asResponsiveArray } from '~/style/utils';
 import { useBreakpoints } from '~/utils/use-breakpoints';
 
 export const getStaticProps = createGetStaticProps(
-  getLastGeneratedDate,
-  createGetContent<ArticleSummary[]>((context) => {
-    const { locale } = context;
+	getLastGeneratedDate,
+	createGetContent<ArticleSummary[]>((context) => {
+		const { locale } = context;
 
-    return `*[_type == 'article'] | order(publicationDate desc) {
+		return `*[_type == 'article'] | order(publicationDate desc) {
         "title":title.${locale},
         slug,
         "summary":summary.${locale},
@@ -40,173 +40,184 @@ export const getStaticProps = createGetStaticProps(
           "asset": cover.asset->
         }
       }`;
-  })
+	})
 );
 
 const ArticlesOverview = (props: StaticProps<typeof getStaticProps>) => {
-  const { content, lastGenerated } = props;
-  const { siteText } = useIntl();
-  const router = useRouter();
-  const breakpoints = useBreakpoints();
+	const { content, lastGenerated } = props;
+	const { siteText } = useIntl();
+	const router = useRouter();
+	const breakpoints = useBreakpoints();
 
-  const sortOptions = useMemo(() => {
-    /**
-     * Find all the categories that are currently being used in articles,
-     * to later check if we still need it for the menu items.
-     */
-    const availableCategories = [
-      '__alles',
-      ...new Set(content.map((item) => item.categories).flat()),
-    ];
+	const sortOptions = useMemo(() => {
+		/**
+		 * Find all the categories that are currently being used in articles,
+		 * to later check if we still need it for the menu items.
+		 */
+		const availableCategories = [
+			'__alles',
+			...new Set(content.map((item) => item.categories).flat()),
+		];
 
-    return articleCategory
-      .map((id) => {
-        const label =
-          siteText.common_actueel.secties.artikelen.categorie_filters[id];
+		return articleCategory
+			.map((id) => {
+				const label =
+					siteText.common_actueel.secties.artikelen.categorie_filters[
+						id
+					];
 
-        return {
-          label,
-          value: id,
-        };
-      })
-      .filter((item) => availableCategories.includes(item.value));
-  }, [siteText, content]);
+				return {
+					label,
+					value: id,
+				};
+			})
+			.filter((item) => availableCategories.includes(item.value));
+	}, [siteText, content]);
 
-  const handleCategoryFilter = useCallback(
-    function setNewParam(item: ArticleCategoryType) {
-      router.replace(
-        {
-          pathname: '/artikelen',
-          query: { categorie: item },
-        },
-        undefined,
-        { shallow: true }
-      );
-    },
-    [router]
-  );
+	const handleCategoryFilter = useCallback(
+		function setNewParam(item: ArticleCategoryType) {
+			router.replace(
+				{
+					pathname: '/artikelen',
+					query: { categorie: item },
+				},
+				undefined,
+				{ shallow: true }
+			);
+		},
+		[router]
+	);
 
-  const currentCategory = (
-    articleCategory.includes(router.query.categorie as ArticleCategoryType)
-      ? router.query.categorie
-      : articleCategory[0]
-  ) as ArticleCategoryType;
+	const currentCategory = (
+		articleCategory.includes(router.query.categorie as ArticleCategoryType)
+			? router.query.categorie
+			: articleCategory[0]
+	) as ArticleCategoryType;
 
-  return (
-    <Layout {...siteText.articles_metadata} lastGenerated={lastGenerated}>
-      <Box backgroundColor="white" py={{ _: 4, md: 5 }}>
-        <MaxWidth px={{ _: 3, lg: 4 }}>
-          <Box pb={2}>
-            <Heading level={2} as="h1">
-              {siteText.common_actueel.secties.artikelen.titel}
-            </Heading>
-          </Box>
+	return (
+		<Layout {...siteText.articles_metadata} lastGenerated={lastGenerated}>
+			<Box backgroundColor="white" py={{ _: 4, md: 5 }}>
+				<MaxWidth px={{ _: 3, lg: 4 }}>
+					<Box pb={2}>
+						<Heading level={2} as="h1">
+							{siteText.common_actueel.secties.artikelen.titel}
+						</Heading>
+					</Box>
 
-          <Text>{siteText.common_actueel.secties.artikelen.beschrijving}</Text>
+					<Text>
+						{siteText.common_actueel.secties.artikelen.beschrijving}
+					</Text>
 
-          {breakpoints.lg ? (
-            <OrderedList>
-              {sortOptions.map((item, index) => (
-                <ListItem
-                  key={index}
-                  isActive={currentCategory === item.value}
-                  onClick={() => handleCategoryFilter(item.value)}
-                >
-                  <StyledButton>
-                    <InlineText>{item.label}</InlineText>
-                    <BoldText aria-hidden="true">{item.label}</BoldText>
-                  </StyledButton>
-                </ListItem>
-              ))}
-            </OrderedList>
-          ) : (
-            <Box
-              mt={3}
-              mb={4}
-              width="100%"
-              css={css({
-                select: {
-                  width: '100%',
-                  maxWidth: asResponsiveArray({ _: '25rem', xs: '23rem' }),
-                },
-              })}
-            >
-              <Select
-                options={sortOptions}
-                onChange={handleCategoryFilter}
-                value={currentCategory}
-              />
-            </Box>
-          )}
+					{breakpoints.lg ? (
+						<OrderedList>
+							{sortOptions.map((item, index) => (
+								<ListItem
+									key={index}
+									isActive={currentCategory === item.value}
+									onClick={() =>
+										handleCategoryFilter(item.value)
+									}
+								>
+									<StyledButton>
+										<InlineText>{item.label}</InlineText>
+										<BoldText aria-hidden="true">
+											{item.label}
+										</BoldText>
+									</StyledButton>
+								</ListItem>
+							))}
+						</OrderedList>
+					) : (
+						<Box
+							mt={3}
+							mb={4}
+							width="100%"
+							css={css({
+								select: {
+									width: '100%',
+									maxWidth: asResponsiveArray({
+										_: '25rem',
+										xs: '23rem',
+									}),
+								},
+							})}
+						>
+							<Select
+								options={sortOptions}
+								onChange={handleCategoryFilter}
+								value={currentCategory}
+							/>
+						</Box>
+					)}
 
-          <ArticlesOverviewList
-            articleSummaries={content}
-            hideLink={true}
-            currentCategory={currentCategory}
-          />
-        </MaxWidth>
-      </Box>
-    </Layout>
-  );
+					<ArticlesOverviewList
+						articleSummaries={content}
+						hideLink={true}
+						currentCategory={currentCategory}
+					/>
+				</MaxWidth>
+			</Box>
+		</Layout>
+	);
 };
 
 export default ArticlesOverview;
 
 const OrderedList = styled.ol(
-  css({
-    overflow: 'hidden',
-    position: 'relative',
-    display: 'flex',
-    justifyContent: 'space-around',
-    borderTop: '1px solid',
-    borderBottom: '1px solid',
-    borderColor: 'silver',
-    m: 0,
-    my: 4,
-    p: 0,
-    listStyleType: 'none',
-  })
+	css({
+		overflow: 'hidden',
+		position: 'relative',
+		display: 'flex',
+		justifyContent: 'space-around',
+		borderTop: '1px solid',
+		borderBottom: '1px solid',
+		borderColor: 'silver',
+		m: 0,
+		my: 4,
+		p: 0,
+		listStyleType: 'none',
+	})
 );
 
 const ListItem = styled.li<{ isActive: boolean }>((x) =>
-  css({
-    position: 'relative',
-    py: 3,
-    height: '100%',
-    transition: 'transform 0.2s',
-    cursor: 'pointer',
+	css({
+		position: 'relative',
+		py: 3,
+		height: '100%',
+		transition: 'transform 0.2s',
+		cursor: 'pointer',
 
-    '&:after': {
-      content: '""',
-      display: 'block',
-      position: 'absolute',
-      left: 0,
-      bottom: 0,
-      height: '6px',
-      width: `calc(100%)`,
-      backgroundColor: 'blue',
-      transform: `translateY(${x.isActive ? 0 : '6px'})`,
-      transition: 'transform 0.2s',
-    },
+		'&:after': {
+			content: '""',
+			display: 'block',
+			position: 'absolute',
+			left: 0,
+			bottom: 0,
+			height: '6px',
+			width: `calc(100%)`,
+			backgroundColor: 'blue',
+			transform: `translateY(${x.isActive ? 0 : '6px'})`,
+			transition: 'transform 0.2s',
+		},
 
-    span: {
-      // Regular text
-      ':nth-of-type(1)': {
-        opacity: x.isActive ? 0 : 1,
-      },
+		span: {
+			// Regular text
+			':nth-of-type(1)': {
+				opacity: x.isActive ? 0 : 1,
+			},
 
-      // Bold text
-      ':nth-of-type(2)': {
-        opacity: x.isActive ? 1 : 0,
-      },
-    },
+			// Bold text
+			':nth-of-type(2)': {
+				opacity: x.isActive ? 1 : 0,
+			},
+		},
 
-    ':hover': {
-      '&:after': {
-        transform: `translateY(0)`,
-      },
-    },
-  })
+		':hover': {
+			'&:after': {
+				transform: `translateY(0)`,
+			},
+		},
+	})
 );
 
 /*
@@ -216,27 +227,27 @@ const ListItem = styled.li<{ isActive: boolean }>((x) =>
  * It has a aria hidden label and is pure cosmetic for this use case.
  */
 const BoldText = styled.span(
-  css({
-    position: 'absolute',
-    top: 0,
-    left: '50%',
-    fontWeight: 'bold',
-    opacity: 0,
-    whiteSpace: 'nowrap',
-    transform: 'translateX(-50%)',
-  })
+	css({
+		position: 'absolute',
+		top: 0,
+		left: '50%',
+		fontWeight: 'bold',
+		opacity: 0,
+		whiteSpace: 'nowrap',
+		transform: 'translateX(-50%)',
+	})
 );
 
 const StyledButton = styled.button(
-  css({
-    all: 'unset',
-    position: 'relative',
-    px: 3,
+	css({
+		all: 'unset',
+		position: 'relative',
+		px: 3,
 
-    '&:focus': {
-      outlineWidth: '1px',
-      outlineStyle: 'dashed',
-      outlineColor: 'blue',
-    },
-  })
+		'&:focus': {
+			outlineWidth: '1px',
+			outlineStyle: 'dashed',
+			outlineColor: 'blue',
+		},
+	})
 );

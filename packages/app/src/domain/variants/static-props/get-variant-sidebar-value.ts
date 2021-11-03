@@ -3,19 +3,19 @@ import { maxBy } from 'lodash';
 import { isDefined } from 'ts-is-present';
 
 export type VariantSidebarValue = {
-  name: string;
+	name: string;
 } & NlVariantsVariantValue;
 
 export function getVariantSidebarValue(nlVariants: NlVariants | undefined) {
-  if (!isDefined(nlVariants) || !isDefined(nlVariants.values)) {
-    return null;
-  }
+	if (!isDefined(nlVariants) || !isDefined(nlVariants.values)) {
+		return null;
+	}
 
-  return maxBy(
-    nlVariants.values.map<VariantSidebarValue>((x) => ({
-      name: x.name,
-      ...x.last_value,
-    })),
-    (x) => x.percentage
-  );
+	return maxBy(
+		nlVariants.values.map<VariantSidebarValue>((x) => ({
+			name: x.name,
+			...x.last_value,
+		})),
+		(x) => x.percentage
+	);
 }

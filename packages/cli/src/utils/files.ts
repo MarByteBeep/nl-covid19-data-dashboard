@@ -8,32 +8,32 @@ import pMemoize from 'p-memoize';
  * multiple times and not have to keep track what files we already used.
  */
 export const readObjectFromJsonFile = pMemoize(async (filePath: string) => {
-  try {
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const result = JSON.parse(fileContents);
+	try {
+		const fileContents = fs.readFileSync(filePath, 'utf8');
+		const result = JSON.parse(fileContents);
 
-    if (isArray(result)) {
-      throw new Error(`Read data is an array instead of expected object`);
-    }
+		if (isArray(result)) {
+			throw new Error(`Read data is an array instead of expected object`);
+		}
 
-    return result as UnknownObject;
-  } catch (err) {
-    throw new Error(`Failed to read JSON file ${filePath}`);
-  }
+		return result as UnknownObject;
+	} catch (err) {
+		throw new Error(`Failed to read JSON file ${filePath}`);
+	}
 });
 
 export function getFilesWithTimeSeries(directory: string) {
-  assert(fs.existsSync(directory), `Directory ${directory} does not exist`);
+	assert(fs.existsSync(directory), `Directory ${directory} does not exist`);
 
-  const fileList = fs.readdirSync(directory);
+	const fileList = fs.readdirSync(directory);
 
-  const timeSeriesFiles = [
-    ...getFileNames(fileList, /^NL.json$/),
-    ...getFileNames(fileList, /^VR[0-9]+.json$/),
-    ...getFileNames(fileList, /^GM[0-9]+.json$/),
-  ];
+	const timeSeriesFiles = [
+		...getFileNames(fileList, /^NL.json$/),
+		...getFileNames(fileList, /^VR[0-9]+.json$/),
+		...getFileNames(fileList, /^GM[0-9]+.json$/),
+	];
 
-  return timeSeriesFiles;
+	return timeSeriesFiles;
 }
 
 /**
@@ -43,5 +43,5 @@ export function getFilesWithTimeSeries(directory: string) {
  * @param pattern The given regular expression
  */
 export function getFileNames(fileList: string[], pattern: RegExp) {
-  return fileList.filter((filename) => filename.match(pattern));
+	return fileList.filter((filename) => filename.match(pattern));
 }

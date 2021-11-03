@@ -7,43 +7,43 @@ import { AccessibilityDefinition } from '~/utils/use-accessibility-annotations';
 import { MiniTile, MiniTileProps } from './mini-tile';
 
 type MiniTrendTileProps<T extends TimestampedValue = TimestampedValue> = {
-  /**
-   * The mandatory AccessibilityDefinition provides a reference to annotate the
-   * graph with a label and description.
-   */
-  accessibility: AccessibilityDefinition;
-  timeframe?: TimeframeOption;
-  seriesConfig: SeriesConfig<T>;
-  dataOptions?: DataOptions;
-  values: T[];
+	/**
+	 * The mandatory AccessibilityDefinition provides a reference to annotate the
+	 * graph with a label and description.
+	 */
+	accessibility: AccessibilityDefinition;
+	timeframe?: TimeframeOption;
+	seriesConfig: SeriesConfig<T>;
+	dataOptions?: DataOptions;
+	values: T[];
 } & Omit<MiniTileProps, 'children'>;
 
 export function MiniTrendTile<T extends TimestampedValue>(
-  props: MiniTrendTileProps<T>
+	props: MiniTrendTileProps<T>
 ) {
-  const {
-    accessibility,
-    timeframe = '5weeks',
-    values,
-    seriesConfig,
-    dataOptions,
-    ...tileProps
-  } = props;
+	const {
+		accessibility,
+		timeframe = '5weeks',
+		values,
+		seriesConfig,
+		dataOptions,
+		...tileProps
+	} = props;
 
-  return (
-    <MiniTile {...tileProps}>
-      <div>
-        <ErrorBoundary>
-          <MiniTrendChart
-            accessibility={accessibility}
-            timeframe={timeframe}
-            title={tileProps.title}
-            values={values}
-            seriesConfig={seriesConfig}
-            dataOptions={dataOptions}
-          />
-        </ErrorBoundary>
-      </div>
-    </MiniTile>
-  );
+	return (
+		<MiniTile {...tileProps}>
+			<div>
+				<ErrorBoundary>
+					<MiniTrendChart
+						accessibility={accessibility}
+						timeframe={timeframe}
+						title={tileProps.title}
+						values={values}
+						seriesConfig={seriesConfig}
+						dataOptions={dataOptions}
+					/>
+				</ErrorBoundary>
+			</div>
+		</MiniTile>
+	);
 }

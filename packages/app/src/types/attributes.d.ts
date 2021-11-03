@@ -4,5 +4,5 @@
  *
  */
 export interface DataProps {
-  'data-cy'?: string;
+	'data-cy'?: string;
 }

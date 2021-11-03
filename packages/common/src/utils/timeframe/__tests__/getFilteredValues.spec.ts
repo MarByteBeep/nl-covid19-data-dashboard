@@ -3,63 +3,63 @@ import { getFilteredValues } from '..';
 const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
 
 function createTestDate(numberOfDays: number): Date {
-  return new Date(new Date().getTime() - numberOfDays * oneDayInMilliseconds);
+	return new Date(new Date().getTime() - numberOfDays * oneDayInMilliseconds);
 }
 
 type TestValue = {
-  date: Date;
+	date: Date;
 };
 
 function createTestValues(): TestValue[] {
-  const testValueList = [
-    {
-      date: createTestDate(1),
-    },
-    {
-      date: createTestDate(2),
-    },
-    {
-      date: createTestDate(9),
-    },
-    {
-      date: createTestDate(12),
-    },
-    {
-      date: createTestDate(60),
-    },
-  ];
+	const testValueList = [
+		{
+			date: createTestDate(1),
+		},
+		{
+			date: createTestDate(2),
+		},
+		{
+			date: createTestDate(9),
+		},
+		{
+			date: createTestDate(12),
+		},
+		{
+			date: createTestDate(60),
+		},
+	];
 
-  return testValueList;
+	return testValueList;
 }
 
 const testCallback = (item: TestValue) => item.date.getTime();
 
 describe('Utils: getFilteredValues', () => {
-  let _testList: any[];
+	let _testList: any[];
 
-  beforeEach(() => {
-    _testList = createTestValues();
-  });
+	beforeEach(() => {
+		_testList = createTestValues();
+	});
 
-  it('should filter the list by 5weeks', () => {
-    const result = getFilteredValues(
-      _testList,
-      '5weeks',
-      new Date(),
-      testCallback
-    );
+	it('should filter the list by 5weeks', () => {
+		const result = getFilteredValues(
+			_testList,
+			'5weeks',
+			new Date(),
+			testCallback
+		);
 
-    expect(result.length).toEqual(4);
-  });
+		expect(result.length).toEqual(4);
+	});
 
-  it('should filter the list by all', () => {
-    const result = getFilteredValues(
-      _testList,
-      'all',
-      new Date(),
-      testCallback
-    );
+	it('should filter the list by all', () => {
+		const result = getFilteredValues(
+			_testList,
+			'all',
+			new Date(),
+			testCallback
+		);
 
-    expect(result.length).toEqual(5);
-  });
+		expect(result.length).toEqual(5);
+	});
 });

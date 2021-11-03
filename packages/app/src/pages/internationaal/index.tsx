@@ -3,28 +3,28 @@ import { Layout } from '~/domain/layout/layout';
 import { useIntl } from '~/intl';
 import { withFeatureNotFoundPage } from '~/lib/features';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import { getLastGeneratedDate } from '~/static-props/get-data';
 
 export const getStaticProps = withFeatureNotFoundPage(
-  'inHomePage',
-  createGetStaticProps(getLastGeneratedDate)
+	'inHomePage',
+	createGetStaticProps(getLastGeneratedDate)
 );
 
 export default function InternationalPage(
-  props: StaticProps<typeof getStaticProps>
+	props: StaticProps<typeof getStaticProps>
 ) {
-  const intl = useIntl();
-  const { lastGenerated } = props;
+	const intl = useIntl();
+	const { lastGenerated } = props;
 
-  return (
-    <Layout
-      {...intl.siteText.internationaal_metadata}
-      lastGenerated={lastGenerated}
-    >
-      <InLayout lastGenerated={lastGenerated} />
-    </Layout>
-  );
+	return (
+		<Layout
+			{...intl.siteText.internationaal_metadata}
+			lastGenerated={lastGenerated}
+		>
+			<InLayout lastGenerated={lastGenerated} />
+		</Layout>
+	);
 }

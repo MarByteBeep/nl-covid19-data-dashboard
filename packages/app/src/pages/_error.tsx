@@ -3,33 +3,33 @@ import { Content } from '~/domain/layout/content';
 import { Layout } from '~/domain/layout/layout';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import { getLastGeneratedDate } from '~/static-props/get-data';
 
 export const getStaticProps = createGetStaticProps(getLastGeneratedDate);
 
 const ErrorPage = (props: StaticProps<typeof getStaticProps>) => {
-  const { lastGenerated } = props;
-  const { siteText } = useIntl();
+	const { lastGenerated } = props;
+	const { siteText } = useIntl();
 
-  return (
-    <Layout {...siteText.error_metadata} lastGenerated={lastGenerated}>
-      <Content>
-        <Heading level={1}>{siteText.error_titel.text}</Heading>
-        <Text>{siteText.error_beschrijving.text}</Text>
+	return (
+		<Layout {...siteText.error_metadata} lastGenerated={lastGenerated}>
+			<Content>
+				<Heading level={1}>{siteText.error_titel.text}</Heading>
+				<Text>{siteText.error_beschrijving.text}</Text>
 
-        <button
-          onClick={() => {
-            location.reload();
-          }}
-        >
-          {siteText.error_probeer_opnieuw.text}
-        </button>
-      </Content>
-    </Layout>
-  );
+				<button
+					onClick={() => {
+						location.reload();
+					}}
+				>
+					{siteText.error_probeer_opnieuw.text}
+				</button>
+			</Content>
+		</Layout>
+	);
 };
 
 export default ErrorPage;

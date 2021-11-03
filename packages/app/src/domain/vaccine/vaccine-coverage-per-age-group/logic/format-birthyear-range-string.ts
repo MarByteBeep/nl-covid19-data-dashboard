@@ -14,31 +14,31 @@ import { replaceVariablesInText } from '~/utils/replace-variables-in-text';
  */
 
 export function formatBirthyearRangeString(
-  birthyearRange: string,
-  templates: {
-    earlier: string;
-    later: string;
-    range: string;
-  }
+	birthyearRange: string,
+	templates: {
+		earlier: string;
+		later: string;
+		range: string;
+	}
 ) {
-  const splittedBirthyear = birthyearRange.split('-');
+	const splittedBirthyear = birthyearRange.split('-');
 
-  switch (true) {
-    case birthyearRange.startsWith('-'): {
-      return replaceVariablesInText(templates.earlier, {
-        birthyear: splittedBirthyear[1],
-      });
-    }
-    case birthyearRange.endsWith('-'): {
-      return replaceVariablesInText(templates.later, {
-        birthyear: splittedBirthyear[0],
-      });
-    }
-    default: {
-      return replaceVariablesInText(templates.range, {
-        birthyearStart: splittedBirthyear[0],
-        birthyearEnd: splittedBirthyear[1],
-      });
-    }
-  }
+	switch (true) {
+		case birthyearRange.startsWith('-'): {
+			return replaceVariablesInText(templates.earlier, {
+				birthyear: splittedBirthyear[1],
+			});
+		}
+		case birthyearRange.endsWith('-'): {
+			return replaceVariablesInText(templates.later, {
+				birthyear: splittedBirthyear[0],
+			});
+		}
+		default: {
+			return replaceVariablesInText(templates.range, {
+				birthyearStart: splittedBirthyear[0],
+				birthyearEnd: splittedBirthyear[1],
+			});
+		}
+	}
 }

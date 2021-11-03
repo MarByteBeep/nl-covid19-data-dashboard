@@ -4,8 +4,8 @@ import { JSONObject } from './custom-validations';
 import { SchemaInfoItem } from './schema-info';
 
 type ValidationResult = {
-  isValid: boolean;
-  schemaErrors?: (ErrorObject | string)[];
+	isValid: boolean;
+	schemaErrors?: (ErrorObject | string)[];
 };
 
 /**
@@ -16,26 +16,26 @@ type ValidationResult = {
  *
  */
 export function executeValidations(
-  validateFunction: ValidateFunction,
-  data: JSONObject,
-  schemaInfo: SchemaInfoItem
+	validateFunction: ValidateFunction,
+	data: JSONObject,
+	schemaInfo: SchemaInfoItem
 ): ValidationResult {
-  let isValid = validateFunction(data) as boolean;
-  let schemaErrors: (ErrorObject | string)[] = validateFunction.errors ?? [];
+	let isValid = validateFunction(data) as boolean;
+	let schemaErrors: (ErrorObject | string)[] = validateFunction.errors ?? [];
 
-  if (schemaInfo.customValidations) {
-    const errors = schemaInfo.customValidations
-      .flatMap((validationFunc) => validationFunc(data))
-      .filter(isDefined);
+	if (schemaInfo.customValidations) {
+		const errors = schemaInfo.customValidations
+			.flatMap((validationFunc) => validationFunc(data))
+			.filter(isDefined);
 
-    if (errors !== undefined) {
-      schemaErrors = schemaErrors.concat(errors);
-    }
+		if (errors !== undefined) {
+			schemaErrors = schemaErrors.concat(errors);
+		}
 
-    if (isValid) {
-      isValid = !errors?.length;
-    }
-  }
+		if (isValid) {
+			isValid = !errors?.length;
+		}
+	}
 
-  return { isValid, schemaErrors };
+	return { isValid, schemaErrors };
 }

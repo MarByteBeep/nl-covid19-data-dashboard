@@ -5,37 +5,37 @@ import { Down } from '@corona-dashboard/icons';
 import { Container, IconContainer } from './containers';
 
 export function SidebarDifference({
-  value,
+	value,
 }: {
-  value: DifferenceDecimal | DifferenceInteger;
+	value: DifferenceDecimal | DifferenceInteger;
 }) {
-  const { difference } = value;
+	const { difference } = value;
 
-  if (difference > 0) {
-    return (
-      <Container>
-        <IconContainer color="red">
-          <Up />
-        </IconContainer>
-      </Container>
-    );
-  }
+	if (difference > 0) {
+		return (
+			<Container>
+				<IconContainer color="red">
+					<Up />
+				</IconContainer>
+			</Container>
+		);
+	}
 
-  if (difference < 0) {
-    return (
-      <Container>
-        <IconContainer color="data.primary">
-          <Down />
-        </IconContainer>
-      </Container>
-    );
-  }
+	if (difference < 0) {
+		return (
+			<Container>
+				<IconContainer color="data.primary">
+					<Down />
+				</IconContainer>
+			</Container>
+		);
+	}
 
-  return (
-    <Container>
-      <IconContainer color="data.neutral">
-        <Gelijk />
-      </IconContainer>
-    </Container>
-  );
+	return (
+		<Container>
+			<IconContainer color="data.neutral">
+				<Gelijk />
+			</IconContainer>
+		</Container>
+	);
 }

@@ -9,17 +9,17 @@ import { Work } from '@corona-dashboard/icons';
 import { SituationKey } from '../logic/situations';
 
 const icons = {
-  home_and_visits: HomeAndVisits,
-  work: Work,
-  school_and_day_care: SchoolAndDayCare,
-  health_care: HealthCare,
-  gathering: Gathering,
-  travel: Travel,
-  hospitality: Hospitality,
-  other: Other,
+	home_and_visits: HomeAndVisits,
+	work: Work,
+	school_and_day_care: SchoolAndDayCare,
+	health_care: HealthCare,
+	gathering: Gathering,
+	travel: Travel,
+	hospitality: Hospitality,
+	other: Other,
 };
 
 export function SituationIcon({ id }: { id: SituationKey }) {
-  const IconFromMap = icons[id];
-  return <IconFromMap />;
+	const IconFromMap = icons[id];
+	return <IconFromMap />;
 }

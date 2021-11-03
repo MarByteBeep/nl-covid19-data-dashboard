@@ -1,7 +1,7 @@
 import {
-  DataScope,
-  MetricKeys,
-  MetricProperty,
+	DataScope,
+	MetricKeys,
+	MetricProperty,
 } from '@corona-dashboard/common';
 
 /**
@@ -11,15 +11,15 @@ import {
  */
 
 export type BarScaleConfig = {
-  min: number;
-  max: number;
-  limit: number;
-  gradient: { color: string; value: number }[];
+	min: number;
+	max: number;
+	limit: number;
+	gradient: { color: string; value: number }[];
 };
 
 export type MetricConfig = {
-  barScale?: BarScaleConfig;
-  minimumRange?: number;
+	barScale?: BarScaleConfig;
+	minimumRange?: number;
 };
 
 /**
@@ -27,7 +27,7 @@ export type MetricConfig = {
  * structure as the data object it is coupled with
  */
 export type ScopedMetricConfigs<S extends DataScope> = {
-  [metricKey in MetricKeys<S>]?: {
-    [property in MetricProperty<S, metricKey>]?: MetricConfig;
-  };
+	[metricKey in MetricKeys<S>]?: {
+		[property in MetricProperty<S, metricKey>]?: MetricConfig;
+	};
 };

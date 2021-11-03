@@ -1,9 +1,9 @@
 import { GetStaticPropsContext } from 'next';
 
 export function getInPositiveTestsQuery(context: GetStaticPropsContext) {
-  const { locale } = context;
+	const { locale } = context;
 
-  return `
+	return `
   *[_type=='in_positiveTestsPage']{
     "pageLinks": [...pageLinks[]{
       "title": title.${locale},

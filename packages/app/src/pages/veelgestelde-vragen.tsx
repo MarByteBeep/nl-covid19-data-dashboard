@@ -8,28 +8,28 @@ import { Content } from '~/domain/layout/content';
 import { Layout } from '~/domain/layout/layout';
 import { useIntl } from '~/intl';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import {
-  createGetContent,
-  getLastGeneratedDate,
+	createGetContent,
+	getLastGeneratedDate,
 } from '~/static-props/get-data';
 import { FAQuestionAndAnswer, RichContentBlock } from '~/types/cms';
 import { getSkipLinkId } from '~/utils/skip-links';
 
 interface VeelgesteldeVragenData {
-  title: string | null;
-  description: RichContentBlock[] | null;
-  questions: FAQuestionAndAnswer[];
+	title: string | null;
+	description: RichContentBlock[] | null;
+	questions: FAQuestionAndAnswer[];
 }
 
 export const getStaticProps = createGetStaticProps(
-  getLastGeneratedDate,
-  createGetContent<VeelgesteldeVragenData>((context) => {
-    const { locale = 'nl' } = context;
+	getLastGeneratedDate,
+	createGetContent<VeelgesteldeVragenData>((context) => {
+		const { locale = 'nl' } = context;
 
-    return `*[_type == 'veelgesteldeVragen']{
+		return `*[_type == 'veelgesteldeVragen']{
       ...,
       "description": {
         "_type": description._type,
@@ -59,67 +59,77 @@ export const getStaticProps = createGetStaticProps(
 
     }[0]
     `;
-  })
+	})
 );
 
 const Verantwoording = (props: StaticProps<typeof getStaticProps>) => {
-  const { content, lastGenerated } = props;
-  const { siteText } = useIntl();
+	const { content, lastGenerated } = props;
+	const { siteText } = useIntl();
 
-  const groups = groupBy<FAQuestionAndAnswer>(
-    content.questions,
-    (x) => x.group
-  );
+	const groups = groupBy<FAQuestionAndAnswer>(
+		content.questions,
+		(x) => x.group
+	);
 
-  return (
-    <Layout
-      {...siteText.veelgestelde_vragen_metadata}
-      lastGenerated={lastGenerated}
-    >
-      <Head>
-        <link
-          key="dc-type"
-          rel="dcterms:type"
-          href="https://standaarden.overheid.nl/owms/terms/webpagina"
-        />
-        <link
-          key="dc-type-title"
-          rel="dcterms:type"
-          href="https://standaarden.overheid.nl/owms/terms/webpagina"
-          title="webpagina"
-        />
-      </Head>
+	return (
+		<Layout
+			{...siteText.veelgestelde_vragen_metadata}
+			lastGenerated={lastGenerated}
+		>
+			<Head>
+				<link
+					key="dc-type"
+					rel="dcterms:type"
+					href="https://standaarden.overheid.nl/owms/terms/webpagina"
+				/>
+				<link
+					key="dc-type-title"
+					rel="dcterms:type"
+					href="https://standaarden.overheid.nl/owms/terms/webpagina"
+					title="webpagina"
+				/>
+			</Head>
 
-      <Content>
-        <Box spacing={4}>
-          {content.title && <Heading level={1}>{content.title}</Heading>}
-          {content.description && <RichContent blocks={content.description} />}
+			<Content>
+				<Box spacing={4}>
+					{content.title && (
+						<Heading level={1}>{content.title}</Heading>
+					)}
+					{content.description && (
+						<RichContent blocks={content.description} />
+					)}
 
-          {Object.entries(groups).map(([group, questions]) => (
-            <Box as="article" key={group} spacing={3}>
-              <Heading level={3} as="h2">
-                {group}
-              </Heading>
-              <div>
-                {questions.map((item) => {
-                  const id = getSkipLinkId(item.title);
-                  return (
-                    <CollapsibleSection key={id} id={id} summary={item.title}>
-                      {item.content && (
-                        <Box py={3}>
-                          <RichContent blocks={item.content} />
-                        </Box>
-                      )}
-                    </CollapsibleSection>
-                  );
-                })}
-              </div>
-            </Box>
-          ))}
-        </Box>
-      </Content>
-    </Layout>
-  );
+					{Object.entries(groups).map(([group, questions]) => (
+						<Box as="article" key={group} spacing={3}>
+							<Heading level={3} as="h2">
+								{group}
+							</Heading>
+							<div>
+								{questions.map((item) => {
+									const id = getSkipLinkId(item.title);
+									return (
+										<CollapsibleSection
+											key={id}
+											id={id}
+											summary={item.title}
+										>
+											{item.content && (
+												<Box py={3}>
+													<RichContent
+														blocks={item.content}
+													/>
+												</Box>
+											)}
+										</CollapsibleSection>
+									);
+								})}
+							</div>
+						</Box>
+					))}
+				</Box>
+			</Content>
+		</Layout>
+	);
 };
 
 export default Verantwoording;

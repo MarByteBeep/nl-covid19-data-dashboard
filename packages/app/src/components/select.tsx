@@ -8,123 +8,127 @@ import chevronDownUrl from '~/assets/chevron-down.svg';
 import closeUrl from '~/assets/close.svg';
 
 interface Option<T extends string> {
-  value: T;
-  label: string;
+	value: T;
+	label: string;
 }
 
 export type SelectProps<T extends string> = {
-  options: Option<T>[];
-  value: string | undefined;
-  onChange: (value: T) => void;
-  onClear?: () => void;
-  placeholder?: string;
-  icon?: React.ReactNode;
+	options: Option<T>[];
+	value: string | undefined;
+	onChange: (value: T) => void;
+	onClear?: () => void;
+	placeholder?: string;
+	icon?: React.ReactNode;
 };
 
 export function Select<T extends string>({
-  value,
-  onChange,
-  onClear,
-  options,
-  placeholder,
-  icon,
+	value,
+	onChange,
+	onClear,
+	options,
+	placeholder,
+	icon,
 }: SelectProps<T>) {
-  const { siteText } = useIntl();
+	const { siteText } = useIntl();
 
-  const hasIcon = isDefined(icon);
+	const hasIcon = isDefined(icon);
 
-  return (
-    <Container>
-      <StyledSelect
-        value={value || ''}
-        onChange={(event) => onChange((event.target.value || undefined) as T)}
-        isClearable={!!onClear}
-        hasIcon={hasIcon}
-      >
-        {placeholder && (
-          <option value="" disabled={!value}>
-            {placeholder}
-          </option>
-        )}
-        {options.map(({ value, label }) => (
-          <option key={value} value={value}>
-            {label}
-          </option>
-        ))}
-      </StyledSelect>
-      {onClear && value && (
-        <ClearButton
-          onClick={() => onClear && onClear()}
-          title={siteText.common.clear_select_input}
-        >
-          <VisuallyHidden>{siteText.common.clear_select_input}</VisuallyHidden>
-        </ClearButton>
-      )}
-      {isDefined(icon) && <Icon>{icon}</Icon>}
-    </Container>
-  );
+	return (
+		<Container>
+			<StyledSelect
+				value={value || ''}
+				onChange={(event) =>
+					onChange((event.target.value || undefined) as T)
+				}
+				isClearable={!!onClear}
+				hasIcon={hasIcon}
+			>
+				{placeholder && (
+					<option value="" disabled={!value}>
+						{placeholder}
+					</option>
+				)}
+				{options.map(({ value, label }) => (
+					<option key={value} value={value}>
+						{label}
+					</option>
+				))}
+			</StyledSelect>
+			{onClear && value && (
+				<ClearButton
+					onClick={() => onClear && onClear()}
+					title={siteText.common.clear_select_input}
+				>
+					<VisuallyHidden>
+						{siteText.common.clear_select_input}
+					</VisuallyHidden>
+				</ClearButton>
+			)}
+			{isDefined(icon) && <Icon>{icon}</Icon>}
+		</Container>
+	);
 }
 
 const Container = styled.div(css({ position: 'relative', maxWidth: '100%' }));
 
 const Icon = styled.span(
-  css({
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    minHeight: '100%',
-    py: 1,
-    pl: 2,
-  })
+	css({
+		pointerEvents: 'none',
+		display: 'flex',
+		alignItems: 'center',
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		minHeight: '100%',
+		py: 1,
+		pl: 2,
+	})
 );
 
 const ClearButton = styled.button(
-  css({
-    width: 32,
-    height: '100%',
-    border: '1px solid lightGray',
-    padding: 2,
-    textAlign: 'left',
-    backgroundColor: 'white',
-    backgroundImage: `url('${closeUrl}')`,
-    backgroundSize: '24px 24px',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center center',
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    cursor: 'pointer',
-  })
+	css({
+		width: 32,
+		height: '100%',
+		border: '1px solid lightGray',
+		padding: 2,
+		textAlign: 'left',
+		backgroundColor: 'white',
+		backgroundImage: `url('${closeUrl}')`,
+		backgroundSize: '24px 24px',
+		backgroundRepeat: 'no-repeat',
+		backgroundPosition: 'center center',
+		position: 'absolute',
+		right: 0,
+		top: 0,
+		cursor: 'pointer',
+	})
 );
 
 const StyledSelect = styled.select<{ isClearable: boolean; hasIcon: boolean }>(
-  (x) =>
-    css({
-      display: 'block',
-      minWidth: '15em',
-      maxWidth: '100%',
-      borderWidth: 1,
-      borderStyle: 'solid',
-      borderColor: 'lightGray',
-      fontFamily: 'body',
-      appearance: 'none',
-      p: 2,
-      pr: x.isClearable ? '2.4rem' : '2rem',
-      pl: x.hasIcon ? '2.4rem' : '0.5rem',
-      background: `url('${chevronDownUrl}')`,
-      backgroundSize: '18px 12px',
-      backgroundRepeat: 'no-repeat, repeat',
-      backgroundPosition: 'right 0.6em top 55%, 0 0',
-      '&:focus': {
-        borderColor: 'lightGray',
-        outline: '2px dotted',
-        outlineColor: 'blue',
-      },
-      '&::-ms-expand': {
-        display: 'none',
-      },
-    })
+	(x) =>
+		css({
+			display: 'block',
+			minWidth: '15em',
+			maxWidth: '100%',
+			borderWidth: 1,
+			borderStyle: 'solid',
+			borderColor: 'lightGray',
+			fontFamily: 'body',
+			appearance: 'none',
+			p: 2,
+			pr: x.isClearable ? '2.4rem' : '2rem',
+			pl: x.hasIcon ? '2.4rem' : '0.5rem',
+			background: `url('${chevronDownUrl}')`,
+			backgroundSize: '18px 12px',
+			backgroundRepeat: 'no-repeat, repeat',
+			backgroundPosition: 'right 0.6em top 55%, 0 0',
+			'&:focus': {
+				borderColor: 'lightGray',
+				outline: '2px dotted',
+				outlineColor: 'blue',
+			},
+			'&::-ms-expand': {
+				display: 'none',
+			},
+		})
 );

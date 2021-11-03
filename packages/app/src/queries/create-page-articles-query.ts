@@ -1,22 +1,22 @@
 import { ArticleSummary } from '~/components/article-teaser';
 
 type ArticlePageType =
-  | 'deceasedPage'
-  | 'behaviorPage'
-  | 'hospitalPage'
-  | 'intensiveCarePage'
-  | 'positiveTestsPage'
-  | 'in_positiveTestsPage'
-  | 'in_variantsPage'
-  | 'reproductionPage'
-  | 'sewerPage'
-  | 'vaccinationsPage'
-  | 'situationsPage'
-  | 'variantsPage'
-  | 'nursingHomePage'
-  | 'disabilityCarePage'
-  | 'elderlyAtHomePage'
-  | 'infectiousPeoplePage';
+	| 'deceasedPage'
+	| 'behaviorPage'
+	| 'hospitalPage'
+	| 'intensiveCarePage'
+	| 'positiveTestsPage'
+	| 'in_positiveTestsPage'
+	| 'in_variantsPage'
+	| 'reproductionPage'
+	| 'sewerPage'
+	| 'vaccinationsPage'
+	| 'situationsPage'
+	| 'variantsPage'
+	| 'nursingHomePage'
+	| 'disabilityCarePage'
+	| 'elderlyAtHomePage'
+	| 'infectiousPeoplePage';
 
 /**
  * This query fetches the articles field from a page type document. Pages in the
@@ -29,11 +29,11 @@ type ArticlePageType =
  * case in how it is currently set up.
  */
 export function createPageArticlesQuery(
-  pageTypeName: ArticlePageType,
-  locale: string,
-  articlesFieldName = 'articles'
+	pageTypeName: ArticlePageType,
+	locale: string,
+	articlesFieldName = 'articles'
 ) {
-  const query = `
+	const query = `
     *[_type == '${pageTypeName}']{
       "articles": ${articlesFieldName}[]->{
         "title":title.${locale},
@@ -46,7 +46,7 @@ export function createPageArticlesQuery(
       }
     }[0]`;
 
-  return query;
+	return query;
 }
 
 export type PageArticlesQueryResult = { articles?: ArticleSummary[] };

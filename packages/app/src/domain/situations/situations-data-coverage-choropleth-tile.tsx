@@ -14,130 +14,136 @@ import { LegendIcon } from './components/legend-icon';
 import { SituationsDataCoverageTooltip } from './components/situations-data-coverage-tooltip';
 
 interface SituationsDataCoverageChoroplethTileProps {
-  data: {
-    situations: VrCollectionSituations[];
-  };
+	data: {
+		situations: VrCollectionSituations[];
+	};
 }
 
 export function SituationsDataCoverageChoroplethTile({
-  data,
+	data,
 }: SituationsDataCoverageChoroplethTileProps) {
-  const { siteText, formatDateSpan } = useIntl();
-  const reverseRouter = useReverseRouter();
+	const { siteText, formatDateSpan } = useIntl();
+	const reverseRouter = useReverseRouter();
 
-  const text = siteText.brononderzoek;
-  const { date_start_unix, date_end_unix } = data.situations[0];
+	const text = siteText.brononderzoek;
+	const { date_start_unix, date_end_unix } = data.situations[0];
 
-  const [date_from, date_to] = formatDateSpan(
-    { seconds: date_start_unix },
-    { seconds: date_end_unix }
-  );
+	const [date_from, date_to] = formatDateSpan(
+		{ seconds: date_start_unix },
+		{ seconds: date_end_unix }
+	);
 
-  return (
-    <ChartTile
-      title={text.situaties_kaarten_uitkomsten.titel}
-      metadata={{
-        date: [date_start_unix, date_end_unix],
-        source: text.bronnen.rivm,
-      }}
-    >
-      <Box
-        display="flex"
-        flexDirection={{ _: 'column', lg: 'row' }}
-        as="figure"
-        height="100%"
-      >
-        <Box flex={{ lg: 1 }} as="figcaption">
-          <Markdown
-            content={replaceVariablesInText(
-              text.situaties_kaarten_uitkomsten.beschrijving,
-              { date_from, date_to }
-            )}
-          />
-          <Spacer mb={4} />
-          <Box spacing={3}>
-            <LegendItem
-              color="data.primary"
-              icon={<Check />}
-              title={
-                text.situaties_kaarten_uitkomsten.legenda.voldoende_data.titel
-              }
-              description={
-                text.situaties_kaarten_uitkomsten.legenda.voldoende_data
-                  .omschrijving
-              }
-            />
-            <LegendItem
-              color="gray"
-              icon={<Cross />}
-              title={
-                text.situaties_kaarten_uitkomsten.legenda.onvoldoende_data.titel
-              }
-              description={
-                text.situaties_kaarten_uitkomsten.legenda.onvoldoende_data
-                  .omschrijving
-              }
-            />
-          </Box>
-        </Box>
-        <Box
-          flex={{ lg: 1 }}
-          ml={[0, 0, 3]}
-          display="flex"
-          flexDirection="column"
-          height="100%"
-        >
-          <Box height="100%">
-            <ErrorBoundary>
-              <DynamicChoropleth
-                renderTarget="canvas"
-                accessibility={{
-                  key: 'situations_has_sufficient_data_choropleth',
-                }}
-                map="vr"
-                data={data.situations}
-                dataConfig={{
-                  metricName: 'situations',
-                  metricProperty: 'has_sufficient_data',
-                }}
-                dataOptions={{
-                  getLink: reverseRouter.vr.brononderzoek,
-                  tooltipVariables: {
-                    patients: siteText.choropleth_tooltip.patients,
-                  },
-                }}
-                formatTooltip={(context) => (
-                  <SituationsDataCoverageTooltip context={context} />
-                )}
-              />
-            </ErrorBoundary>
-          </Box>
-        </Box>
-      </Box>
-    </ChartTile>
-  );
+	return (
+		<ChartTile
+			title={text.situaties_kaarten_uitkomsten.titel}
+			metadata={{
+				date: [date_start_unix, date_end_unix],
+				source: text.bronnen.rivm,
+			}}
+		>
+			<Box
+				display="flex"
+				flexDirection={{ _: 'column', lg: 'row' }}
+				as="figure"
+				height="100%"
+			>
+				<Box flex={{ lg: 1 }} as="figcaption">
+					<Markdown
+						content={replaceVariablesInText(
+							text.situaties_kaarten_uitkomsten.beschrijving,
+							{ date_from, date_to }
+						)}
+					/>
+					<Spacer mb={4} />
+					<Box spacing={3}>
+						<LegendItem
+							color="data.primary"
+							icon={<Check />}
+							title={
+								text.situaties_kaarten_uitkomsten.legenda
+									.voldoende_data.titel
+							}
+							description={
+								text.situaties_kaarten_uitkomsten.legenda
+									.voldoende_data.omschrijving
+							}
+						/>
+						<LegendItem
+							color="gray"
+							icon={<Cross />}
+							title={
+								text.situaties_kaarten_uitkomsten.legenda
+									.onvoldoende_data.titel
+							}
+							description={
+								text.situaties_kaarten_uitkomsten.legenda
+									.onvoldoende_data.omschrijving
+							}
+						/>
+					</Box>
+				</Box>
+				<Box
+					flex={{ lg: 1 }}
+					ml={[0, 0, 3]}
+					display="flex"
+					flexDirection="column"
+					height="100%"
+				>
+					<Box height="100%">
+						<ErrorBoundary>
+							<DynamicChoropleth
+								renderTarget="canvas"
+								accessibility={{
+									key: 'situations_has_sufficient_data_choropleth',
+								}}
+								map="vr"
+								data={data.situations}
+								dataConfig={{
+									metricName: 'situations',
+									metricProperty: 'has_sufficient_data',
+								}}
+								dataOptions={{
+									getLink: reverseRouter.vr.brononderzoek,
+									tooltipVariables: {
+										patients:
+											siteText.choropleth_tooltip
+												.patients,
+									},
+								}}
+								formatTooltip={(context) => (
+									<SituationsDataCoverageTooltip
+										context={context}
+									/>
+								)}
+							/>
+						</ErrorBoundary>
+					</Box>
+				</Box>
+			</Box>
+		</ChartTile>
+	);
 }
 
 function LegendItem({
-  color,
-  icon,
-  title,
-  description,
+	color,
+	icon,
+	title,
+	description,
 }: {
-  color: Color;
-  icon: JSX.Element;
-  title: string;
-  description: string;
+	color: Color;
+	icon: JSX.Element;
+	title: string;
+	description: string;
 }) {
-  return (
-    <Box display="flex" css={css({ gap: '.5rem' })}>
-      <LegendIcon color={color}>{icon}</LegendIcon>
-      <Box spacing={1}>
-        <Text color={color} fontWeight="bold">
-          {title}
-        </Text>
-        <Text>{description}</Text>
-      </Box>
-    </Box>
-  );
+	return (
+		<Box display="flex" css={css({ gap: '.5rem' })}>
+			<LegendIcon color={color}>{icon}</LegendIcon>
+			<Box spacing={1}>
+				<Text color={color} fontWeight="bold">
+					{title}
+				</Text>
+				<Text>{description}</Text>
+			</Box>
+		</Box>
+	);
 }

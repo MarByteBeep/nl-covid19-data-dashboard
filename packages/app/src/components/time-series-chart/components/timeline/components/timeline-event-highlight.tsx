@@ -7,32 +7,32 @@ const activeColor = transparentize(0.7, colors.data.primary);
 const inactiveColor = transparentize(1, colors.data.primary);
 
 export function TimelineEventHighlight({
-  height,
-  timelineState,
+	height,
+	timelineState,
 }: {
-  height: number;
-  timelineState: TimelineState;
+	height: number;
+	timelineState: TimelineState;
 }) {
-  const { xOffset, event } = timelineState.current || {};
-  const { x0 = 0, x1 = 0 } = xOffset?.highlight || {};
+	const { xOffset, event } = timelineState.current || {};
+	const { x0 = 0, x1 = 0 } = xOffset?.highlight || {};
 
-  const width = Math.max(1, x1 - x0);
+	const width = Math.max(1, x1 - x0);
 
-  return (
-    <AnimatePresence>
-      {timelineState.current && (
-        <m.rect
-          key={`${event?.start}-${event?.end}`}
-          pointerEvents="none"
-          height={height}
-          x={x0}
-          width={width}
-          style={{ mixBlendMode: 'multiply' }}
-          initial={{ fill: inactiveColor }}
-          exit={{ fill: inactiveColor }}
-          animate={{ fill: activeColor }}
-        />
-      )}
-    </AnimatePresence>
-  );
+	return (
+		<AnimatePresence>
+			{timelineState.current && (
+				<m.rect
+					key={`${event?.start}-${event?.end}`}
+					pointerEvents="none"
+					height={height}
+					x={x0}
+					width={width}
+					style={{ mixBlendMode: 'multiply' }}
+					initial={{ fill: inactiveColor }}
+					exit={{ fill: inactiveColor }}
+					animate={{ fill: activeColor }}
+				/>
+			)}
+		</AnimatePresence>
+	);
 }

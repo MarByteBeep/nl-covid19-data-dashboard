@@ -8,8 +8,8 @@ import { useIsOldBrowser } from './use-is-old-browser';
  *   support.
  */
 export function useIsMotionDisabled() {
-  const isOldBrowser = useIsOldBrowser(true);
-  const prefersReducedMotion = useReducedMotion() === true;
+	const isOldBrowser = useIsOldBrowser(true);
+	const prefersReducedMotion = useReducedMotion() === true;
 
-  return isOldBrowser || prefersReducedMotion;
+	return isOldBrowser || prefersReducedMotion;
 }

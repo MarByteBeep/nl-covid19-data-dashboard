@@ -9,42 +9,42 @@ import { TooltipWrapper } from './tooltip-wrapper';
 import { TooltipData, TooltipFormatter } from './types';
 
 interface TooltipProps<T extends TimestampedValue> {
-  title?: string;
-  data: TooltipData<T>;
-  left: number;
-  top: number;
-  bounds: Bounds;
-  padding: Padding;
-  formatTooltip?: TooltipFormatter<T>;
+	title?: string;
+	data: TooltipData<T>;
+	left: number;
+	top: number;
+	bounds: Bounds;
+	padding: Padding;
+	formatTooltip?: TooltipFormatter<T>;
 }
 
 export function Tooltip<T extends TimestampedValue>({
-  title,
-  data: tooltipData,
-  left,
-  top,
-  formatTooltip,
-  bounds,
-  padding,
+	title,
+	data: tooltipData,
+	left,
+	top,
+	formatTooltip,
+	bounds,
+	padding,
 }: TooltipProps<T>) {
-  const content =
-    typeof formatTooltip === 'function' ? (
-      formatTooltip(tooltipData)
-    ) : (
-      <TooltipSeriesList data={tooltipData} />
-    );
+	const content =
+		typeof formatTooltip === 'function' ? (
+			formatTooltip(tooltipData)
+		) : (
+			<TooltipSeriesList data={tooltipData} />
+		);
 
-  if (!content) return null;
+	if (!content) return null;
 
-  return (
-    <TooltipWrapper
-      title={title}
-      left={left}
-      top={top}
-      bounds={bounds}
-      padding={padding}
-    >
-      {content}
-    </TooltipWrapper>
-  );
+	return (
+		<TooltipWrapper
+			title={title}
+			left={left}
+			top={top}
+			bounds={bounds}
+			padding={padding}
+		>
+			{content}
+		</TooltipWrapper>
+	);
 }

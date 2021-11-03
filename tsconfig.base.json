@@ -1,24 +1,24 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "lib": ["esnext", "dom"],
-    "target": "es2018",
-    "moduleResolution": "node",
-    "rootDir": ".",
-    "baseUrl": ".",
-    "paths": {
-      "@corona-dashboard/*": ["./*/src"]
-    },
-    "strict": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "preserve",
-    "composite": true,
-    "incremental": true
-  },
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"module": "commonjs",
+		"lib": ["esnext", "dom"],
+		"target": "es2018",
+		"moduleResolution": "node",
+		"rootDir": ".",
+		"baseUrl": ".",
+		"paths": {
+			"@corona-dashboard/*": ["./*/src"]
+		},
+		"strict": true,
+		"skipLibCheck": true,
+		"skipDefaultLibCheck": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"forceConsistentCasingInFileNames": true,
+		"jsx": "preserve",
+		"composite": true,
+		"incremental": true
+	},
+	"exclude": ["node_modules"]
 }

@@ -10,18 +10,18 @@ import { getClient } from '../../client';
  * Then it can be deleted.
  */
 (async function run() {
-  const client = getClient('development');
+	const client = getClient('development');
 
-  const documents = (await client.fetch(
-    `*[_type == 'lokalizeText']`
-  )) as LokalizeText[];
+	const documents = (await client.fetch(
+		`*[_type == 'lokalizeText']`
+	)) as LokalizeText[];
 
-  const transaction = client.transaction();
+	const transaction = client.transaction();
 
-  documents.forEach((doc) => transaction.patch(doc._id, { unset: ['path'] }));
+	documents.forEach((doc) => transaction.patch(doc._id, { unset: ['path'] }));
 
-  await transaction.commit();
+	await transaction.commit();
 })().catch((err) => {
-  console.error(`Transaction failed: ${err.message}`);
-  process.exit(1);
+	console.error(`Transaction failed: ${err.message}`);
+	process.exit(1);
 });

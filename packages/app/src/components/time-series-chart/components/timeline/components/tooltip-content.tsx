@@ -9,123 +9,130 @@ import { useIsTouchDevice } from '~/utils/use-is-touch-device';
 import { TimelineEventConfig } from '../logic';
 
 interface TimelineTooltipContentProps {
-  config: TimelineEventConfig;
-  onNext: () => void;
-  onPrev: () => void;
-  onClose: () => void;
-  hasMultipleEvents: boolean;
+	config: TimelineEventConfig;
+	onNext: () => void;
+	onPrev: () => void;
+	onClose: () => void;
+	hasMultipleEvents: boolean;
 }
 
 export function TimelineTooltipContent({
-  config,
-  onNext,
-  onPrev,
-  onClose,
-  hasMultipleEvents,
+	config,
+	onNext,
+	onPrev,
+	onClose,
+	hasMultipleEvents,
 }: TimelineTooltipContentProps) {
-  const intl = useIntl();
-  const isTouch = useIsTouchDevice();
-  const dateStr = [
-    intl.formatDateFromSeconds(config.start, 'medium'),
-    config.end && intl.formatDateFromSeconds(config.end, 'medium'),
-  ]
-    .filter(isDefined)
-    .join(' – ');
+	const intl = useIntl();
+	const isTouch = useIsTouchDevice();
+	const dateStr = [
+		intl.formatDateFromSeconds(config.start, 'medium'),
+		config.end && intl.formatDateFromSeconds(config.end, 'medium'),
+	]
+		.filter(isDefined)
+		.join(' – ');
 
-  return (
-    <Box
-      color="black"
-      px={18}
-      py={15}
-      spacing={3}
-      onTouchStart={stopEventPropagation}
-      onTouchMove={stopEventPropagation}
-      onMouseMove={stopEventPropagation}
-      onMouseLeave={stopEventPropagation}
-      width={{ _: '100vw', sm: '100%' }}
-      maxWidth="100%"
-    >
-      {isTouch && (
-        <Box
-          display="flex"
-          justifyContent={hasMultipleEvents ? 'space-between' : 'center'}
-          alignItems="center"
-          ml={-2}
-          mr={-2}
-        >
-          {hasMultipleEvents && (
-            <ChevronButton
-              onClick={onPrev}
-              rotate
-              title={intl.siteText.charts.timeline.prev}
-            />
-          )}
+	return (
+		<Box
+			color="black"
+			px={18}
+			py={15}
+			spacing={3}
+			onTouchStart={stopEventPropagation}
+			onTouchMove={stopEventPropagation}
+			onMouseMove={stopEventPropagation}
+			onMouseLeave={stopEventPropagation}
+			width={{ _: '100vw', sm: '100%' }}
+			maxWidth="100%"
+		>
+			{isTouch && (
+				<Box
+					display="flex"
+					justifyContent={
+						hasMultipleEvents ? 'space-between' : 'center'
+					}
+					alignItems="center"
+					ml={-2}
+					mr={-2}
+				>
+					{hasMultipleEvents && (
+						<ChevronButton
+							onClick={onPrev}
+							rotate
+							title={intl.siteText.charts.timeline.prev}
+						/>
+					)}
 
-          <InlineText variant="label1" color="labelGray">
-            {dateStr}
-          </InlineText>
+					<InlineText variant="label1" color="labelGray">
+						{dateStr}
+					</InlineText>
 
-          {hasMultipleEvents && (
-            <ChevronButton
-              onClick={onNext}
-              title={intl.siteText.charts.timeline.next}
-            />
-          )}
-        </Box>
-      )}
-      <Box spacing={2}>
-        {!isTouch && (
-          <Text variant="label1" color="labelGray">
-            {dateStr}
-          </Text>
-        )}
+					{hasMultipleEvents && (
+						<ChevronButton
+							onClick={onNext}
+							title={intl.siteText.charts.timeline.next}
+						/>
+					)}
+				</Box>
+			)}
+			<Box spacing={2}>
+				{!isTouch && (
+					<Text variant="label1" color="labelGray">
+						{dateStr}
+					</Text>
+				)}
 
-        <Text variant="label1" fontWeight="bold">
-          {config.title}
-        </Text>
-        <Text variant="label1">{config.description}</Text>
-      </Box>
+				<Text variant="label1" fontWeight="bold">
+					{config.title}
+				</Text>
+				<Text variant="label1">{config.description}</Text>
+			</Box>
 
-      {isTouch && (
-        <Box
-          pt={3}
-          mx={-27}
-          borderTop="1px solid"
-          borderTopColor="lightGray"
-          display="flex"
-          justifyContent="center"
-          textVariant="label1"
-        >
-          <Anchor as="button" onClick={onClose} color="blue" underline>
-            {intl.siteText.common.sluiten}
-          </Anchor>
-        </Box>
-      )}
-    </Box>
-  );
+			{isTouch && (
+				<Box
+					pt={3}
+					mx={-27}
+					borderTop="1px solid"
+					borderTopColor="lightGray"
+					display="flex"
+					justifyContent="center"
+					textVariant="label1"
+				>
+					<Anchor
+						as="button"
+						onClick={onClose}
+						color="blue"
+						underline
+					>
+						{intl.siteText.common.sluiten}
+					</Anchor>
+				</Box>
+			)}
+		</Box>
+	);
 }
 
 function ChevronButton({
-  onClick,
-  title,
-  rotate,
+	onClick,
+	title,
+	rotate,
 }: {
-  onClick: () => void;
-  title: string;
-  rotate?: boolean;
+	onClick: () => void;
+	title: string;
+	rotate?: boolean;
 }) {
-  return (
-    <Box
-      color="blue"
-      style={{ transform: rotate ? 'rotate(180deg)' : undefined }}
-    >
-      <IconButton title={title} onClick={onClick} size={13} padding={2}>
-        <Chevron aria-hidden={true} />
-      </IconButton>
-    </Box>
-  );
+	return (
+		<Box
+			color="blue"
+			style={{ transform: rotate ? 'rotate(180deg)' : undefined }}
+		>
+			<IconButton title={title} onClick={onClick} size={13} padding={2}>
+				<Chevron aria-hidden={true} />
+			</IconButton>
+		</Box>
+	);
 }
 
 function stopEventPropagation(evt: TouchEvent | MouseEvent) {
-  evt.stopPropagation();
+	evt.stopPropagation();
 }

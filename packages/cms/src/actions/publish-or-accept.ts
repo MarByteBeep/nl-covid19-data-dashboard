@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react';
 import { DocumentActionProps } from './types';
 
 export interface Operation {
-  disabled: (args: unknown) => false | string;
-  execute: (args?: unknown) => void;
+	disabled: (args: unknown) => false | string;
+	execute: (args?: unknown) => void;
 }
 
 /**
@@ -23,70 +23,70 @@ export interface Operation {
  * get publish most frequently.
  */
 export function PublishOrAcceptAction(props: DocumentActionProps) {
-  const { patch, publish } = useDocumentOperation(props.id, props.type) as {
-    patch: Operation;
-    publish: Operation;
-  };
+	const { patch, publish } = useDocumentOperation(props.id, props.type) as {
+		patch: Operation;
+		publish: Operation;
+	};
 
-  assert(
-    props.type === 'lokalizeText',
-    `The PublishOrAcceptAction should only be made available for LokalizeText documents, and not: ${props.type}`
-  );
+	assert(
+		props.type === 'lokalizeText',
+		`The PublishOrAcceptAction should only be made available for LokalizeText documents, and not: ${props.type}`
+	);
 
-  const document = (props.draft || props.published) as LokalizeText | null;
+	const document = (props.draft || props.published) as LokalizeText | null;
 
-  const [isPublishing, setIsPublishing] = useState(false);
+	const [isPublishing, setIsPublishing] = useState(false);
 
-  useEffect(() => {
-    /**
-     * If the isPublishing state was set to true and the draft has changed to
-     * become `null` the document has been published
-     */
-    if (isPublishing && !props.draft) {
-      setIsPublishing(false);
-    }
-  }, [props.draft]);
+	useEffect(() => {
+		/**
+		 * If the isPublishing state was set to true and the draft has changed to
+		 * become `null` the document has been published
+		 */
+		if (isPublishing && !props.draft) {
+			setIsPublishing(false);
+		}
+	}, [props.draft]);
 
-  if (!document) return;
+	if (!document) return;
 
-  /**
-   * It could be that we as developers already supplied the complete text
-   * document with correct texts when it got injected. In such case, there is
-   * nothing to change/publish. To avoid forcing communication to edit something
-   * that is already done, just to get the option to publish we detect this
-   * state and provide "accept" as an action to simply un-flag the text document
-   * and use as-is.
-   */
-  const isNewlyAddedWithoutDraft = document.is_newly_added;
+	/**
+	 * It could be that we as developers already supplied the complete text
+	 * document with correct texts when it got injected. In such case, there is
+	 * nothing to change/publish. To avoid forcing communication to edit something
+	 * that is already done, just to get the option to publish we detect this
+	 * state and provide "accept" as an action to simply un-flag the text document
+	 * and use as-is.
+	 */
+	const isNewlyAddedWithoutDraft = document.is_newly_added;
 
-  const label = isPublishing
-    ? 'Publishing…'
-    : isNewlyAddedWithoutDraft
-    ? 'Accept'
-    : 'Publish';
+	const label = isPublishing
+		? 'Publishing…'
+		: isNewlyAddedWithoutDraft
+		? 'Accept'
+		: 'Publish';
 
-  /**
-   * Normally disabled state is tied directly to publish.disabled, but in case
-   * we have a new document we need to enable the Accept state of the button.
-   */
-  const disabled = document.is_newly_added ? isPublishing : publish.disabled;
+	/**
+	 * Normally disabled state is tied directly to publish.disabled, but in case
+	 * we have a new document we need to enable the Accept state of the button.
+	 */
+	const disabled = document.is_newly_added ? isPublishing : publish.disabled;
 
-  return {
-    disabled,
-    label,
-    onHandle: () => {
-      setIsPublishing(true);
+	return {
+		disabled,
+		label,
+		onHandle: () => {
+			setIsPublishing(true);
 
-      const patchData: Partial<LokalizeText> = {
-        is_newly_added: false,
-        publish_count: document.publish_count + 1,
-      };
+			const patchData: Partial<LokalizeText> = {
+				is_newly_added: false,
+				publish_count: document.publish_count + 1,
+			};
 
-      patch.execute([{ set: patchData }]);
+			patch.execute([{ set: patchData }]);
 
-      publish.execute();
+			publish.execute();
 
-      props.onComplete();
-    },
-  };
+			props.onComplete();
+		},
+	};
 }

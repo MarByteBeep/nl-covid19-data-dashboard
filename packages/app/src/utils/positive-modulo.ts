@@ -6,5 +6,5 @@
  */
 
 export function positiveModulo(current: number, max: number) {
-  return ((current % max) + max) % max;
+	return ((current % max) + max) % max;
 }

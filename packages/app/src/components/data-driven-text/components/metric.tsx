@@ -10,59 +10,61 @@ import { Content, DataFile, DataKeys } from '..';
 import { getPluralizedText } from '../logic/get-pluralized-text';
 
 export function Metric<T extends DataKeys, K = DataFile<T>>({
-  data,
-  metricName,
-  metricProperty,
-  differenceKey,
-  text,
-  additionalData,
+	data,
+	metricName,
+	metricProperty,
+	differenceKey,
+	text,
+	additionalData,
 }: Extract<Content<T>, { type: 'metric' }> & { data: K }) {
-  const { siteText, formatNumber } = useIntl();
+	const { siteText, formatNumber } = useIntl();
 
-  const lastValue = get(data, [metricName, 'last_value']);
-  const propertyValue = metricProperty && lastValue[metricProperty];
+	const lastValue = get(data, [metricName, 'last_value']);
+	const propertyValue = metricProperty && lastValue[metricProperty];
 
-  assert(
-    isDefined(propertyValue),
-    `Missing value for metric property ${[
-      metricName,
-      'last_value',
-      metricProperty,
-    ]
-      .filter(isDefined)
-      .join(':')}`
-  );
+	assert(
+		isDefined(propertyValue),
+		`Missing value for metric property ${[
+			metricName,
+			'last_value',
+			metricProperty,
+		]
+			.filter(isDefined)
+			.join(':')}`
+	);
 
-  const differenceValue = differenceKey
-    ? (get(data, ['difference', differenceKey]) as
-        | DifferenceInteger
-        | DifferenceDecimal)
-    : undefined;
+	const differenceValue = differenceKey
+		? (get(data, ['difference', differenceKey]) as
+				| DifferenceInteger
+				| DifferenceDecimal)
+		: undefined;
 
-  assert(
-    isDefined(differenceValue),
-    `Missing value for difference:${differenceKey}`
-  );
+	assert(
+		isDefined(differenceValue),
+		`Missing value for difference:${differenceKey}`
+	);
 
-  const baseText = getPluralizedText(text, propertyValue);
+	const baseText = getPluralizedText(text, propertyValue);
 
-  return (
-    <>
-      {replaceComponentsInText(baseText, {
-        newDate: (
-          <RelativeDate
-            dateInSeconds={differenceValue.new_date_unix}
-            isCapitalized={baseText.indexOf('{{newDate}}') === 0}
-            absoluteDateTemplate={siteText.common.absolute_date_template}
-          />
-        ),
-        propertyValue: (
-          <InlineText fontWeight="bold">
-            {formatNumber(propertyValue)}
-          </InlineText>
-        ),
-        ...(additionalData || {}),
-      })}
-    </>
-  );
+	return (
+		<>
+			{replaceComponentsInText(baseText, {
+				newDate: (
+					<RelativeDate
+						dateInSeconds={differenceValue.new_date_unix}
+						isCapitalized={baseText.indexOf('{{newDate}}') === 0}
+						absoluteDateTemplate={
+							siteText.common.absolute_date_template
+						}
+					/>
+				),
+				propertyValue: (
+					<InlineText fontWeight="bold">
+						{formatNumber(propertyValue)}
+					</InlineText>
+				),
+				...(additionalData || {}),
+			})}
+		</>
+	);
 }

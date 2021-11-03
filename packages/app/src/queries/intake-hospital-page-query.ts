@@ -1,9 +1,9 @@
 import { GetStaticPropsContext } from 'next';
 
 export function getIntakeHospitalPageQuery(context: GetStaticPropsContext) {
-  const { locale } = context;
+	const { locale } = context;
 
-  return `
+	return `
   *[_type=='intensiveCarePage']{
     "pageLinks": [...pageLinks[]{
       "title": title.${locale},

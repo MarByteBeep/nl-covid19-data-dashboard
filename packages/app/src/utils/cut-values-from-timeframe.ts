@@ -2,10 +2,10 @@ import { getDaysForTimeframe, TimeframeOption } from '@corona-dashboard/common';
 import { takeRight } from 'lodash';
 
 export function cutValuesFromTimeframe<T>(
-  values: T[],
-  timeframe: TimeframeOption
+	values: T[],
+	timeframe: TimeframeOption
 ) {
-  const amountOfDays = getDaysForTimeframe(timeframe);
+	const amountOfDays = getDaysForTimeframe(timeframe);
 
-  return takeRight(values, amountOfDays);
+	return takeRight(values, amountOfDays);
 }

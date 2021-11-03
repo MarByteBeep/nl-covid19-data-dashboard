@@ -6,51 +6,57 @@ import { SeriesConfig } from './series';
 import { MetricPropertyFormatters } from './use-metric-property-formatters';
 
 export function useFormatSeriesValue<T extends TimestampedValue>(
-  metricPropertyFormatters: MetricPropertyFormatters<T>
+	metricPropertyFormatters: MetricPropertyFormatters<T>
 ) {
-  const intl = useIntl();
+	const intl = useIntl();
 
-  return useMemo(() => {
-    function getValueString(
-      value: T,
-      metricProperty: keyof T,
-      isPercentage?: boolean
-    ) {
-      const formatter =
-        metricPropertyFormatters[metricProperty] || intl.formatNumber;
-      const numberValue = value[metricProperty] as unknown as number | null;
-      const formattedValue = isPresent(numberValue)
-        ? formatter(numberValue)
-        : numberValue;
+	return useMemo(() => {
+		function getValueString(
+			value: T,
+			metricProperty: keyof T,
+			isPercentage?: boolean
+		) {
+			const formatter =
+				metricPropertyFormatters[metricProperty] || intl.formatNumber;
+			const numberValue = value[metricProperty] as unknown as
+				| number
+				| null;
+			const formattedValue = isPresent(numberValue)
+				? formatter(numberValue)
+				: numberValue;
 
-      return isPresent(formattedValue)
-        ? isPercentage
-          ? `${formattedValue}%`
-          : formattedValue
-        : '-';
-    }
+			return isPresent(formattedValue)
+				? isPercentage
+					? `${formattedValue}%`
+					: formattedValue
+				: '-';
+		}
 
-    function formatSeriesValue(
-      value: T,
-      config: SeriesConfig<T>[number],
-      isPercentage?: boolean
-    ) {
-      switch (config.type) {
-        case 'range':
-          return `${getValueString(
-            value,
-            config.metricPropertyLow,
-            isPercentage
-          )} - ${getValueString(
-            value,
-            config.metricPropertyHigh,
-            isPercentage
-          )}`;
-        default:
-          return getValueString(value, config.metricProperty, isPercentage);
-      }
-    }
+		function formatSeriesValue(
+			value: T,
+			config: SeriesConfig<T>[number],
+			isPercentage?: boolean
+		) {
+			switch (config.type) {
+				case 'range':
+					return `${getValueString(
+						value,
+						config.metricPropertyLow,
+						isPercentage
+					)} - ${getValueString(
+						value,
+						config.metricPropertyHigh,
+						isPercentage
+					)}`;
+				default:
+					return getValueString(
+						value,
+						config.metricProperty,
+						isPercentage
+					);
+			}
+		}
 
-    return formatSeriesValue;
-  }, [metricPropertyFormatters, intl.formatNumber]);
+		return formatSeriesValue;
+	}, [metricPropertyFormatters, intl.formatNumber]);
 }

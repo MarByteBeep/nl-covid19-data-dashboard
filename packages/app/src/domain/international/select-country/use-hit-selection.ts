@@ -11,95 +11,95 @@ import { positiveModulo } from '~/utils/positive-modulo';
  *   the arrow-keys.
  */
 export function useHitSelection({
-  isEnabled = false,
-  maxPossibleItems = 0,
-  onSelectHit,
-  handleOnClose,
+	isEnabled = false,
+	maxPossibleItems = 0,
+	onSelectHit,
+	handleOnClose,
 }: {
-  isEnabled: boolean;
-  maxPossibleItems: number;
-  onSelectHit: (index: number, openInNewWindow?: boolean) => void;
-  handleOnClose: () => void;
+	isEnabled: boolean;
+	maxPossibleItems: number;
+	onSelectHit: (index: number, openInNewWindow?: boolean) => void;
+	handleOnClose: () => void;
 }) {
-  const [focusIndex, setFocusIndex] = useState(0);
-  const focusRef = useRef<HTMLLIElement>(null);
+	const [focusIndex, setFocusIndex] = useState(0);
+	const focusRef = useRef<HTMLLIElement>(null);
 
-  useHotkey(
-    'up',
-    () => {
-      const nextIndex = focusIndex - 1;
-      setFocusIndex(positiveModulo(nextIndex, maxPossibleItems));
-      maybeScrollIntoView(focusRef.current);
-    },
-    {
-      allowRepeat: true,
-      isDisabled: !isEnabled,
-    }
-  );
+	useHotkey(
+		'up',
+		() => {
+			const nextIndex = focusIndex - 1;
+			setFocusIndex(positiveModulo(nextIndex, maxPossibleItems));
+			maybeScrollIntoView(focusRef.current);
+		},
+		{
+			allowRepeat: true,
+			isDisabled: !isEnabled,
+		}
+	);
 
-  useHotkey(
-    'down',
-    () => {
-      const nextIndex = focusIndex + 1;
-      setFocusIndex(positiveModulo(nextIndex, maxPossibleItems));
-      maybeScrollIntoView(focusRef.current);
-    },
-    {
-      allowRepeat: true,
-      isDisabled: !isEnabled,
-    }
-  );
+	useHotkey(
+		'down',
+		() => {
+			const nextIndex = focusIndex + 1;
+			setFocusIndex(positiveModulo(nextIndex, maxPossibleItems));
+			maybeScrollIntoView(focusRef.current);
+		},
+		{
+			allowRepeat: true,
+			isDisabled: !isEnabled,
+		}
+	);
 
-  useHotkey(
-    'enter',
-    () => {
-      if (maxPossibleItems === 0) return;
+	useHotkey(
+		'enter',
+		() => {
+			if (maxPossibleItems === 0) return;
 
-      onSelectHit(focusIndex);
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+			onSelectHit(focusIndex);
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  useHotkey(
-    'home',
-    () => {
-      setFocusIndex(0);
-      maybeScrollIntoView(focusRef.current);
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+	useHotkey(
+		'home',
+		() => {
+			setFocusIndex(0);
+			maybeScrollIntoView(focusRef.current);
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  useHotkey(
-    'end',
-    () => {
-      setFocusIndex(maxPossibleItems - 1);
-      maybeScrollIntoView(focusRef.current);
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+	useHotkey(
+		'end',
+		() => {
+			setFocusIndex(maxPossibleItems - 1);
+			maybeScrollIntoView(focusRef.current);
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  useHotkey(
-    'escape',
-    () => {
-      handleOnClose();
-    },
-    { allowRepeat: true, isDisabled: !isEnabled }
-  );
+	useHotkey(
+		'escape',
+		() => {
+			handleOnClose();
+		},
+		{ allowRepeat: true, isDisabled: !isEnabled }
+	);
 
-  return {
-    focusIndex,
-    focusRef,
-    setFocusIndex,
-  };
+	return {
+		focusIndex,
+		focusRef,
+		setFocusIndex,
+	};
 }
 
 function maybeScrollIntoView<T extends Element>(el: T | null | undefined) {
-  if (el) {
-    scrollIntoView(el, {
-      behavior: 'smooth',
-      scrollMode: 'if-needed',
-      block: 'nearest',
-      inline: 'nearest',
-    });
-  }
+	if (el) {
+		scrollIntoView(el, {
+			behavior: 'smooth',
+			scrollMode: 'if-needed',
+			block: 'nearest',
+			inline: 'nearest',
+		});
+	}
 }

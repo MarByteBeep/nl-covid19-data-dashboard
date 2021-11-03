@@ -13,10 +13,10 @@ type ValueOf<T> = T[keyof T];
  *   Await<Promise<{ a: number }>> == { a: number }
  */
 type Await<T> = T extends {
-  then(onfulfilled?: (value: infer U) => unknown): unknown;
+	then(onfulfilled?: (value: infer U) => unknown): unknown;
 }
-  ? U
-  : T;
+	? U
+	: T;
 
 /**
  * Make one or more properties optional on a type.

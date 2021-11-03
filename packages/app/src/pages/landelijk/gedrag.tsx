@@ -18,200 +18,226 @@ import { Layout } from '~/domain/layout/layout';
 import { NlLayout } from '~/domain/layout/nl-layout';
 import { useIntl } from '~/intl';
 import {
-  createPageArticlesQuery,
-  PageArticlesQueryResult,
+	createPageArticlesQuery,
+	PageArticlesQueryResult,
 } from '~/queries/create-page-articles-query';
 import {
-  createGetStaticProps,
-  StaticProps,
+	createGetStaticProps,
+	StaticProps,
 } from '~/static-props/create-get-static-props';
 import {
-  createGetChoroplethData,
-  createGetContent,
-  getLastGeneratedDate,
-  selectNlData,
+	createGetChoroplethData,
+	createGetContent,
+	getLastGeneratedDate,
+	selectNlData,
 } from '~/static-props/get-data';
 import { replaceVariablesInText } from '~/utils/replace-variables-in-text';
 
 export const getStaticProps = createGetStaticProps(
-  getLastGeneratedDate,
-  selectNlData('behavior', 'behavior_per_age_group'),
-  createGetChoroplethData({
-    vr: ({ behavior }) => ({ behavior }),
-  }),
-  createGetContent<PageArticlesQueryResult>((context) => {
-    const { locale } = context;
-    return createPageArticlesQuery('behaviorPage', locale);
-  })
+	getLastGeneratedDate,
+	selectNlData('behavior', 'behavior_per_age_group'),
+	createGetChoroplethData({
+		vr: ({ behavior }) => ({ behavior }),
+	}),
+	createGetContent<PageArticlesQueryResult>((context) => {
+		const { locale } = context;
+		return createPageArticlesQuery('behaviorPage', locale);
+	})
 );
 
 export default function BehaviorPage(
-  props: StaticProps<typeof getStaticProps>
+	props: StaticProps<typeof getStaticProps>
 ) {
-  const { selectedNlData: data, choropleth, content, lastGenerated } = props;
-  const behaviorLastValue = data.behavior.last_value;
+	const { selectedNlData: data, choropleth, content, lastGenerated } = props;
+	const behaviorLastValue = data.behavior.last_value;
 
-  const intl = useIntl();
-  const { nl_gedrag } = intl.siteText;
+	const intl = useIntl();
+	const { nl_gedrag } = intl.siteText;
 
-  const metadata = {
-    ...intl.siteText.nationaal_metadata,
-    title: nl_gedrag.metadata.title,
-    description: nl_gedrag.metadata.description,
-  };
+	const metadata = {
+		...intl.siteText.nationaal_metadata,
+		title: nl_gedrag.metadata.title,
+		description: nl_gedrag.metadata.description,
+	};
 
-  const [currentId, setCurrentId] = useState<BehaviorIdentifier>('wash_hands');
-  const scrollToRef = useRef<HTMLDivElement>(null);
+	const [currentId, setCurrentId] =
+		useState<BehaviorIdentifier>('wash_hands');
+	const scrollToRef = useRef<HTMLDivElement>(null);
 
-  const behaviorLookupKeys = useBehaviorLookupKeys();
+	const behaviorLookupKeys = useBehaviorLookupKeys();
 
-  const { highestCompliance, highestSupport } = useMemo(() => {
-    const list = behaviorLookupKeys.map((x) => ({
-      description: x.description,
-      compliancePercentage: behaviorLastValue[x.complianceKey] as number,
-      supportPercentage: behaviorLastValue[x.supportKey] as number,
-    }));
+	const { highestCompliance, highestSupport } = useMemo(() => {
+		const list = behaviorLookupKeys.map((x) => ({
+			description: x.description,
+			compliancePercentage: behaviorLastValue[x.complianceKey] as number,
+			supportPercentage: behaviorLastValue[x.supportKey] as number,
+		}));
 
-    const highestCompliance = list.sort(
-      (a, b) => (b.compliancePercentage ?? 0) - (a.compliancePercentage ?? 0)
-    )[0];
+		const highestCompliance = list.sort(
+			(a, b) =>
+				(b.compliancePercentage ?? 0) - (a.compliancePercentage ?? 0)
+		)[0];
 
-    const highestSupport = list.sort(
-      (a, b) => (b.supportPercentage ?? 0) - (a.supportPercentage ?? 0)
-    )[0];
+		const highestSupport = list.sort(
+			(a, b) => (b.supportPercentage ?? 0) - (a.supportPercentage ?? 0)
+		)[0];
 
-    return { highestCompliance, highestSupport };
-  }, [behaviorLastValue, behaviorLookupKeys]);
+		return { highestCompliance, highestSupport };
+	}, [behaviorLastValue, behaviorLookupKeys]);
 
-  return (
-    <Layout {...metadata} lastGenerated={lastGenerated}>
-      <NlLayout>
-        <TileList>
-          <PageInformationBlock
-            category={intl.siteText.nationaal_layout.headings.gedrag}
-            title={nl_gedrag.pagina.titel}
-            icon={<Gedrag />}
-            description={nl_gedrag.pagina.toelichting}
-            metadata={{
-              datumsText: nl_gedrag.datums,
-              dateOrRange: {
-                start: behaviorLastValue.date_start_unix,
-                end: behaviorLastValue.date_end_unix,
-              },
-              dateOfInsertionUnix: behaviorLastValue.date_of_insertion_unix,
-              dataSources: [nl_gedrag.bronnen.rivm],
-            }}
-            referenceLink={nl_gedrag.reference.href}
-            articles={content.articles}
-          />
+	return (
+		<Layout {...metadata} lastGenerated={lastGenerated}>
+			<NlLayout>
+				<TileList>
+					<PageInformationBlock
+						category={
+							intl.siteText.nationaal_layout.headings.gedrag
+						}
+						title={nl_gedrag.pagina.titel}
+						icon={<Gedrag />}
+						description={nl_gedrag.pagina.toelichting}
+						metadata={{
+							datumsText: nl_gedrag.datums,
+							dateOrRange: {
+								start: behaviorLastValue.date_start_unix,
+								end: behaviorLastValue.date_end_unix,
+							},
+							dateOfInsertionUnix:
+								behaviorLastValue.date_of_insertion_unix,
+							dataSources: [nl_gedrag.bronnen.rivm],
+						}}
+						referenceLink={nl_gedrag.reference.href}
+						articles={content.articles}
+					/>
 
-          <TwoKpiSection>
-            <Tile>
-              <Box spacing={3}>
-                <Heading level={3}>{nl_gedrag.onderzoek_uitleg.titel}</Heading>
-                <Markdown content={nl_gedrag.onderzoek_uitleg.toelichting} />
-              </Box>
-            </Tile>
+					<TwoKpiSection>
+						<Tile>
+							<Box spacing={3}>
+								<Heading level={3}>
+									{nl_gedrag.onderzoek_uitleg.titel}
+								</Heading>
+								<Markdown
+									content={
+										nl_gedrag.onderzoek_uitleg.toelichting
+									}
+								/>
+							</Box>
+						</Tile>
 
-            <Tile>
-              <Box spacing={3}>
-                <Heading level={3}>
-                  {nl_gedrag.kpi_recente_inzichten.titel}
-                </Heading>
+						<Tile>
+							<Box spacing={3}>
+								<Heading level={3}>
+									{nl_gedrag.kpi_recente_inzichten.titel}
+								</Heading>
 
-                <Markdown
-                  content={replaceVariablesInText(
-                    nl_gedrag.kpi_recente_inzichten.tekst,
-                    {
-                      number_of_participants: intl.formatNumber(
-                        behaviorLastValue.number_of_participants
-                      ),
-                      date_start: intl.formatDateFromSeconds(
-                        behaviorLastValue.date_start_unix
-                      ),
-                      date_end: intl.formatDateFromSeconds(
-                        behaviorLastValue.date_end_unix
-                      ),
+								<Markdown
+									content={replaceVariablesInText(
+										nl_gedrag.kpi_recente_inzichten.tekst,
+										{
+											number_of_participants:
+												intl.formatNumber(
+													behaviorLastValue.number_of_participants
+												),
+											date_start:
+												intl.formatDateFromSeconds(
+													behaviorLastValue.date_start_unix
+												),
+											date_end:
+												intl.formatDateFromSeconds(
+													behaviorLastValue.date_end_unix
+												),
 
-                      highest_compliance_description:
-                        highestCompliance.description,
-                      highest_compliance_compliance_percentage:
-                        intl.formatPercentage(
-                          highestCompliance.compliancePercentage
-                        ),
-                      highest_compliance_support_percentage:
-                        intl.formatPercentage(
-                          highestCompliance.supportPercentage
-                        ),
+											highest_compliance_description:
+												highestCompliance.description,
+											highest_compliance_compliance_percentage:
+												intl.formatPercentage(
+													highestCompliance.compliancePercentage
+												),
+											highest_compliance_support_percentage:
+												intl.formatPercentage(
+													highestCompliance.supportPercentage
+												),
 
-                      highest_support_description: highestSupport.description,
-                      highest_support_compliance_percentage:
-                        intl.formatPercentage(
-                          highestSupport.compliancePercentage
-                        ),
-                      highest_support_support_percentage: intl.formatPercentage(
-                        highestSupport.supportPercentage
-                      ),
-                    }
-                  )}
-                />
-              </Box>
-            </Tile>
-          </TwoKpiSection>
+											highest_support_description:
+												highestSupport.description,
+											highest_support_compliance_percentage:
+												intl.formatPercentage(
+													highestSupport.compliancePercentage
+												),
+											highest_support_support_percentage:
+												intl.formatPercentage(
+													highestSupport.supportPercentage
+												),
+										}
+									)}
+								/>
+							</Box>
+						</Tile>
+					</TwoKpiSection>
 
-          <BehaviorTableTile
-            title={nl_gedrag.basisregels.title}
-            description={nl_gedrag.basisregels.description}
-            complianceExplanation={nl_gedrag.basisregels.volgen_beschrijving}
-            supportExplanation={nl_gedrag.basisregels.steunen_beschrijving}
-            value={behaviorLastValue}
-            annotation={nl_gedrag.basisregels.annotatie}
-            setCurrentId={setCurrentId}
-            scrollRef={scrollToRef}
-          />
+					<BehaviorTableTile
+						title={nl_gedrag.basisregels.title}
+						description={nl_gedrag.basisregels.description}
+						complianceExplanation={
+							nl_gedrag.basisregels.volgen_beschrijving
+						}
+						supportExplanation={
+							nl_gedrag.basisregels.steunen_beschrijving
+						}
+						value={behaviorLastValue}
+						annotation={nl_gedrag.basisregels.annotatie}
+						setCurrentId={setCurrentId}
+						scrollRef={scrollToRef}
+					/>
 
-          <span ref={scrollToRef} />
+					<span ref={scrollToRef} />
 
-          <BehaviorLineChartTile
-            values={data.behavior.values}
-            metadata={{
-              date: [
-                behaviorLastValue.date_start_unix,
-                behaviorLastValue.date_end_unix,
-              ],
-              source: nl_gedrag.bronnen.rivm,
-            }}
-            currentId={currentId}
-            setCurrentId={setCurrentId}
-          />
+					<BehaviorLineChartTile
+						values={data.behavior.values}
+						metadata={{
+							date: [
+								behaviorLastValue.date_start_unix,
+								behaviorLastValue.date_end_unix,
+							],
+							source: nl_gedrag.bronnen.rivm,
+						}}
+						currentId={currentId}
+						setCurrentId={setCurrentId}
+					/>
 
-          <BehaviorChoroplethsTile
-            title={nl_gedrag.verdeling_in_nederland.titel}
-            description={nl_gedrag.verdeling_in_nederland.description}
-            data={choropleth.vr}
-            currentId={currentId}
-            setCurrentId={setCurrentId}
-          />
+					<BehaviorChoroplethsTile
+						title={nl_gedrag.verdeling_in_nederland.titel}
+						description={
+							nl_gedrag.verdeling_in_nederland.description
+						}
+						data={choropleth.vr}
+						currentId={currentId}
+						setCurrentId={setCurrentId}
+					/>
 
-          {data.behavior_per_age_group && (
-            <BehaviorPerAgeGroup
-              title={nl_gedrag.tabel_per_leeftijdsgroep.title}
-              description={nl_gedrag.tabel_per_leeftijdsgroep.description}
-              complianceExplanation={
-                nl_gedrag.tabel_per_leeftijdsgroep.explanation.compliance
-              }
-              supportExplanation={
-                nl_gedrag.tabel_per_leeftijdsgroep.explanation.support
-              }
-              data={data.behavior_per_age_group}
-              currentId={currentId}
-              setCurrentId={setCurrentId}
-            />
-          )}
+					{data.behavior_per_age_group && (
+						<BehaviorPerAgeGroup
+							title={nl_gedrag.tabel_per_leeftijdsgroep.title}
+							description={
+								nl_gedrag.tabel_per_leeftijdsgroep.description
+							}
+							complianceExplanation={
+								nl_gedrag.tabel_per_leeftijdsgroep.explanation
+									.compliance
+							}
+							supportExplanation={
+								nl_gedrag.tabel_per_leeftijdsgroep.explanation
+									.support
+							}
+							data={data.behavior_per_age_group}
+							currentId={currentId}
+							setCurrentId={setCurrentId}
+						/>
+					)}
 
-          <MoreInformation />
-        </TileList>
-      </NlLayout>
-    </Layout>
-  );
+					<MoreInformation />
+				</TileList>
+			</NlLayout>
+		</Layout>
+	);
 }

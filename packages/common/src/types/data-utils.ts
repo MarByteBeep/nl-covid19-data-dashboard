@@ -5,10 +5,10 @@ import { Gm, In, Nl, Vr } from '.';
  * a given scope key.
  */
 export type ScopedData = {
-  gm: Gm;
-  in: In;
-  nl: Nl;
-  vr: Vr;
+	gm: Gm;
+	in: In;
+	nl: Nl;
+	vr: Vr;
 };
 
 export type DataScopeKey = keyof ScopedData;
@@ -16,12 +16,12 @@ export type DataScopeKey = keyof ScopedData;
 export type DataScope = ScopedData[DataScopeKey];
 
 export type MetricKeys<T> = keyof Omit<
-  T,
-  'last_generated' | 'proto_name' | 'name' | 'code'
+	T,
+	'last_generated' | 'proto_name' | 'name' | 'code'
 >;
 
 type ValuesMetric<T> = {
-  values: T[];
+	values: T[];
 };
 
 /**
@@ -35,6 +35,6 @@ type ValueKeys<T> = T extends ValuesMetric<infer V> ? ValueKeys<V> : keyof T;
  * The metric properties of metric M in data scope S (scope being In/Nl/Vr/Gm)
  */
 export type MetricProperty<
-  S extends DataScope,
-  M extends MetricKeys<S>
+	S extends DataScope,
+	M extends MetricKeys<S>
 > = ValueKeys<S[M]>;

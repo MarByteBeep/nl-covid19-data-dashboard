@@ -5,27 +5,27 @@ import { useIntl } from '~/intl';
 import { useReverseRouter } from '~/utils/use-reverse-router';
 
 interface VrComboBoxProps {
-  getLink?: (code: string) => string;
+	getLink?: (code: string) => string;
 }
 
 export function VrComboBox(props: VrComboBoxProps) {
-  const { getLink } = props;
+	const { getLink } = props;
 
-  const { siteText } = useIntl();
-  const reverseRouter = useReverseRouter();
-  const router = useRouter();
+	const { siteText } = useIntl();
+	const reverseRouter = useReverseRouter();
+	const router = useRouter();
 
-  return (
-    <ComboBox
-      placeholder={siteText.common.zoekveld_placeholder_regio}
-      options={vrData}
-      onSelect={(region) =>
-        router.push(
-          typeof getLink === 'function'
-            ? getLink(region.code)
-            : reverseRouter.vr.index(region.code)
-        )
-      }
-    />
-  );
+	return (
+		<ComboBox
+			placeholder={siteText.common.zoekveld_placeholder_regio}
+			options={vrData}
+			onSelect={(region) =>
+				router.push(
+					typeof getLink === 'function'
+						? getLink(region.code)
+						: reverseRouter.vr.index(region.code)
+				)
+			}
+		/>
+	);
 }

@@ -1,143 +1,147 @@
 import { isDefined } from 'ts-is-present';
 import {
-  GmSewerPerInstallationValue,
-  InVariantsVariantValue,
-  NlVariantsVariantValue,
-  VrSewerPerInstallationValue,
+	GmSewerPerInstallationValue,
+	InVariantsVariantValue,
+	NlVariantsVariantValue,
+	VrSewerPerInstallationValue,
 } from './types';
 
 export type UnknownObject = Record<string, unknown>;
 
 export function sortTimeSeriesInDataInPlace<T>(
-  data: T,
-  { setDatesToMiddleOfDay = false } = {}
+	data: T,
+	{ setDatesToMiddleOfDay = false } = {}
 ) {
-  const timeSeriesPropertyNames = getTimeSeriesPropertyNames(data);
+	const timeSeriesPropertyNames = getTimeSeriesPropertyNames(data);
 
-  for (const propertyName of timeSeriesPropertyNames) {
-    try {
-      const timeSeries = data[propertyName] as unknown as TimeSeriesMetric;
+	for (const propertyName of timeSeriesPropertyNames) {
+		try {
+			const timeSeries = data[
+				propertyName
+			] as unknown as TimeSeriesMetric;
 
-      if (timeSeries.values.length === 0) {
-        continue;
-      }
+			if (timeSeries.values.length === 0) {
+				continue;
+			}
 
-      timeSeries.values = sortTimeSeriesValues(timeSeries.values);
+			timeSeries.values = sortTimeSeriesValues(timeSeries.values);
 
-      if (setDatesToMiddleOfDay) {
-        /**
-         * We'll map all dates to midday (12:00). This simplifies the rendering of
-         * a marker/annotation on a date.
-         */
-        timeSeries.values = timeSeries.values.map(setValueDatesToMiddleOfDay);
+			if (setDatesToMiddleOfDay) {
+				/**
+				 * We'll map all dates to midday (12:00). This simplifies the rendering of
+				 * a marker/annotation on a date.
+				 */
+				timeSeries.values = timeSeries.values.map(
+					setValueDatesToMiddleOfDay
+				);
 
-        if (timeSeries.last_value) {
-          timeSeries.last_value = setValueDatesToMiddleOfDay(
-            timeSeries.last_value
-          );
-        }
-      }
-    } catch (e) {
-      console.error(`Error during processing ${propertyName}`);
-      throw e;
-    }
-  }
+				if (timeSeries.last_value) {
+					timeSeries.last_value = setValueDatesToMiddleOfDay(
+						timeSeries.last_value
+					);
+				}
+			}
+		} catch (e) {
+			console.error(`Error during processing ${propertyName}`);
+			throw e;
+		}
+	}
 
-  /**
-   * Sewer per installation contains timeseries nested inside values, so we need
-   * to process that separately.
-   */
-  if (isDefined((data as UnknownObject).sewer_per_installation)) {
-    const nestedSeries = (data as UnknownObject)
-      .sewer_per_installation as SewerPerInstallationData;
+	/**
+	 * Sewer per installation contains timeseries nested inside values, so we need
+	 * to process that separately.
+	 */
+	if (isDefined((data as UnknownObject).sewer_per_installation)) {
+		const nestedSeries = (data as UnknownObject)
+			.sewer_per_installation as SewerPerInstallationData;
 
-    if (!nestedSeries.values) {
-      /**
-       * It can happen that we get incomplete json data and assuming that values
-       * exists here might crash the app
-       */
-      console.error('sewer_per_installation.values does not exist');
-      return;
-    }
+		if (!nestedSeries.values) {
+			/**
+			 * It can happen that we get incomplete json data and assuming that values
+			 * exists here might crash the app
+			 */
+			console.error('sewer_per_installation.values does not exist');
+			return;
+		}
 
-    if (!Array.isArray(nestedSeries.values)) {
-      /**
-       * It can happen that we get incomplete json data and assuming that values
-       * exists here might crash the app
-       */
-      console.error('sewer_per_installation.values is not an array');
-      return;
-    }
+		if (!Array.isArray(nestedSeries.values)) {
+			/**
+			 * It can happen that we get incomplete json data and assuming that values
+			 * exists here might crash the app
+			 */
+			console.error('sewer_per_installation.values is not an array');
+			return;
+		}
 
-    nestedSeries.values = nestedSeries.values.map((x, index) => {
-      if (!x.values) {
-        /**
-         * It can happen that we get incomplete json data and assuming that values
-         * exists here might crash the app
-         */
-        console.error(
-          `sewer_per_installation.values[${index}] does not have a values collection`
-        );
-        return x;
-      }
-      x.values = sortTimeSeriesValues(x.values) as
-        | VrSewerPerInstallationValue[]
-        | GmSewerPerInstallationValue[];
+		nestedSeries.values = nestedSeries.values.map((x, index) => {
+			if (!x.values) {
+				/**
+				 * It can happen that we get incomplete json data and assuming that values
+				 * exists here might crash the app
+				 */
+				console.error(
+					`sewer_per_installation.values[${index}] does not have a values collection`
+				);
+				return x;
+			}
+			x.values = sortTimeSeriesValues(x.values) as
+				| VrSewerPerInstallationValue[]
+				| GmSewerPerInstallationValue[];
 
-      if (setDatesToMiddleOfDay) {
-        x.values = x.values.map(setValueDatesToMiddleOfDay);
+			if (setDatesToMiddleOfDay) {
+				x.values = x.values.map(setValueDatesToMiddleOfDay);
 
-        if (x.last_value) {
-          x.last_value = setValueDatesToMiddleOfDay(x.last_value);
-        }
-      }
-      return x;
-    });
-  }
+				if (x.last_value) {
+					x.last_value = setValueDatesToMiddleOfDay(x.last_value);
+				}
+			}
+			return x;
+		});
+	}
 
-  /**
-   * The variants data is structured similarly to sewer_per_installation as
-   * shown above. @TODO unify/clean up validation of both.
-   */
-  if (isDefined((data as UnknownObject).variants)) {
-    const nestedSeries = (data as UnknownObject).variants as VariantsData;
+	/**
+	 * The variants data is structured similarly to sewer_per_installation as
+	 * shown above. @TODO unify/clean up validation of both.
+	 */
+	if (isDefined((data as UnknownObject).variants)) {
+		const nestedSeries = (data as UnknownObject).variants as VariantsData;
 
-    if (!nestedSeries.values) {
-      /**
-       * It can happen that we get incomplete json data and assuming that values
-       * exists here might crash the app
-       */
-      console.error('variants.values does not exist');
-      return;
-    }
+		if (!nestedSeries.values) {
+			/**
+			 * It can happen that we get incomplete json data and assuming that values
+			 * exists here might crash the app
+			 */
+			console.error('variants.values does not exist');
+			return;
+		}
 
-    nestedSeries.values = nestedSeries.values.map((x, index) => {
-      if (!x.values) {
-        /**
-         * It can happen that we get incomplete json data and assuming that values
-         * exists here might crash the app
-         */
-        console.error(
-          `variants.nestedSeries.values[${index}].values does not exist`
-        );
-        return x;
-      }
+		nestedSeries.values = nestedSeries.values.map((x, index) => {
+			if (!x.values) {
+				/**
+				 * It can happen that we get incomplete json data and assuming that values
+				 * exists here might crash the app
+				 */
+				console.error(
+					`variants.nestedSeries.values[${index}].values does not exist`
+				);
+				return x;
+			}
 
-      x.values = sortTimeSeriesValues(x.values) as
-        | NlVariantsVariantValue[]
-        | InVariantsVariantValue[];
+			x.values = sortTimeSeriesValues(x.values) as
+				| NlVariantsVariantValue[]
+				| InVariantsVariantValue[];
 
-      if (setDatesToMiddleOfDay) {
-        x.values = x.values.map(setValueDatesToMiddleOfDay);
+			if (setDatesToMiddleOfDay) {
+				x.values = x.values.map(setValueDatesToMiddleOfDay);
 
-        if (x.last_value) {
-          x.last_value = setValueDatesToMiddleOfDay(x.last_value);
-        }
-      }
+				if (x.last_value) {
+					x.last_value = setValueDatesToMiddleOfDay(x.last_value);
+				}
+			}
 
-      return x;
-    });
-  }
+			return x;
+		});
+	}
 }
 
 /**
@@ -145,73 +149,77 @@ export function sortTimeSeriesInDataInPlace<T>(
  * in their content. All time series data is kept in this values field.
  */
 function getTimeSeriesPropertyNames<T>(data: T) {
-  return Object.entries(data).reduce(
-    (acc, [propertyKey, propertyValue]) =>
-      isTimeSeries(propertyValue) ? [...acc, propertyKey as keyof T] : acc,
-    [] as (keyof T)[]
-  );
+	return Object.entries(data).reduce(
+		(acc, [propertyKey, propertyValue]) =>
+			isTimeSeries(propertyValue)
+				? [...acc, propertyKey as keyof T]
+				: acc,
+		[] as (keyof T)[]
+	);
 }
 
 export function sortTimeSeriesValues(values: TimestampedValue[]) {
-  /**
-   * There are 3 ways in which time series data can be timestamped. We need to
-   * detect and handle each of them.
-   */
-  if (isDateSeries(values)) {
-    return values.sort((a, b) => a.date_unix - b.date_unix);
-  } else if (isDateSpanSeries(values)) {
-    return values.sort((a, b) => a.date_end_unix - b.date_end_unix);
-  }
+	/**
+	 * There are 3 ways in which time series data can be timestamped. We need to
+	 * detect and handle each of them.
+	 */
+	if (isDateSeries(values)) {
+		return values.sort((a, b) => a.date_unix - b.date_unix);
+	} else if (isDateSpanSeries(values)) {
+		return values.sort((a, b) => a.date_end_unix - b.date_end_unix);
+	}
 
-  /**
-   * If none match we throw, since it means an unknown timestamp is used and we
-   * want to be sure we sort all data.
-   */
-  throw new Error(
-    `Unknown timestamp in value ${JSON.stringify(values[0], null, 2)}`
-  );
+	/**
+	 * If none match we throw, since it means an unknown timestamp is used and we
+	 * want to be sure we sort all data.
+	 */
+	throw new Error(
+		`Unknown timestamp in value ${JSON.stringify(values[0], null, 2)}`
+	);
 }
 
 function setValueDatesToMiddleOfDay<T extends TimestampedValue>(value: T) {
-  if (isDateSpanValue(value)) {
-    value.date_start_unix = middleOfDayInSeconds(value.date_start_unix);
-    value.date_end_unix = middleOfDayInSeconds(value.date_end_unix);
-  }
-  if (isDateValue(value)) {
-    value.date_unix = middleOfDayInSeconds(value.date_unix);
-  }
+	if (isDateSpanValue(value)) {
+		value.date_start_unix = middleOfDayInSeconds(value.date_start_unix);
+		value.date_end_unix = middleOfDayInSeconds(value.date_end_unix);
+	}
+	if (isDateValue(value)) {
+		value.date_unix = middleOfDayInSeconds(value.date_unix);
+	}
 
-  return value;
+	return value;
 }
 
 export type TimestampedValue = DateValue | DateSpanValue;
 
 export interface DateValue {
-  date_unix: number;
+	date_unix: number;
 }
 
 export interface DateSpanValue {
-  date_start_unix: number;
-  date_end_unix: number;
+	date_start_unix: number;
+	date_end_unix: number;
 }
 
 export interface TimeSeriesMetric<T = TimestampedValue> {
-  values: T[];
-  last_value: T;
+	values: T[];
+	last_value: T;
 }
 
 export interface SewerPerInstallationData {
-  values: (TimeSeriesMetric<
-    VrSewerPerInstallationValue | GmSewerPerInstallationValue
-  > & {
-    rwzi_awzi_name: string;
-  })[];
+	values: (TimeSeriesMetric<
+		VrSewerPerInstallationValue | GmSewerPerInstallationValue
+	> & {
+		rwzi_awzi_name: string;
+	})[];
 }
 
 export interface VariantsData {
-  values: (TimeSeriesMetric<NlVariantsVariantValue | InVariantsVariantValue> & {
-    name: string;
-  })[];
+	values: (TimeSeriesMetric<
+		NlVariantsVariantValue | InVariantsVariantValue
+	> & {
+		name: string;
+	})[];
 }
 
 /**
@@ -220,58 +228,58 @@ export interface VariantsData {
  */
 
 export function isDateValue(value: TimestampedValue): value is DateValue {
-  return isDefined((value as DateValue).date_unix);
+	return isDefined((value as DateValue).date_unix);
 }
 
 export function isDateSpanValue(
-  value: TimestampedValue
+	value: TimestampedValue
 ): value is DateSpanValue {
-  return (
-    isDefined((value as DateSpanValue).date_start_unix) &&
-    isDefined((value as DateSpanValue).date_end_unix)
-  );
+	return (
+		isDefined((value as DateSpanValue).date_start_unix) &&
+		isDefined((value as DateSpanValue).date_end_unix)
+	);
 }
 
 export function isTimeSeries(
-  value: unknown | TimeSeriesMetric
+	value: unknown | TimeSeriesMetric
 ): value is TimeSeriesMetric {
-  const metric = value as TimeSeriesMetric;
-  return isDefined(metric.values) && isDefined(metric.last_value);
+	const metric = value as TimeSeriesMetric;
+	return isDefined(metric.values) && isDefined(metric.last_value);
 }
 
 export function isDateSeries(
-  timeSeries: TimestampedValue[]
+	timeSeries: TimestampedValue[]
 ): timeSeries is DateValue[] {
-  if (!timeSeries.length) return false;
-  const firstValue = (timeSeries as DateValue[])[0];
-  return isDefined(firstValue?.date_unix);
+	if (!timeSeries.length) return false;
+	const firstValue = (timeSeries as DateValue[])[0];
+	return isDefined(firstValue?.date_unix);
 }
 
 export function isDateSpanSeries(
-  timeSeries: TimestampedValue[]
+	timeSeries: TimestampedValue[]
 ): timeSeries is DateSpanValue[] {
-  if (!timeSeries.length) return false;
-  const firstValue = (timeSeries as DateSpanValue[])[0];
-  return (
-    isDefined(firstValue?.date_end_unix) &&
-    isDefined(firstValue?.date_start_unix)
-  );
+	if (!timeSeries.length) return false;
+	const firstValue = (timeSeries as DateSpanValue[])[0];
+	return (
+		isDefined(firstValue?.date_end_unix) &&
+		isDefined(firstValue?.date_start_unix)
+	);
 }
 
 export function startOfDayInSeconds(seconds: number) {
-  const date = new Date(seconds * 1000);
-  date.setHours(0, 0, 0, 0);
-  return Math.floor(date.getTime() / 1000);
+	const date = new Date(seconds * 1000);
+	date.setHours(0, 0, 0, 0);
+	return Math.floor(date.getTime() / 1000);
 }
 
 export function endOfDayInSeconds(seconds: number) {
-  const date = new Date(seconds * 1000);
-  date.setHours(23, 59, 59, 999);
-  return Math.floor(date.getTime() / 1000);
+	const date = new Date(seconds * 1000);
+	date.setHours(23, 59, 59, 999);
+	return Math.floor(date.getTime() / 1000);
 }
 
 export function middleOfDayInSeconds(seconds: number) {
-  const date = new Date(seconds * 1000);
-  date.setHours(12, 0, 0, 0);
-  return Math.floor(date.getTime() / 1000);
+	const date = new Date(seconds * 1000);
+	date.setHours(12, 0, 0, 0);
+	return Math.floor(date.getTime() / 1000);
 }

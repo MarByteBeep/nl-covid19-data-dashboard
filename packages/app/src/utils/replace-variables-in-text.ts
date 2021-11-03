@@ -7,7 +7,8 @@ import { assert } from './assert';
  * instead of throwing an error when there's a validation error.
  */
 const shouldValidate =
-  typeof window === 'undefined' || process.env.NEXT_PUBLIC_PHASE !== 'develop';
+	typeof window === 'undefined' ||
+	process.env.NEXT_PUBLIC_PHASE !== 'develop';
 
 const curlyBracketRegex = /\{\{(.+?)\}\}/g;
 
@@ -27,130 +28,141 @@ const curlyBracketRegex = /\{\{(.+?)\}\}/g;
  * @param variables - An object with keys representing any variable available for replacement.
  */
 export function replaceVariablesInText(
-  translation: string,
-  variables: Record<
-    string,
-    string | number | undefined | Record<string, string | number | undefined>
-  >,
-  formatters?: DataFormatters
+	translation: string,
+	variables: Record<
+		string,
+		| string
+		| number
+		| undefined
+		| Record<string, string | number | undefined>
+	>,
+	formatters?: DataFormatters
 ) {
-  if (shouldValidate) {
-    assert(
-      isDefined(translation),
-      `Missing a locale text with placeholders for: ${Object.keys(
-        variables
-      ).join(',')} in: "${translation}"`
-    );
-  }
-  const formatterNames = isDefined(formatters) ? Object.keys(formatters) : [];
+	if (shouldValidate) {
+		assert(
+			isDefined(translation),
+			`Missing a locale text with placeholders for: ${Object.keys(
+				variables
+			).join(',')} in: "${translation}"`
+		);
+	}
+	const formatterNames = isDefined(formatters) ? Object.keys(formatters) : [];
 
-  return translation.replace(
-    curlyBracketRegex,
-    (_string, variableName: string) => {
-      const trimmedValue = variableName.trim();
-      const [trimmedName, command, commandArgument] = trimmedValue
-        .split(',')
-        .map((x) => x.trim());
+	return translation.replace(
+		curlyBracketRegex,
+		(_string, variableName: string) => {
+			const trimmedValue = variableName.trim();
+			const [trimmedName, command, commandArgument] = trimmedValue
+				.split(',')
+				.map((x) => x.trim());
 
-      if (isDefined(command)) {
-        switch (true) {
-          case command === 'plural': {
-            return executePluralize(
-              variables,
-              trimmedName,
-              translation,
-              commandArgument
-            );
-          }
-          case formatterNames.includes(command): {
-            return isDefined(formatters)
-              ? executeFormat(
-                  variables,
-                  trimmedName,
-                  translation,
-                  formatters[command as unknown as keyof DataFormatters] as (
-                    value: unknown
-                  ) => string
-                )
-              : '';
-          }
-          default: {
-            throw new Error(`Unknown command encountered: ${command}`);
-          }
-        }
-      }
-      if (trimmedName in variables) {
-        return (variables[trimmedName] ?? '').toString();
-      }
+			if (isDefined(command)) {
+				switch (true) {
+					case command === 'plural': {
+						return executePluralize(
+							variables,
+							trimmedName,
+							translation,
+							commandArgument
+						);
+					}
+					case formatterNames.includes(command): {
+						return isDefined(formatters)
+							? executeFormat(
+									variables,
+									trimmedName,
+									translation,
+									formatters[
+										command as unknown as keyof DataFormatters
+									] as (value: unknown) => string
+							  )
+							: '';
+					}
+					default: {
+						throw new Error(
+							`Unknown command encountered: ${command}`
+						);
+					}
+				}
+			}
+			if (trimmedName in variables) {
+				return (variables[trimmedName] ?? '').toString();
+			}
 
-      if (!shouldValidate) {
-        return `[#ERROR {{${trimmedName}}}]`;
-      }
+			if (!shouldValidate) {
+				return `[#ERROR {{${trimmedName}}}]`;
+			}
 
-      throw new Error(
-        `No value was supplied for placeholder ${trimmedName} in ${Object.keys(
-          variables
-        ).join(',')}. Text: ${translation}`
-      );
-    }
-  );
+			throw new Error(
+				`No value was supplied for placeholder ${trimmedName} in ${Object.keys(
+					variables
+				).join(',')}. Text: ${translation}`
+			);
+		}
+	);
 }
 
 function executeFormat(
-  variables: Record<
-    string,
-    string | number | Record<string, string | number | undefined> | undefined
-  >,
-  trimmedName: string,
-  translation: string,
-  formatter: (value: unknown) => string
+	variables: Record<
+		string,
+		| string
+		| number
+		| Record<string, string | number | undefined>
+		| undefined
+	>,
+	trimmedName: string,
+	translation: string,
+	formatter: (value: unknown) => string
 ) {
-  if (!isDefined(variables[trimmedName])) {
-    throw new Error(
-      `No value was supplied for command number value ${trimmedName} in ${Object.keys(
-        variables
-      ).join(',')}. Text: ${translation}`
-    );
-  }
+	if (!isDefined(variables[trimmedName])) {
+		throw new Error(
+			`No value was supplied for command number value ${trimmedName} in ${Object.keys(
+				variables
+			).join(',')}. Text: ${translation}`
+		);
+	}
 
-  return formatter(variables[trimmedName]);
+	return formatter(variables[trimmedName]);
 }
 
 function executePluralize(
-  variables: Record<
-    string,
-    string | number | Record<string, string | number | undefined> | undefined
-  >,
-  trimmedName: string,
-  translation: string,
-  commandArgument: string
+	variables: Record<
+		string,
+		| string
+		| number
+		| Record<string, string | number | undefined>
+		| undefined
+	>,
+	trimmedName: string,
+	translation: string,
+	commandArgument: string
 ) {
-  if (!isDefined(variables[trimmedName])) {
-    throw new Error(
-      `No value was supplied for command count value ${trimmedName} in ${Object.keys(
-        variables
-      ).join(',')}. Text: ${translation}`
-    );
-  }
-  if (!isDefined(variables[commandArgument])) {
-    throw new Error(
-      `No value was supplied for plural command argument ${commandArgument} in ${Object.keys(
-        variables
-      ).join(',')}. Text: ${translation}`
-    );
-  }
-  return pluralize(
-    variables[trimmedName] as number,
-    variables[commandArgument] as { plural: string; singular: string }
-  );
+	if (!isDefined(variables[trimmedName])) {
+		throw new Error(
+			`No value was supplied for command count value ${trimmedName} in ${Object.keys(
+				variables
+			).join(',')}. Text: ${translation}`
+		);
+	}
+	if (!isDefined(variables[commandArgument])) {
+		throw new Error(
+			`No value was supplied for plural command argument ${commandArgument} in ${Object.keys(
+				variables
+			).join(',')}. Text: ${translation}`
+		);
+	}
+	return pluralize(
+		variables[trimmedName] as number,
+		variables[commandArgument] as { plural: string; singular: string }
+	);
 }
 
 function pluralize(
-  count: number,
-  pluralizeOptions: { plural: string; singular: string }
+	count: number,
+	pluralizeOptions: { plural: string; singular: string }
 ) {
-  if (count === 1) {
-    return pluralizeOptions.singular;
-  }
-  return pluralizeOptions.plural;
+	if (count === 1) {
+		return pluralizeOptions.singular;
+	}
+	return pluralizeOptions.plural;
 }
