@@ -91,7 +91,10 @@ export async function exportLokalizeTexts({
 }
 
 async function writePrettyJson(data: Record<string, unknown>, path: string) {
-	const json = prettier.format(JSON.stringify(data), { parser: 'json' });
+	const json = prettier.format(JSON.stringify(data), {
+		parser: 'json',
+		useTabs: true,
+	});
 	return new Promise<void>((resolve, reject) =>
 		fs.writeFile(path, json, { encoding: 'utf8' }, (err) =>
 			err ? reject(err) : resolve()

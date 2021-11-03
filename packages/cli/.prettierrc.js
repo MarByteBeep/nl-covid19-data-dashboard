@@ -6,4 +6,5 @@ module.exports = {
 	useTabs: true,
 	bracketSpacing: true,
 	endOfLine: 'crlf',
+	parser: 'babel',
 };

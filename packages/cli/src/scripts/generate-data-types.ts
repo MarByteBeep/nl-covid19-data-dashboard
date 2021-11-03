@@ -3,6 +3,8 @@ import { compile, JSONSchema } from 'json-schema-to-typescript';
 import path from 'path';
 import { schemaDirectory } from '../config';
 import { createValidateFunction } from '../schema';
+const format = require('prettier-eslint');
+const prettierOptions = require('../../.prettierrc');
 
 // The directory where the resulting data.d.ts file will be saved
 const outputDirectory = path.join(
@@ -69,7 +71,11 @@ function writeDefinitionsToFile(typeDefinitions: string[]) {
 
 	fs.writeFileSync(
 		outputFile,
-		`${bannerComment}${typeDefinitions.join('\n')}`,
+		format({
+			text: `${bannerComment}${typeDefinitions.join('\n')}`,
+			eslintConfig: {},
+			prettierOptions,
+		}),
 		{
 			encoding: 'utf8',
 		}
