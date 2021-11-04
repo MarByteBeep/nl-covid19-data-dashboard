@@ -7,11 +7,13 @@ import {
 } from '../../data-sorting';
 import { DAY_IN_SECONDS } from '../../time';
 
-export type TimeframeOption = 'all' | '5weeks';
+export type TimeframeOption = 'all' | '5weeks' | '10weeks';
 
 export function getDaysForTimeframe(timeframe: TimeframeOption) {
 	if (timeframe === '5weeks') {
 		return 5 * 7;
+	} else if (timeframe === '10weeks') {
+		return 10 * 7;
 	}
 	return Infinity;
 }

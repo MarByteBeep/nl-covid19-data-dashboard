@@ -9,11 +9,16 @@ interface ChartTimeControlsProps {
 }
 
 export function ChartTimeControls(props: ChartTimeControlsProps) {
-	const { onChange, timeframe, timeframeOptions = ['all', '5weeks'] } = props;
+	const {
+		onChange,
+		timeframe,
+		timeframeOptions = ['all', '5weeks', '10weeks'],
+	} = props;
 
 	const { siteText } = useIntl();
 
 	const labelMap = {
+		'10weeks': siteText.charts.time_controls['10weeks'],
 		'5weeks': siteText.charts.time_controls['5weeks'],
 		all: siteText.charts.time_controls['all'],
 		week: siteText.charts.time_controls['week'],

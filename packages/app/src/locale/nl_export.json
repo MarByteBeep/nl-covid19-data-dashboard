@@ -508,6 +508,7 @@
 			"region": "Per veiligheidsregio"
 		},
 		"time_controls": {
+			"10weeks": "Laatste 10 weken",
 			"5weeks": "Laatste 5 weken",
 			"all": "Toon alles",
 			"week": "Laatste week"
