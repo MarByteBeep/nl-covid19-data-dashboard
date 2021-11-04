@@ -1,72 +1,84 @@
-import { Gedrag } from '@corona-dashboard/icons';
-import { PageInformationBlock } from '~/components/page-information-block';
+import { colors } from '@corona-dashboard/common';
+import { ChartTile } from '~/components/chart-tile';
 import { TileList } from '~/components/tile-list';
+import { TimeSeriesChart } from '~/components/time-series-chart';
 import { Layout } from '~/domain/layout/layout';
 import { NlLayout } from '~/domain/layout/nl-layout';
-import { SituationsDataCoverageChoroplethTile } from '~/domain/situations/situations-data-coverage-choropleth-tile';
-import { SituationsOverviewChoroplethTile } from '~/domain/situations/situations-overview-choropleth-tile';
 import { useIntl } from '~/intl';
-import { withFeatureNotFoundPage } from '~/lib/features';
-import { createPageArticlesQuery, PageArticlesQueryResult } from '~/queries/create-page-articles-query';
-import { createGetStaticProps, StaticProps } from '~/static-props/create-get-static-props';
-import { createGetChoroplethData, createGetContent, getLastGeneratedDate } from '~/static-props/get-data';
-export const getStaticProps = withFeatureNotFoundPage(
-	'situationsPage',
-	createGetStaticProps(
-		getLastGeneratedDate,
-		createGetChoroplethData({
-			vr: ({ situations }) => ({
-				situations,
-			}),
-		}),
-		createGetContent<PageArticlesQueryResult>((context) => {
-			const { locale } = context;
-			return createPageArticlesQuery('situationsPage', locale);
-		})
-	)
+import {
+	createGetStaticProps,
+	StaticProps,
+} from '~/static-props/create-get-static-props';
+import { getLastGeneratedDate, selectNlData } from '~/static-props/get-data';
+
+export const getStaticProps = createGetStaticProps(
+	getLastGeneratedDate,
+	selectNlData('tested_overall')
 );
 
 export default function Page(props: StaticProps<typeof getStaticProps>) {
-	const { choropleth, lastGenerated, content } = props;
+	const { selectedNlData: data, lastGenerated } = props;
 
-	const intl = useIntl();
+	const { siteText } = useIntl();
 
-	const text = intl.siteText.brononderzoek;
+	const text = siteText.positief_geteste_personen;
 
 	const metadata = {
-		...intl.siteText.nationaal_metadata,
+		...siteText.nationaal_metadata,
 		title: text.metadata.title,
 		description: text.metadata.description,
 	};
-
-	const singleValue = choropleth.vr.situations[0];
 
 	return (
 		<Layout {...metadata} lastGenerated={lastGenerated}>
 			<NlLayout>
 				<TileList>
-					<PageInformationBlock
-						category={intl.siteText.nationaal_layout.headings.besmettingen}
-						screenReaderCategory={intl.siteText.sidebar.metrics.source_investigation.title}
-						title={text.titel}
-						icon={<Gedrag />}
-						description={text.pagina_toelichting}
+					<ChartTile
+						title={text.linechart_titel}
+						description={text.linechart_toelichting}
 						metadata={{
-							datumsText: text.datums,
-							dateOrRange: {
-								start: singleValue.date_start_unix,
-								end: singleValue.date_end_unix,
-							},
-							dateOfInsertionUnix: singleValue.date_of_insertion_unix,
-							dataSources: [text.bronnen.rivm],
+							source: text.bronnen.rivm,
 						}}
-						referenceLink={text.reference.href}
-						articles={content.articles}
-					/>
-
-					<SituationsDataCoverageChoroplethTile data={choropleth.vr} />
-
-					<SituationsOverviewChoroplethTile data={choropleth.vr.situations} />
+						timeframeOptions={['all', '5weeks', '10weeks']}
+					>
+						{(timeframe) => (
+							<TimeSeriesChart
+								accessibility={{
+									key: 'confirmed_cases_infected_over_time_chart',
+								}}
+								values={data.tested_overall.values}
+								timeframe={timeframe}
+								seriesConfig={[
+									{
+										type: 'line',
+										metricProperty:
+											'infected_per_100k_moving_average',
+										label: siteText
+											.positief_geteste_personen
+											.tooltip_labels
+											.infected_per_100k_moving_average,
+										color: colors.data.primary,
+									},
+									{
+										type: 'bar',
+										metricProperty: 'infected_per_100k',
+										label: siteText
+											.positief_geteste_personen
+											.tooltip_labels.infected_per_100k,
+										color: colors.data.primary,
+									},
+									{
+										type: 'invisible',
+										metricProperty: 'infected',
+										label: siteText
+											.positief_geteste_personen
+											.tooltip_labels.infected_overall,
+										color: colors.data.primary,
+									},
+								]}
+							/>
+						)}
+					</ChartTile>
 				</TileList>
 			</NlLayout>
 		</Layout>
